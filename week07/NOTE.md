@@ -1,1 +1,10 @@
 学习笔记
+css排版-盒-源码（显示为标签）；语义（元素）；表现（盒）-盒模型（content,padding,margin,border）
+css排版-正常流-盒子和文字-一行排满换下一行-分ifc和bfc
+css排版-行级排布-基线-基线排布按文字排布-行模型（line-top,line-bottom最大字的高度；text-top,text-bottom;base-line）
+css排版-块级排布-float与clear；clear:right找出空出的位置
+css排版-bfc合并-float;边距折叠-给一个div,float:right,另一个留给这个float单独的空间，可以使用overflow:hidden，划分成俩个不相合的div;
+css-flex排版
+css-动画
+css-颜色
+css-绘制
