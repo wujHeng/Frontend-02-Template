@@ -44,17 +44,17 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboa',
-    meta: { title: '首页', icon: 'dashboard' },
+    redirect: '/dashboard',
     children: [{
-      path: 'dashboa',
+      path: 'dashboard',
+      name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页' }
+      meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   }
 ]
 
-//存在权限的路由  
+// 存在权限的路由
 // meta.roles  权限
 export const asyncRoutes = [
   {
@@ -66,9 +66,22 @@ export const asyncRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table',roles: ['admin'] }
+        meta: { title: 'Table', icon: 'table', roles: ['admin'] }
       }
     ]
+  },
+  {
+    path: '/fqtest',
+    component: Layout,
+    children: [
+      {
+        path: 'mytest',
+        name: 'mytest',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'mytest', icon: 'table' }
+      }
+    ]
+
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
