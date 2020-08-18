@@ -44,14 +44,13 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboa',
-    meta: { title: '首页', icon: 'dashboard' },
+    redirect: '/dashboard',
     children: [{
-      path: 'dashboa',
+      path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
-  }
+  },
 ]
 
 //存在权限的路由  
@@ -59,7 +58,8 @@ export const constantRoutes = [
 export const asyncRoutes = [
   {
     path: '/example',
-    component: () => import('@/layout'),
+    component: Layout,
+    redirect: '/example/table',
     meta: { title: 'Example', icon: 'el-icon-s-help' },
     children: [
       {
