@@ -44,29 +44,51 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboa',
-    meta: { title: '首页', icon: 'dashboard' },
+    redirect: '/dashboard',
     children: [{
-      path: 'dashboa',
+      path: 'dashboard',
+      name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页' }
+      meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   }
 ]
 
-//存在权限的路由  
+// 存在权限的路由
 // meta.roles  权限
 export const asyncRoutes = [
+
   {
-    path: '/example',
-    component: () => import('@/layout'),
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    path: '/plan',
+    component: Layout,
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table',roles: ['admin'] }
+        path: 'manage',
+        name: 'PlanManage',
+        component: () => import('@/views/plan/index'),
+        meta: { title: '计划管理' }
+      }
+    ]
+  },
+  {
+    path: '/recipe',
+    component: Layout,
+    alwaysShow: true,
+    redirect: '/recipe/list',
+    name: 'Recipe',
+    meta: { title: '配方管理' },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/recipe/list/index'),
+        name: 'RecipeList',
+        meta: { title: '配方列表' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/recipe/create/index'),
+        name: 'RecipeList',
+        meta: { title: '新增配方' }
       }
     ]
   },
