@@ -47,11 +47,10 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
-  }
+  },
 ]
 
 // 存在权限的路由
@@ -91,8 +90,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/material',
+  {path: '/material',
     component: Layout,
     redirect: '/material/base-info',
     name: 'Material',
