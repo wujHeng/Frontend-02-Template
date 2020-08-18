@@ -53,22 +53,57 @@ export const constantRoutes = [
   },
 ]
 
-//存在权限的路由  
+// 存在权限的路由
 // meta.roles  权限
 export const asyncRoutes = [
+
   {
-    path: '/example',
+    path: '/plan',
     component: Layout,
-    redirect: '/example/table',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table',roles: ['admin'] }
+        path: 'manage',
+        name: 'PlanManage',
+        component: () => import('@/views/plan/index'),
+        meta: { title: '计划管理' }
       }
     ]
+  },
+  {
+    path: '/recipe',
+    component: Layout,
+    redirect: '/recipe/list',
+    name: 'Recipe',
+    meta: { title: '配方管理' },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/recipe/list/index'),
+        name: 'RecipeList',
+        meta: { title: '配方列表' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/recipe/create/index'),
+        name: 'RecipeList',
+        meta: { title: '新增配方' }
+      }
+    ]
+  },
+  {path: '/material',
+    component: Layout,
+    redirect: '/material/base-info',
+    name: 'Material',
+    meta: { title: '原材料及称量参数' },
+    children: [
+      {
+        path: 'base-info',
+        component: () => import('@/views/material/base-info/index'),
+        name: 'MaterialBaseInfo',
+        meta: { title: '原材料基本信息' }
+      }
+    ]
+
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
