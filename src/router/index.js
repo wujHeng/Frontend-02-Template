@@ -73,7 +73,6 @@ export const asyncRoutes = [
   {
     path: '/recipe',
     component: Layout,
-    alwaysShow: true,
     redirect: '/recipe/list',
     name: 'Recipe',
     meta: { title: '配方管理' },
@@ -91,6 +90,22 @@ export const asyncRoutes = [
         meta: { title: '新增配方' }
       }
     ]
+  },
+  {
+    path: '/material',
+    component: Layout,
+    redirect: '/material/base-info',
+    name: 'Material',
+    meta: { title: '原材料及称量参数' },
+    children: [
+      {
+        path: 'base-info',
+        component: () => import('@/views/material/base-info/index'),
+        name: 'MaterialBaseInfo',
+        meta: { title: '原材料基本信息' }
+      }
+    ]
+
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
