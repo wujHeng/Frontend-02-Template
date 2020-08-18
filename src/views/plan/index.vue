@@ -1,3 +1,3 @@
 <template>
-    <p>计划管理测试</p>
+  <p>计划管理测试</p>
 </template>
