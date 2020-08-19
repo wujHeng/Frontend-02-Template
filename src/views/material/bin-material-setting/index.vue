@@ -1,5 +1,5 @@
 <template>
-<div style="margin-top: 25px">
+<div style="margin-top: 25px; width: 60%">
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item label="机台">
       <el-select
@@ -8,9 +8,9 @@
           v-model="equip" placeholder="请选择">
         <el-option
           v-for="item in equipOptions"
-          :key="item.global_name"
-          :label="item.global_name"
-          :value="item.global_name">
+          :key="item"
+          :label="item"
+          :value="item">
         </el-option>
       </el-select>
     </el-form-item>
@@ -28,7 +28,7 @@
   <el-table
     :data="tableBinCBData"
     border
-    style="width: 100%">
+    style="width: 80%">
     <el-table-column
       label="炭黑称">
       <el-table-column
@@ -38,58 +38,44 @@
       <el-table-column
         prop="masterial_name"
         label="物料名称">
+        <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
+            <el-select
+                clearable
+                @change="masterialChange"
+                v-model="scope.row.masterial_name">
+                <el-option
+                v-for="item in masterialOptions"
+                :key="item"
+                :label="item"
+                :value="item">
+                </el-option>
+            </el-select>
+        </template>
       </el-table-column>
       <el-table-column
         prop="low_value"
-        label="慢称值">
+        label="使用状态">
         <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
-          <el-input type="number" v-model="scope.row.low_value"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="advance_value"
-        label="提前量">
-        <template slot-scope="scope" v-if="scope.row.advance_value!='' && scope.row.advance_value>=0">
-          <el-input type="number" v-model="scope.row.advance_value"></el-input>
-        </template>
-      </el-table-column>
-    </el-table-column>
-    <el-table-column
-      label="（单位0.1S）">
-      <el-table-column
-        prop="adjust_value"
-        label="调整值">
-        <template slot-scope="scope" v-if="scope.row.adjust_value!='' && scope.row.adjust_value>=0">
-          <el-input type="number" v-model="scope.row.adjust_value"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="dot_time"
-        label="点动时间">
-        <template slot-scope="scope" v-if="scope.row.dot_time!='' && scope.row.dot_time>=0">
-          <el-input type="number" v-model="scope.row.dot_time"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="fast_speed"
-        label="快称速度">
-        <template slot-scope="scope" v-if="scope.row.fast_speed!='' && scope.row.fast_speed>=0">
-          <el-input type="number" v-model="scope.row.fast_speed"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="low_speed"
-        label="慢称速度">
-        <template slot-scope="scope" v-if="scope.row.low_speed!='' && scope.row.low_speed>=0">
-          <el-input type="number" v-model="scope.row.low_speed"></el-input>
+          <el-select
+          clearable
+          @change="stateChange"
+          v-model="scope.row.state" >
+        <el-option
+          v-for="item in stateOptions"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
         </template>
       </el-table-column>
     </el-table-column>
+    
   </el-table>
   <el-table
     :data="tableBinOilData"
     border
-    style="width: 75%">
+    style="width: 80%">
     <el-table-column
       label="油料称">
       <el-table-column
@@ -99,33 +85,35 @@
       <el-table-column
         prop="masterial_name"
         label="物料名称">
+        <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
+            <el-select
+                clearable
+                @change="masterialChange"
+                v-model="scope.row.masterial_name">
+                <el-option
+                v-for="item in masterialOptions"
+                :key="item"
+                :label="item"
+                :value="item">
+                </el-option>
+            </el-select>
+        </template>
       </el-table-column>
       <el-table-column
         prop="low_value"
-        label="慢称值">
+        label="使用状态">
         <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
-          <el-input type="number" v-model="scope.row.low_value"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="advance_value"
-        label="提前量">
-        <template slot-scope="scope" v-if="scope.row.advance_value!='' && scope.row.advance_value>=0">
-          <el-input type="number" v-model="scope.row.advance_value"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="adjust_value"
-        label="调整值">
-        <template slot-scope="scope" v-if="scope.row.adjust_value!='' && scope.row.adjust_value>=0">
-          <el-input type="number" v-model="scope.row.adjust_value"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="dot_time"
-        label="点动时间">
-        <template slot-scope="scope" v-if="scope.row.dot_time!='' && scope.row.dot_time>=0">
-          <el-input type="number" v-model="scope.row.dot_time"></el-input>
+          <el-select
+          clearable
+          @change="stateChange"
+          v-model="scope.row.state" >
+        <el-option
+          v-for="item in stateOptions"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
         </template>
       </el-table-column>
     </el-table-column>
@@ -213,20 +201,16 @@ export default {
       equip: '1#密炼机',
       equipOptionsUrl: '',
       equipOptions: ['1#密炼机','2#密炼机','3#密炼机',],
+    //   state: '使用',
+      stateOptionsUrl: '',
+      stateOptions: ["使用","停用"],
+    //   masterial: '炭黑1',
+      masterialOptionsUrl: '',
+      masterialOptions: ["炭黑1","炭黑2","炭黑3","炭黑4",],
 
     }
   },
   created() {
-    // axios.get(equipOptionsUrl, {
-    //       params: {
-    //       class_name: "设备类型"
-    //     }
-    //   }).then(function (response) {
-
-    //     this.equipOptions = response.data.results;
-    //   }).catch(function (error) {
-
-    //   });
   },
   methods: {
     equipChange() {
