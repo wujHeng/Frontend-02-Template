@@ -1,5 +1,5 @@
 <template>
-<div style="margin-top: 25px; width: 60%">
+<div style="margin-top: 25px; width: 80%; margin:25px auto auto auto">
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item label="机台">
       <el-select
@@ -15,14 +15,14 @@
       </el-select>
     </el-form-item>
     <el-form-item style="float: right">
-      <el-button>保存并下载</el-button>
-      <el-button>返回</el-button>
+      <el-button type="info">保存并下载</el-button>
+      <el-button type="info">返回</el-button>
       
     </el-form-item>
   </el-form>
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item label="当前机台">
-      <input type="text" v-model="equip" :disabled="true">
+      <el-input type="text" v-model="equip" :disabled="true"></el-input>
     </el-form-item>
   </el-form>
   <el-table

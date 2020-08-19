@@ -8,21 +8,21 @@
           v-model="equip" placeholder="请选择">
         <el-option
           v-for="item in equipOptions"
-          :key="item.global_name"
-          :label="item.global_name"
-          :value="item.global_name">
+          :key="item"
+          :label="item"
+          :value="item">
         </el-option>
       </el-select>
     </el-form-item>
     <el-form-item style="float: right">
-      <el-button>保存并下载</el-button>
-      <el-button>返回</el-button>
+      <el-button type="info">保存并下载</el-button>
+      <el-button type="info">返回</el-button>
       
     </el-form-item>
   </el-form>
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item label="当前机台">
-      <input type="text" v-model="equip" :disabled="true">
+      <el-input type="text" v-model="equip" :disabled="true"></el-input>
     </el-form-item>
   </el-form>
   <el-table
@@ -43,14 +43,14 @@
         prop="low_value"
         label="慢称值">
         <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
-          <el-input type="number" v-model="scope.row.low_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.low_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="advance_value"
         label="提前量">
         <template slot-scope="scope" v-if="scope.row.advance_value!='' && scope.row.advance_value>=0">
-          <el-input type="number" v-model="scope.row.advance_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.advance_value"></el-input>
         </template>
       </el-table-column>
     </el-table-column>
@@ -60,28 +60,28 @@
         prop="adjust_value"
         label="调整值">
         <template slot-scope="scope" v-if="scope.row.adjust_value!='' && scope.row.adjust_value>=0">
-          <el-input type="number" v-model="scope.row.adjust_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.adjust_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="dot_time"
         label="点动时间">
         <template slot-scope="scope" v-if="scope.row.dot_time!='' && scope.row.dot_time>=0">
-          <el-input type="number" v-model="scope.row.dot_time"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.dot_time"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="fast_speed"
         label="快称速度">
         <template slot-scope="scope" v-if="scope.row.fast_speed!='' && scope.row.fast_speed>=0">
-          <el-input type="number" v-model="scope.row.fast_speed"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.fast_speed"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="low_speed"
         label="慢称速度">
         <template slot-scope="scope" v-if="scope.row.low_speed!='' && scope.row.low_speed>=0">
-          <el-input type="number" v-model="scope.row.low_speed"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.low_speed"></el-input>
         </template>
       </el-table-column>
     </el-table-column>
@@ -104,28 +104,28 @@
         prop="low_value"
         label="慢称值">
         <template slot-scope="scope" v-if="scope.row.low_value!='' && scope.row.low_value>=0">
-          <el-input type="number" v-model="scope.row.low_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.low_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="advance_value"
         label="提前量">
         <template slot-scope="scope" v-if="scope.row.advance_value!='' && scope.row.advance_value>=0">
-          <el-input type="number" v-model="scope.row.advance_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.advance_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="adjust_value"
         label="调整值">
         <template slot-scope="scope" v-if="scope.row.adjust_value!='' && scope.row.adjust_value>=0">
-          <el-input type="number" v-model="scope.row.adjust_value"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.adjust_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="dot_time"
         label="点动时间">
         <template slot-scope="scope" v-if="scope.row.dot_time!='' && scope.row.dot_time>=0">
-          <el-input type="number" v-model="scope.row.dot_time"></el-input>
+          <el-input type="number" min="0" v-model="scope.row.dot_time"></el-input>
         </template>
       </el-table-column>
     </el-table-column>
