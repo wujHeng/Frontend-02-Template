@@ -92,6 +92,7 @@ export const asyncRoutes = [
   },
   {path: '/material',
     component: Layout,
+    alwaysShow: true,
     redirect: '/material/base-info',
     name: 'Material',
     meta: { title: '原材料及称量参数' },
@@ -103,7 +104,35 @@ export const asyncRoutes = [
         meta: { title: '原材料基本信息' }
       }
     ]
-
+  },
+  {
+    path: '/run-mode',
+    component: Layout,
+    redirect: '/run-mode/index',
+    children: [
+      {
+        path: 'index',
+        name: 'RunMode',
+        component: () => import('@/views/run-mode/index'),
+        meta: { title: '运行模式切换' }
+      }
+    ]
+  },
+  {
+    path: '/report',
+    component: Layout,
+    alwaysShow: true,
+    redirect: '/report/material-statistics',
+    name: 'Report',
+    meta: { title: '报表' },
+    children: [
+      {
+        path: 'material-statistics',
+        component: () => import('@/views/report/material-statistics/index'),
+        name: 'MaterialStatisticsReport',
+        meta: { title: '物料统计报表' }
+      }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
