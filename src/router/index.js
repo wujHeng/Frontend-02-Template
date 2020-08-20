@@ -143,6 +143,18 @@ export const asyncRoutes = [
         component: () => import('@/views/report/material-statistics/index'),
         name: 'MaterialStatisticsReport',
         meta: { title: '物料统计报表' }
+      },
+      {
+        path: 'batch-statistics',
+        component: () => import('@/views/report/batch/index'),
+        name: 'batchStatisticsReport',
+        meta: { title: '批次记录报表' }
+      },  
+      {
+        path: 'train-statistics',
+        component: () => import('@/views/report/train/index'),
+        name: 'trainStatisticsReport',
+        meta: { title: '车次报表' }
       }
     ]
   },
