@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="dashboard_box" v-for="(item,index) in 10" :key="index">
-      <div class="dashboard_boxTitle" @click="clickBoxTitle">1#机台</div>
+      <div class="dashboard_boxTitle" @click="clickBoxTitle">{{index+1}}#机台</div>
       <div style="height:300px">
         <ve-histogram
           width="100%"
