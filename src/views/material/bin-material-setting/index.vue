@@ -1,5 +1,5 @@
 <template>
-<div style="margin-top: 25px; width: 80%; margin:25px auto auto auto">
+<div style="margin-top: 25px; margin:25px auto auto auto">
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item label="机台">
       <el-select
