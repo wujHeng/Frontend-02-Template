@@ -1,3 +1,3 @@
 export default {
-  loginUrl: '/vue-admin-template/user/login'
+  loginUrl: '/api/v1/docs/login'
 }
