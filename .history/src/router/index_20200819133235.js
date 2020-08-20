@@ -102,18 +102,6 @@ export const asyncRoutes = [
         component: () => import('@/views/material/base-info/index'),
         name: 'MaterialBaseInfo',
         meta: { title: '原材料基本信息' }
-      },
-      {
-        path: 'weighing-info',
-        component: () => import('@/views/material/weighing-info/index'),
-        name: 'MaterialWeighingInfo',
-        meta: { title: '原材料称量信息' }
-      },
-      {
-        path: 'bin-material-setting',
-        component: () => import('@/views/material/bin-material-setting/index'),
-        name: 'BinMaterialSetting',
-        meta: { title: '日料罐物料设置' }
       }
     ]
   },

@@ -8,4 +8,9 @@ const getters = {
   routes: state => state.permission.routes,
   addRoutes: state => state.permission.addRoutes
 }
+// 获取vuex数据
+// import { mapGetters } from "vuex";
+// computed: {
+//   ...mapGetters(["name"]),
+// },
 export default getters

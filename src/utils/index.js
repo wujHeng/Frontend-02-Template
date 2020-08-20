@@ -117,3 +117,26 @@ export function param2Obj(url) {
   })
   return obj
 }
+/**
+ * @param {string} _data
+ * @param {boolean} bool
+ * @returns {string}
+ */
+export function setDate(_data, bool) {
+  let date = _data ? new Date(_data) : new Date()
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    i: date.getMinutes(),
+    s: date.getSeconds(),
+    a: date.getDay()
+  }
+  if (bool) {
+    return formatObj.y + '-' + formatObj.m + '-' + formatObj.d + ' ' +
+      formatObj.h + ':' + formatObj.i + ':' + formatObj.s
+  } else {
+    return formatObj.y + '-' + formatObj.m + '-' + formatObj.d
+  }
+}
