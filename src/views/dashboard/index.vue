@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import {weigh} from "@/api/user"
 export default {
   name: "Dashboard",
   data() {
@@ -128,8 +129,16 @@ export default {
       },
     };
   },
-  created() {},
+  created() {
+    this.getList()
+  },
   methods: {
+    async getList(){
+      try{
+        let data = await weigh('get',{params:{id:111}})
+        console.log(data,'data')
+      }catch(e){}
+    },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options);
     },
