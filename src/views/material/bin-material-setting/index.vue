@@ -15,7 +15,7 @@
       </el-select>
     </el-form-item>
     <el-form-item style="float: right">
-      <el-button type="info">保存并下载</el-button>
+      <el-button type="info" @click="save">保存并下载</el-button>
       <el-button type="info">返回</el-button>
       
     </el-form-item>
@@ -122,12 +122,13 @@
 </template>
 
 <script> 
+import { weighCb } from '@/api/wengh'
+
 export default {
   
   data: function() {
     return {
-      tableBinCBDataUrl: '',
-      tableBinOilDataUrl: '',
+      tableData: [],
       tableBinCBData: [{
         "tank_name": "1号炭黑罐",
         "masterial_name": "炭黑1",
@@ -213,10 +214,25 @@ export default {
   created() {
   },
   methods: {
+    async getList(){
+      try{
+        let data = await weighCb('get')
+        this.tableData = data
+        console.log(data,'data')
+      }catch(e){}
+    },
     equipChange() {
       
     },
-    
+    masterialChange() {
+      
+    },
+    stateChange() {
+      
+    },
+    save() {
+      console.log(this.tableData, 'tableData')
+    },
   }
 }
 </script>
