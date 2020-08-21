@@ -4,4 +4,5 @@ export default {
   globalCodesUrl: "/api/v1/basics/global-codes/",
   weighCbUrl: "/api/v1/production/weigh-cb/",
   weighOilUrl: "/api/v1/production/weigh-oil/",
+  weighUrl: "/api/v1/production/weigh-cb/",
 }
