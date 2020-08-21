@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- <div>
-      <ve-line :data="chartData" :after-set-option="afterSetOption"></ve-line>
-    </div>
-    <button @click="clickChartData">下载</button> -->
     <el-form :inline="true">
       <el-form-item label="日期">
         <el-date-picker
@@ -87,12 +83,204 @@
       <el-table-column prop="equip_no" label="密炼时间"></el-table-column>
       <el-table-column prop="equip_no" label="间隔时间"></el-table-column>
     </el-table>
+    <el-row style="margin-top:20px">
+      <el-col :span="24" class="trainContentLeft">
+        <el-row class="row-border-bottom">
+          <el-col :span="2">
+            <div class="grid-content bg-purple">页</div>
+          </el-col>
+          <el-col :span="4">
+            <div class="grid-content bg-purple">1</div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content bg-purple">报表</div>
+          </el-col>
+          <el-col :span="5">
+            <div class="grid-content bg-purple-light">打印时间</div>
+          </el-col>
+          <el-col :span="5">
+            <div class="grid-content bg-purple-light bd-right-none">
+              2020/8/3
+              20:28:52
+            </div>
+          </el-col>
+        </el-row>
+        <div class="train-title">密炼信息</div>
+        <table
+          class="train-one"
+          width="100%"
+          cellspacing="0"
+          border="1"
+          cellpadding="1"
+          style="border-collapse:collapse"
+          frame="hsides"
+        >
+          <tr class="train-one-tr-banburying">
+            <td>计划编号</td>
+            <td>2000002200</td>
+            <td>设定车次</td>
+            <td>12</td>
+            <td>开始</td>
+            <td>2020/10/10</td>
+            <td>本/遥控</td>
+            <td>fds</td>
+          </tr>
+          <tr class="train-one-tr-banburying">
+            <td>计划编号</td>
+            <td>2000002200</td>
+            <td>设定车次</td>
+            <td>12</td>
+            <td>开始</td>
+            <td>2020/10/10</td>
+            <td>本/遥控</td>
+            <td>fds</td>
+          </tr>
+          <tr class="train-one-tr-banburying">
+            <td>计划编号</td>
+            <td>2000002200</td>
+            <td>设定车次</td>
+            <td>12</td>
+            <td>开始</td>
+            <td>2020/10/10</td>
+            <td>本/遥控</td>
+            <td>fds</td>
+          </tr>
+        </table>
+
+        <div class="train-title">称量信息</div>
+        <table
+          class="train-one"
+          width="100%"
+          cellspacing="0"
+          border="1"
+          cellpadding="1"
+          style="border-collapse:collapse"
+          frame="hsides"
+        >
+          <tr class="train-one-tr-banburying">
+            <td>ID</td>
+            <td>名称</td>
+            <td>设定值</td>
+            <td>实重</td>
+            <td>状态</td>
+            <td>种类</td>
+            <td>超差</td>
+          </tr>
+          <tr class="train-one-tr-banburying" v-for="(item,index) in 4" :key="index">
+            <td>ID</td>
+            <td>名称</td>
+            <td>设定值</td>
+            <td>实重</td>
+            <td>状态</td>
+            <td>种类</td>
+            <td>超差</td>
+          </tr>
+        </table>
+
+        <div class="train-title">密炼信息</div>
+        <table
+          class="train-one"
+          width="100%"
+          cellspacing="0"
+          border="1"
+          cellpadding="1"
+          style="border-collapse:collapse"
+          frame="hsides"
+        >
+          <tr class="train-one-tr-banburying">
+            <td>ID</td>
+            <td>条件名称</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+          </tr>
+          <tr class="train-one-tr-banburying" v-for="(item,index) in 10" :key="index">
+            <td>ID</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+            <td>计划编号</td>
+          </tr>
+        </table>
+
+        <div class="train-title">报警记录</div>
+        <table
+          class="train-one"
+          width="100%"
+          cellspacing="0"
+          border="1"
+          cellpadding="1"
+          style="border-collapse:collapse"
+          frame="hsides"
+        >
+          <tr class="train-one-tr-banburying">
+            <td>ID</td>
+            <td>名称</td>
+            <td>设定值</td>
+            <td>实重</td>
+            <td>状态</td>
+            <td>种类</td>
+            <td>超差</td>
+          </tr>
+          <tr class="train-one-tr-banburying" v-for="(item,index) in 4" :key="index">
+            <td>ID</td>
+            <td>名称</td>
+            <td>设定值</td>
+            <td>实重</td>
+            <td>状态</td>
+            <td>种类</td>
+            <td>超差</td>
+          </tr>
+        </table>
+      </el-col>
+      <el-col :span="24" class="trainContentRight">
+        <div style="display:flex">
+          <div class="police-record">
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+            <br />
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+            <span>排胶能量:XXX</span>
+          </div>
+          <div class="right-button">
+            <el-button>上一步</el-button>
+            <el-button>曲线导出</el-button>
+            <br />
+            <el-button>下一步</el-button>
+            <el-button>打印报表</el-button>
+          </div>
+        </div>
+        <div>
+          <ve-line :data="chartData" :after-set-option="afterSetOption" :settings="chartSettings"></ve-line>
+          <!-- <button @click="clickChartData">下载</button> -->
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
   data() {
+    this.chartSettings = {
+      labelMap: {
+        访问用户: "访问用户",
+        下单用户: "下单用户",
+        下单率: "下单率",
+      },
+    };
     return {
       search_date: "",
       getParams: {},
@@ -113,6 +301,20 @@ export default {
       },
       options: {
         backgroundColor: "#fff",
+        toolbox: {
+          //show: true,
+          itemSize: 20,
+          itemGap: 30,
+          right: 50,
+          feature: {
+            // dataView: {show:true},
+            saveAsImage: {
+              name: "自定义扩展方法1",
+              // excludeComponents :['toolbox'],
+              pixelRatio: 2,
+            },
+          },
+        },
       },
     };
   },
@@ -170,5 +372,60 @@ function base64ToBlob(code) {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+$border-color: #dcdfe6;
+$border-weight: 0.5px;
+.trainContentLeft {
+  border: $border-weight solid $border-color;
+  // min-width: 350px;
+  text-align: center;
+  .row-border-bottom {
+    border-bottom: $border-weight solid $border-color;
+  }
+}
+.trainContentRight {
+  border: $border-weight solid $border-color;
+  padding: 15px;
+  // display: flex;
+  .police-record {
+    flex: 1;
+    line-height: 30px;
+    span{
+      margin-right:10px;
+    }
+  }
+  .right-button {
+    width: 200px;
+    button {
+      margin-bottom: 5px;
+    }
+  }
+}
+.grid-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  border-right: $border-weight solid $border-color;
+
+  flex-wrap: wrap;
+}
+.bg-purple {
+  font-size: 24px;
+  font-weight: 700;
+}
+.bd-right-none {
+  border-right: none;
+}
+.train-title {
+  line-height: 30px;
+}
+.train-one {
+  border-color: $border-color;
+  .train-one-tr-banburying {
+    td {
+      line-height: 25px;
+    }
+  }
+}
 </style>

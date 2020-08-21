@@ -22,8 +22,6 @@ service.interceptors.request.use(
       config.headers['Authorization'] = 'JWT ' + getToken()
     }
     // let data = JSON.parse(JSON.stringify(config.data))
-
-    // console.log(config, 'config')
     return config
   },
   error => {
@@ -42,12 +40,22 @@ service.interceptors.response.use(
   },
   error => {
     if (Object.prototype.toString.call(error.response.data) === '[object Object]') {
+      let arr = error.response.data
+      let str = ''
+      arr.forEach(element => {
+        str += element+';'
+      });
+      Message({
+        message: str,
+        type: 'error',
+        duration: 3 * 1000
+      })
       return Promise.reject(error.response.data)
     } else {
       Message({
         message: error.message,
         type: 'error',
-        duration: 5 * 1000
+        duration: 3 * 1000
       })
       return Promise.reject(error)
     }
