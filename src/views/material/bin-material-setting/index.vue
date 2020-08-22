@@ -8,9 +8,9 @@
           v-model="equip" placeholder="请选择">
         <el-option
           v-for="item in equipOptions"
-          :key="item"
-          :label="item"
-          :value="item">
+          :key="item.equip_no"
+          :label="item.equip_no"
+          :value="item.equip_no">
         </el-option>
       </el-select>
     </el-form-item>
@@ -44,10 +44,10 @@
                 @change="masterialChange"
                 v-model="scope.row.masterial_name">
                 <el-option
-                v-for="item in masterialOptions"
-                :key="item"
-                :label="item"
-                :value="item">
+                v-for="item in cbOptions"
+                :key="item.material_name"
+                :label="item.material_name"
+                :value="item.material_name">
                 </el-option>
             </el-select>
         </template>
@@ -89,7 +89,7 @@
                 @change="masterialChange"
                 v-model="scope.row.masterial_name">
                 <el-option
-                v-for="item in masterialOptions"
+                v-for="item in oilOptions"
                 :key="item"
                 :label="item"
                 :value="item">
@@ -117,7 +117,7 @@
 </template>
 
 <script> 
-import { weighCb, weighOil} from '@/api/weigh'
+import { weighCb, weighOil, globalTypes, globalCodes, materials, equip} from '@/api/weigh'
 
 export default {
   
@@ -125,40 +125,81 @@ export default {
     return {
       tableBinCbData: [],
       tableBinOilData: [],
-      equip: '1#密炼机',
-      equipOptionsUrl: '',
-      equipOptions: ['1#密炼机','2#密炼机','3#密炼机',],
-    //   state: '使用',
-      stateOptionsUrl: '',
-      stateOptions: ["使用","停用"],
-    //   masterial: '炭黑1',
-      masterialOptionsUrl: '',
-      masterialOptions: ["炭黑1","炭黑2","炭黑3","炭黑4",],
+      equip: '',
+      equipOptions: [],
+      materialsTypeId: '',
+      cbOptions: [],
+      oilOptions: [],
 
     }
   },
   created() {
     this.getCbList()
     this.getOilList()
+    this.getEquipList()
+    this.getMaterialsCbList()
+    this.getMaterialsOilList()
+    
   },
   methods: {
     async getCbList(){
       try{
-        let cbData = await weighCb('get')
-        this.tableBinCbData = cbData .results
+        let cbData = await weighCb('get', {params: {equip_no: this.equip}})
+        this.tableBinCbData = cbData.results
       }catch(e){}
     },
     async getOilList(){
       try{
-        let oilData = await weighOil('get')
+        let oilData = await weighOil('get', {params: {equip_no: this.equip}})
         this.tableBinOilData = oilData.results
+      }catch(e){}
+    },
+    async putCbList(){
+      try{
+        await weighCb('put', {data: this.tableBinCbData})
+        this.$message({
+          showClose: true,
+          message: '炭黑罐保存成功',
+          type: 'success',
+          center: true
+        });
+      }catch(e){}
+    },
+    async putOilList(){
+      try{
+        await weighOil('put', {data: this.tableBinOilData})
+        this.$message({
+          showClose: true,
+          message: '油料罐保存成功',
+          type: 'success',
+          center: true
+        });
+      }catch(e){}
+    },
+    async getEquipList(){
+      try{
+        let equipData = await equip('get')
+        this.equipOptions = equipData.results
+      }catch(e){}
+    },
+    async getMaterialsCbList(){
+      try{
+        let materialsData = await materials('get',  {params: {material_type_id: 10, page_size: 10000}})
+        this.cbOptions = materialsData.results
+      }catch(e){}
+    },
+    async getMaterialsOilList(){
+      try{
+        let materialsData = await materials('get',  {params: {material_type_id: 57, page_size: 10000}})
+        this.oilOptions = materialsData.results
       }catch(e){}
     },
     formatter: function (row, column) {
         return row.used_flag ? "使用" :  "停用"
       },
     equipChange() {
-      
+      this.getCbList()
+      this.getOilList()
     },
     masterialChange() {
       
@@ -167,7 +208,8 @@ export default {
       
     },
     save() {
-      console.log(this.tableData, 'tableData')
+      this.putCbList()
+      this.putOilList()
     },
   }
 }
