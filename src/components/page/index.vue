@@ -2,9 +2,9 @@
   <div>
     <el-pagination
       layout="total, prev, pager, next"
-      :total="pagination.total"
-      :page-size="pagination.pageSize"
-      :current-page.sync="pagination.currentPage"
+      :total="pagination.count"
+      :page-size="pagination.page_size"
+      :current-page.sync="pagination.page"
       @current-change="currentChange"
     ></el-pagination>
   </div>
@@ -16,11 +16,7 @@ export default {
     pagination: {
       type: Object,
       default() {
-        return {
-          total: 50,
-          pageSize: 10,
-          currentPage: 1
-        };
+        return {};
       },
     },
   },

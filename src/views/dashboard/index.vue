@@ -1,23 +1,24 @@
 <template>
   <div class="dashboard">
-    <div class="dashboard_box" v-for="(item,index) in 10" :key="index">
-      <div class="dashboard_boxTitle" @click="clickBoxTitle">{{index+1}}#机台</div>
+    <div class="dashboard_box" v-for="(item,index) in chartDataList" :key="index">
+      <div class="dashboard_boxTitle" @click="clickBoxTitle(item.id)">{{index+1}}#机台</div>
       <div style="height:300px">
         <ve-histogram
           width="100%"
           height="100%"
-          :data="chartData"
+          :data="item.chartData"
           :settings="chartSettings"
           :after-set-option="afterSetOption"
         ></ve-histogram>
       </div>
       <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="活动名称:">66666</el-form-item>
-        <el-form-item label="活动名称:">66666</el-form-item>
-        <el-form-item label="活动名称:">66666</el-form-item>
-        <el-form-item label="活动名称:">66666</el-form-item>
+        <el-form-item label="当前规格:">{{item.product_no?item.product_no:'--'}}</el-form-item>
+        <el-form-item label="收皮数量:">{{item.current_trains}}</el-form-item>
+        <el-form-item label="设备状态:">{{item.status}}</el-form-item>
+        <!-- <el-form-item label="活动名称:">66666</el-form-item> -->
       </el-form>
     </div>
+    <div v-if="chartDataList.length===0">暂无数据</div>
     <el-dialog
       title="1#机台 生产信息统计"
       center
@@ -59,34 +60,45 @@
 </template>
 
 <script>
-// import {weigh} from "@/api/user"
+import { equipStatusSlanList,equipDetailedList } from "@/api/dashboard";
 export default {
   name: "Dashboard",
   data() {
     this.chartSettings = {
       labelMap: {
-        访问用户: "",
-        下单用户: "",
+        global_name: "班次",
+        plan_sum: "计划车次",
+        actual_trains: "实际车次",
       },
     };
     this.chartSettingsLeft = {};
     return {
       dialogVisible: false,
       form: {},
-      chartData: {
-        columns: ["日期", "访问用户", "下单用户"],
-        rows: [
-          { 日期: "1/1", 访问用户: 1393, 下单用户: 1093 },
-          { 日期: "1/2", 访问用户: 3530, 下单用户: 3230 },
-          { 日期: "1/3", 访问用户: 2923, 下单用户: 2623 },
-          { 日期: "1/4", 访问用户: 1723, 下单用户: 1423 },
-          { 日期: "1/5", 访问用户: 3792, 下单用户: 3492 },
-          { 日期: "1/6", 访问用户: 4593, 下单用户: 4293 },
-        ],
-      },
+      chartDataList: [
+        {
+          equip_no: "115A01",
+          id: 1,
+          status: "运行",
+          current_trains: 123,
+          product_no: null,
+          group_name_list: [
+            {
+              global_name: "a班",
+              plan_sum: 48,
+              actual_trains: 652,
+            },
+            {
+              global_name: "c班",
+              plan_sum: 12,
+              actual_trains: 321,
+            },
+          ],
+        },
+      ],
       options: {
         grid: {
-          y: 20,
+          y: 30,
           y2: 10,
         },
       },
@@ -127,17 +139,33 @@ export default {
           },
         ],
       },
+      current_equip_no:''
     };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
-    async getList(){
-      try{
-        // let data = await weigh('get',{params:{id:111}})
-        // console.log(data,'data')
-      }catch(e){}
+    async getList() {
+      try {
+        let data = await equipStatusSlanList("get");
+        // console.log(data.results, "data");
+        // this.chartDataList = data.results || [];
+        this.chartDataList.forEach((D) => {
+          D.chartData = {
+            columns: ["global_name", "plan_sum", "actual_trains"],
+            rows: D.group_name_list,
+          };
+        });
+        this.chartDataList.splice()
+      } catch (e) {}
+    },
+    async getEquipDetailedList(id){
+        try {
+        let data = await equipDetailedList("get",{params:{id:id}});
+        
+      } catch (e) {
+      }
     },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options);
@@ -145,8 +173,9 @@ export default {
     handleClose(done) {
       done();
     },
-    clickBoxTitle() {
+    clickBoxTitle(id) {
       this.dialogVisible = true;
+      this.getEquipDetailedList(id)
     },
     afterSetOptionLeft(chartObj) {
       chartObj.setOption(this.optionsLeft);
@@ -194,14 +223,14 @@ export default {
   .visibleLeftBox {
     display: inline-block;
     width: 60%;
-    background:rgba(239,239,239,0.5);
+    background: rgba(239, 239, 239, 0.5);
     padding: 5px;
     margin-right: 20px;
   }
   .visibleRightBox {
     display: inline-block;
     width: 40%;
-    background: rgba(239,239,239,0.5);
+    background: rgba(239, 239, 239, 0.5);
     padding: 5px;
   }
 }

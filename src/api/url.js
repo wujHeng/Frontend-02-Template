@@ -11,5 +11,9 @@ export default {
 
   //密炼实绩
   PalletFeedBacksUrl: "/api/v1/production/pallet-feedbacks/",
-  TrainsFeedbacksUrl: "/api/v1/production/trains-feedbacks/"
+  TrainsFeedbacksUrl: "/api/v1/production/trains-feedbacks/",
+
+  //首页
+  EquipStatusSlanListUrl:'/api/v1/production/equip-status-plan-list/',
+  EquipDetailedList:'/api/v1/production/equip-detailed-list/'
 }

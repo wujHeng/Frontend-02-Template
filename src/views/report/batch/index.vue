@@ -40,12 +40,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="班次">
-        <el-select v-model="getParams.classes" placeholder="请选择">
+        <el-select v-model="getParams.classes" placeholder="请选择" @change="changeSearch" clearable>
           <el-option
             v-for="item in classesList"
             :key="item.id"
             :label="item.work_schedule_name+'--'+item.classes_name"
-            :value="item.id"
+            :value="item.classes_name"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -157,9 +157,9 @@
       width="600px"
       :visible.sync="dialogVisibleGraph"
     >
-      <div style="margin: 0 0 20px 5px;">
-        {{chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:''}}
-      </div>
+      <div
+        style="margin: 0 0 20px 5px;"
+      >{{chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:''}}</div>
       <ve-line :data="chartData" :settings="chartSettings"></ve-line>
     </el-dialog>
   </div>
@@ -231,6 +231,7 @@ export default {
         rows: [],
       },
       pagination: {},
+      currentPage: 1,
     };
   },
   created() {
@@ -252,11 +253,8 @@ export default {
       reportBatch("get", { params: _this.getParams })
         .then(function (response) {
           _this.tableData = response.results || [];
-          if (_this.pagination.total !== response.data.count) {
-            _this.pagination.total = response.data.count;
-            _this.pagination.pageSize = response.data.page_size;
-            _this.pagination.currentPage = response.data.page;
-          }
+
+         _this.pagination = response
         })
         .catch(function (error) {
           // this.$message.error("请求错误");
@@ -395,7 +393,8 @@ export default {
       });
     },
     currentChange(page) {
-      console.log(page);
+      this.getParams.page = page;
+      this.getList();
     },
   },
 };
