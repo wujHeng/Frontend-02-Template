@@ -1,13 +1,13 @@
 <template>
   <div style="margin-top: 25px">
-    <el-form style="margin-left: 10px" :inline="true">
+    <!-- <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="原材料类别">
         <el-select />
       </el-form-item>
       <el-form-item style="float: right;">
         <el-button>新建</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <el-table
       :data="tableData"
       border
@@ -63,92 +63,59 @@
         prop="last_updated_date"
         label="更新时间"
       />
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button-group>
+            <el-button
+              size="mini"
+            >编辑
+            </el-button>
+            <el-button
+              size="mini"
+              type="danger"
+            >删除
+            </el-button>
+          </el-button-group>
+        </template>
+      </el-table-column>
     </el-table>
+    <page :total="total" @currentChange="currentChange" />
   </div>
 </template>
 
 <script>
+import { getMaterials } from '@/api/material'
+import page from '@/components/page'
+
 export default {
+  components: { page },
   data() {
     return {
-      tableData: [{
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }, {
-        material_no: '代码01',
-        material_name: '原材料名称01',
-        for_short: '简称01',
-        material_type_name: '天然胶',
-        density: 1.56,
-        package_unit_name: '块',
-        used_flag: true
-
-      }]
+      tableData: [],
+      params: {
+        page: 1
+      },
+      total: '',
+      currentPage: 1
     }
   },
+  created() {
+    this.getMaterialList()
+  },
   methods: {
+
+    getMaterialList() {
+      getMaterials(this.params).then(response => {
+        this.tableData = response.results || []
+        this.total = response.count
+      })
+    },
     formatter: function(row, column) {
       return row.used_flag ? 'Y' : 'N'
+    },
+    currentChange(page) {
+      this.params.page = page
+      this.getMaterialList()
     }
   }
 
