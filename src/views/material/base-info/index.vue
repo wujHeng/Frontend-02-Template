@@ -79,30 +79,43 @@
         </template>
       </el-table-column>
     </el-table>
+    <page :total="total" @currentChange="currentChange" />
   </div>
 </template>
 
 <script>
 import { getMaterials } from '@/api/material'
+import page from '@/components/page'
 
 export default {
+  components: { page },
   data() {
     return {
-      tableData: []
+      tableData: [],
+      params: {
+        page: 1
+      },
+      total: '',
+      currentPage: 1
     }
   },
   created() {
-    this.tableData = this.getMaterialList()
+    this.getMaterialList()
   },
   methods: {
 
     getMaterialList() {
-      getMaterials().then(response => {
-        this.tableData = response.results
+      getMaterials(this.params).then(response => {
+        this.tableData = response.results || []
+        this.total = response.count
       })
     },
     formatter: function(row, column) {
       return row.used_flag ? 'Y' : 'N'
+    },
+    currentChange(page) {
+      this.params.page = page
+      this.getMaterialList()
     }
   }
 
