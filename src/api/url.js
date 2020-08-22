@@ -16,4 +16,10 @@ export default {
   //首页
   EquipStatusSlanListUrl:'/api/v1/production/equip-status-plan-list/',
   EquipDetailedList:'/api/v1/production/equip-detailed-list/'
+  
+  globalTypesUrl: "/api/v1/basics/global-types/",
+  globalCodesUrl: "/api/v1/basics/global-codes/",
+  weighCbUrl: "/api/v1/production/weigh-cb/",
+  weighOilUrl: "/api/v1/production/weigh-oil/",
+  weighUrl: "/api/v1/production/weigh-cb/"
 }
