@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-pagination
-      layout="total, prev, pager, next"
-      :total="pagination.total"
-      :page-size="pagination.pageSize"
-      :current-page.sync="pagination.currentPage"
+      layout="total,prev,pager,next"
+      :total="total"
+      :page-size="pageSize"
+      :current-page.sync="currentPage"
       @current-change="currentChange"
-    ></el-pagination>
+    />
   </div>
 </template>
 
@@ -16,23 +16,29 @@ export default {
     pagination: {
       type: Object,
       default() {
-        return {
-          total: 50,
-          pageSize: 10,
-          currentPage: 1
-        };
-      },
+        return {}
+      }
     },
+    total: {
+      type: Number,
+      default: 100
+    },
+    pageSize: {
+      type: Number,
+      default: 10
+    }
   },
   data() {
-    return {};
+    return {
+      currentPage: 1
+    }
   },
   methods: {
     currentChange(page) {
-      this.$emit("currentChange", page);
-    },
-  },
-};
+      this.$emit('currentChange', page)
+    }
+  }
+}
 </script>
 
 <style>
