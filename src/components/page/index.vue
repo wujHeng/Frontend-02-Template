@@ -1,24 +1,32 @@
 <template>
   <div>
     <el-pagination
-      layout="total, prev, pager, next"
-      :total="pagination.count"
-      :page-size="pagination.page_size"
-      :current-page.sync="pagination.page"
-      @current-change="currentChange"
-    ></el-pagination>
+      layout="total, prev, pager, next"
+      :total="total"
+      :page-size="page_size"
+      :current-page.sync="currentPage"
+      @current-change="currentChange"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    pagination: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
+    pagination: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    total: {
+      type: Number,
+      default: 100,
+    },
+    page_size: {
+      type: Number,
+      default: 10,
+    },
   },
   data() {
     return {};

@@ -41,11 +41,11 @@ module.exports = {
         target: 'http://192.168.137.79:9000/',
         ws: true,
         changeOrigin: true,
-        pathRewrite:{
-          '^/api':''
+        pathRewrite: {
+          '^/api': ''
         }
       }
-    },
+    }
     // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
