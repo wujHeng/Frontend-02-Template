@@ -1,13 +1,23 @@
 <template>
   <div style="margin-top: 25px">
-    <!-- <el-form style="margin-left: 10px" :inline="true">
-      <el-form-item label="原材料类别">
-        <el-select />
-      </el-form-item>
+    <el-form style="margin-left: 10px" :inline="true">
+      <el-select
+        v-model="materialType"
+        clearable
+        placeholder="请选择"
+        @change="materialTypeChange"
+      >
+        <el-option
+          v-for="item in materialTypes"
+          :key="item.id"
+          :label="item.global_name"
+          :value="item.id"
+        />
+      </el-select>
       <el-form-item style="float: right;">
-        <el-button>新建</el-button>
+        <el-button @click="showCreateMaterialDialog">新建</el-button>
       </el-form-item>
-    </el-form> -->
+    </el-form>
     <el-table
       :data="tableData"
       border
@@ -68,11 +78,13 @@
           <el-button-group>
             <el-button
               size="mini"
+              @click="showUpdateMaterialDialog(scope.row)"
             >编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
+              @click="deleteeMaterial(scope.row)"
             >删除
             </el-button>
           </el-button-group>
@@ -80,35 +92,90 @@
       </el-table-column>
     </el-table>
     <page :total="total" @currentChange="currentChange" />
+    <create-material-dialog
+      ref="createMaterialDialog"
+      :material-types="materialTypes"
+      :packing-units="packingUnits"
+      @handleSuccessed="getMaterialList"
+    />
+    <update-material-dialog
+      ref="updateMaterialDialog"
+      :material-types="materialTypes"
+      :packing-units="packingUnits"
+      @handleSuccessed="getMaterialList"
+    />
+
   </div>
 </template>
 
 <script>
-import { getMaterials } from '@/api/material'
+import { getMaterials, getMaterialTypes, getPackingUnits, deleteMaterial } from '@/api/material'
 import page from '@/components/page'
+import CreateMaterialDialog from './CreateMaterialDialog'
+import UpdateMaterialDialog from './UpdateMaterialDialog'
 
 export default {
-  components: { page },
+  components: { page, CreateMaterialDialog, UpdateMaterialDialog },
   data() {
     return {
       tableData: [],
+      materialTypes: [],
+      materialType: null,
+      packingUnits: [],
       params: {
-        page: 1
+        page: 1,
+        material_type_id: null
       },
-      total: '',
+      total: 0,
       currentPage: 1
     }
   },
   created() {
     this.getMaterialList()
+    this.getMaterialTypes()
+    this.getPackingUnits()
   },
   methods: {
-
+    showCreateMaterialDialog() {
+      this.$refs.createMaterialDialog.show()
+    },
+    showUpdateMaterialDialog(material) {
+      this.$refs.updateMaterialDialog.show(JSON.parse(JSON.stringify(material)))
+    },
+    deleteeMaterial(material) {
+      this.$confirm('此操作将永久删除' + material.material_name + ', 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteMaterial(material.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getMaterialList()
+        })
+      })
+    },
     getMaterialList() {
       getMaterials(this.params).then(response => {
         this.tableData = response.results || []
         this.total = response.count
       })
+    },
+    getMaterialTypes() {
+      getMaterialTypes().then(response => {
+        this.materialTypes = response.results
+      })
+    },
+    getPackingUnits() {
+      getPackingUnits().then(response => {
+        this.packingUnits = response.results
+      })
+    },
+    materialTypeChange() {
+      this.params.material_type_id = this.materialType
+      this.getMaterialList()
     },
     formatter: function(row, column) {
       return row.used_flag ? 'Y' : 'N'
