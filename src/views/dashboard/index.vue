@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {weigh} from "@/api/user"
+// import {weigh} from "@/api/user"
 export default {
   name: "Dashboard",
   data() {
@@ -135,8 +135,8 @@ export default {
   methods: {
     async getList(){
       try{
-        let data = await weigh('get',{params:{id:111}})
-        console.log(data,'data')
+        // let data = await weigh('get',{params:{id:111}})
+        // console.log(data,'data')
       }catch(e){}
     },
     afterSetOption(chartObj) {

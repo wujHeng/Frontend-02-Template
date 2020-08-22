@@ -35,7 +35,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    console.log(res, 'res')
     return Promise.resolve(res)
   },
   error => {
