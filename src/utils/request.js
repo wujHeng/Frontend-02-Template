@@ -14,14 +14,20 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
+    if (config.method === 'get') {
+      // console.log(config, 'config')
+      // config.url = config.url
+      // let urlTest = config.url
+      // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
+      // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
+      // let result = params_.substring(1, params_.length - 1)
 
+      // console.log(config.parame,999)
+      // config.url+'/'+
+    }
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
       config.headers['Authorization'] = 'JWT ' + getToken()
     }
-    // let data = JSON.parse(JSON.stringify(config.data))
     return config
   },
   error => {
@@ -35,16 +41,23 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    console.log(res, 'res')
     return Promise.resolve(res)
   },
   error => {
+    console.log(error.response.data)
     if (Object.prototype.toString.call(error.response.data) === '[object Object]') {
-      let arr = error.response.data
+      let obj = error.response.data
       let str = ''
-      arr.forEach(element => {
-        str += element+';'
-      });
+      for (let key in obj) {
+        if (!(obj[key] instanceof Array)) {
+          str += obj[key]
+        } else {
+          obj[key].forEach(element => {
+            str += element + ';'
+          });
+        }
+      }
+      // console.log(str, 'strstr')
       Message({
         message: str,
         type: 'error',

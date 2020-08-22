@@ -40,12 +40,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="班次">
-        <el-select v-model="getParams.classes" placeholder="请选择">
+        <el-select v-model="getParams.classes" placeholder="请选择" @change="changeSearch" clearable>
           <el-option
             v-for="item in classesList"
             :key="item.id"
-            :label="item.classes_name"
-            :value="item.id"
+            :label="item.work_schedule_name+'--'+item.classes_name"
+            :value="item.classes_name"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -85,7 +85,7 @@
       <el-table-column prop="operation_user" label="作业者"></el-table-column>
     </el-table>
 
-    <page @currentChange="currentChange"></page>
+    <page @currentChange="currentChange" :pagination="pagination"></page>
 
     <el-dialog title="胶料产出反馈" :visible.sync="dialogVisibleRubber">
       <el-form :inline="true">
@@ -157,21 +157,41 @@
       width="600px"
       :visible.sync="dialogVisibleGraph"
     >
-      <div style="margin: 0 0 20px 5px;">2020-12-15</div>
-      <ve-line :data="chartData"></ve-line>
+      <div
+        style="margin: 0 0 20px 5px;"
+      >{{chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:''}}</div>
+      <ve-line :data="chartData" :settings="chartSettings"></ve-line>
     </el-dialog>
-    <!-- <button @click="dialogVisibleBAT=true">7777777777</button> -->
   </div>
 </template>
 
 <script>
 import { setDate } from "@/utils/index";
 import page from "@/components/page";
+import {
+  reportBatch,
+  rubberMaterial,
+  equip,
+  classesList,
+  palletFeedBacks,
+  trainsFeedbacks,
+  echartsListUrl,
+} from "@/api/reportBatch";
 export default {
   components: { page },
   data() {
+    this.chartSettings = {
+      labelMap: {
+        created_date_date: "时间",
+        temperature: "温度",
+        power: "功率",
+        energy: "能量",
+        pressure: "压力",
+        rpm: "转速",
+      },
+    };
     return {
-      tableDataUrl: "InternalMixerUrl",
+      // tableDataUrl: "InternalMixerUrl",
       tableData: [],
       search_date: [],
       getParams: {
@@ -200,59 +220,55 @@ export default {
       BATList: [],
       dialogVisibleGraph: false,
       chartData: {
-        columns: ["日期", "访问用户", "下单用户"],
-        rows: [
-          { 日期: "1/1", 访问用户: 1393, 下单用户: 1093 },
-          { 日期: "1/2", 访问用户: 3530, 下单用户: 3230 },
-          { 日期: "1/3", 访问用户: 2923, 下单用户: 2623 },
-          { 日期: "1/4", 访问用户: 1723, 下单用户: 1423 },
-          { 日期: "1/5", 访问用户: 3792, 下单用户: 3492 },
-          { 日期: "1/6", 访问用户: 4593, 下单用户: 4293 },
+        columns: [
+          "created_date_date",
+          "temperature",
+          "power",
+          "energy",
+          "pressure",
+          "rpm",
         ],
+        rows: [],
       },
-      // pagination:{}
+      pagination: {},
+      currentPage: 1,
     };
   },
   created() {
-    // this.getList();
-    // this.getGlueList(); //获取胶料列表
-    // this.getMachineList(); //获取机台列表
-    // this.getClassesList(); //获取班次列表
+    this.getList();
+    this.getGlueList(); //获取胶料列表
+    this.getMachineList(); //获取机台列表
+    this.getClassesList(); //获取班次列表
 
     var _setDateCurrent = setDate();
-    this.getParams.st = _setDateCurrent + " 00:00:00";
+    // this.getParams.st = _setDateCurrent + " 00:00:00";
     this.getParams.et = _setDateCurrent + " 23:59:59";
-    // this.getParams.st = '2020-06-01' + " 00:00:00"
+    this.getParams.st = "2020-06-01" + " 00:00:00";
     // this.getParams.et = '2020-06-01' + ' 23:59:59'
     this.search_date = [this.getParams.st, this.getParams.et];
   },
   methods: {
     getList() {
       var _this = this;
-      axios
-        .get(_this.tableDataUrl, {
-          params: _this.getParams,
-        })
+      reportBatch("get", { params: _this.getParams })
         .then(function (response) {
-          _this.tableData = response.data.results || [];
-          if (_this.tableDataTotal !== response.data.count) {
-            _this.tableDataTotal = response.data.count;
-          }
+          _this.tableData = response.results || [];
+
+         _this.pagination = response
         })
         .catch(function (error) {
-          this.$message.error("请求错误");
+          // this.$message.error("请求错误");
         });
     },
     getGlueList() {
       var _this = this;
-      axios
-        .get(RubberMaterialUrl, {
-          params: {
-            page_size: 10000000,
-          },
-        })
+      rubberMaterial("get", {
+        params: {
+          page_size: 10000000,
+        },
+      })
         .then(function (response) {
-          var glueList = response.data.results || [];
+          var glueList = response.results || [];
           //去重
           var obj = {};
           var newArr = glueList.reduce(function (item, next) {
@@ -267,19 +283,17 @@ export default {
     },
     getMachineList() {
       var _this = this;
-      axios
-        .get(EquipUrl, { params: { page_size: 1000000 } })
+      equip("get", { params: { page_size: 1000000 } })
         .then(function (response) {
-          _this.machineList = response.data.results || [];
+          _this.machineList = response.results || [];
         })
         .catch(function (error) {});
     },
     getClassesList() {
       var _this = this;
-      axios
-        .get(ClassesListUrl)
+      classesList("get")
         .then(function (response) {
-          _this.classesList = response.data.results || [];
+          _this.classesList = response.results || [];
         })
         .catch(function (error) {});
     },
@@ -303,16 +317,15 @@ export default {
     },
     getRubberCoding() {
       var _this = this;
-      axios
-        .get(PalletFeedBacksUrl, {
-          params: {
-            product_no: _this.palletFeedObj.product_no,
-            plan_classes_uid: _this.palletFeedObj.plan_classes_uid,
-            equip_no: _this.palletFeedObj.equip_no,
-          },
-        })
+      palletFeedBacks("get", {
+        params: {
+          product_no: _this.palletFeedObj.product_no,
+          plan_classes_uid: _this.palletFeedObj.plan_classes_uid,
+          equip_no: _this.palletFeedObj.equip_no,
+        },
+      })
         .then(function (response) {
-          _this.palletFeedList = response.data.results || [];
+          _this.palletFeedList = response.results || [];
         })
         .catch(function (error) {});
     },
@@ -323,17 +336,16 @@ export default {
     },
     getBATList() {
       var _this = this;
-      axios
-        .get(TrainsFeedbacksUrl, {
-          params: {
-            plan_classes_uid: _this.BATObj.plan_classes_uid,
-            equip_no: _this.BATObj.equip_no,
-            actual_trains:
-              _this.BATObj.begin_trains + "," + _this.BATObj.end_trains,
-          },
-        })
+      trainsFeedbacks("get", {
+        params: {
+          plan_classes_uid: _this.BATObj.plan_classes_uid,
+          equip_no: _this.BATObj.equip_no,
+          actual_trains:
+            _this.BATObj.begin_trains + "," + _this.BATObj.end_trains,
+        },
+      })
         .then(function (response) {
-          _this.BATList = response.data.results || [];
+          _this.BATList = response.results || [];
         })
         .catch(function (error) {});
     },
@@ -343,27 +355,21 @@ export default {
     },
     getEchartsList() {
       var _this = this;
-      axios
-        .get(EchartsListUrl, {
-          params: {
-            product_no: _this.BATObj.product_no,
-            plan_classes_uid: _this.BATObj.plan_classes_uid,
-            equip_no: _this.BATObj.equip_no,
-            actual_trains:
-              _this.BATObj.begin_trains + "," + _this.BATObj.end_trains,
-          },
-        })
+      echartsListUrl("get", {
+        params: {
+          product_no: _this.BATObj.product_no,
+          plan_classes_uid: _this.BATObj.plan_classes_uid,
+          equip_no: _this.BATObj.equip_no,
+          actual_trains:
+            _this.BATObj.begin_trains + "," + _this.BATObj.end_trains,
+        },
+      })
         .then(function (response) {
-          var results = response.data.results;
-          results.forEach(function (D) {
-            var created_date = D.created_date.split(" ")[1];
-            echartsTime.push(created_date);
-            echartsTemprature.push(D.temperature);
-            echartsPower.push(D.power);
-            echartsEnergy.push(D.energy);
-            echartsPressure.push(D.pressure);
-            echartsRpm.push(D.rpm);
+          var results = response.results;
+          results.forEach((element) => {
+            element.created_date_date = element.created_date.split(" ")[1];
           });
+          _this.chartData.rows = results;
         })
         .catch(function (error) {});
     },
@@ -386,9 +392,10 @@ export default {
         // echarts.init(this.$refs.main).setOption(this.option1);
       });
     },
-    currentChange(page){
-      console.log(page)
-    }
+    currentChange(page) {
+      this.getParams.page = page;
+      this.getList();
+    },
   },
 };
 </script>
