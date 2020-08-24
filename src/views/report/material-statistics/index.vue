@@ -4,26 +4,30 @@
       <el-form-item label="开始时间">
         <el-date-picker
           v-model="params.st"
-          type="date"
+          type="datetime"
           placeholder="选择日期"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="search"
         />
       </el-form-item>
       <el-form-item label="结束时间">
         <el-date-picker
           v-model="params.et"
-          type="date"
+          type="datetime"
           placeholder="选择日期"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="search"
         />
       </el-form-item>
       <br>
       <el-form-item label="机台">
-        <equip-select />
+        <equip-select @equipChanged="equipChanged" />
       </el-form-item>
       <el-form-item label="配方">
-        <el-select />
+        <product-no-select @productBatchingChanged="productBatchingChanged" />
       </el-form-item>
       <el-form-item label="物料类别">
-        <el-select />
+        <material-type-select @materialTypeChanged="materialTypeChanged" />
       </el-form-item>
       <el-form-item style="float: right">
         <el-button>导出</el-button>
@@ -63,9 +67,11 @@
 import { getMaterialStatistics } from '@/api/material-statistics'
 import page from '@/components/page'
 import EquipSelect from '@/components/EquipSelect'
+import ProductNoSelect from '@/components/ProductNoSelect'
+import MaterialTypeSelect from '@/components/MaterialTypeSelect'
 
 export default {
-  components: { page, EquipSelect },
+  components: { page, EquipSelect, ProductNoSelect, MaterialTypeSelect },
   data() {
     return {
       tableData: [],
@@ -81,8 +87,25 @@ export default {
     }
   },
   created() {
+    this.getMaterialStatistics()
   },
   methods: {
+    equipChanged(equip) {
+      this.params.equip_no = equip ? equip.equip_no : null
+      this.search()
+    },
+    productBatchingChanged(productBatching) {
+      this.params.product_no = productBatching ? productBatching.stage_product_batch_no : null
+      this.search()
+    },
+    materialTypeChanged(materialType) {
+      this.params.material_type = materialType
+      this.search()
+    },
+    search() {
+      this.params.page = 1
+      this.getMaterialStatistics()
+    },
     getMaterialStatistics() {
       getMaterialStatistics(this.params).then(response => {
         this.tableData = response.results || []
