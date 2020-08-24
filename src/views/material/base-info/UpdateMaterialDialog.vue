@@ -99,7 +99,6 @@ export default {
     },
     show(material) {
       this.form = material
-      console.log(this.form)
       this.clearFormError()
       this.dialogVisible = true
     },

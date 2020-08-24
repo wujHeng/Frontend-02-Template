@@ -3,19 +3,21 @@
     <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="开始时间">
         <el-date-picker
+          v-model="params.st"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <el-form-item label="结束时间">
         <el-date-picker
+          v-model="params.et"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <br>
       <el-form-item label="机台">
-        <el-select />
+        <equip-select />
       </el-form-item>
       <el-form-item label="配方">
         <el-select />
@@ -24,7 +26,6 @@
         <el-select />
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button>查询</el-button>
         <el-button>导出</el-button>
       </el-form-item>
     </el-form>
@@ -34,63 +35,63 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="machine"
+        prop="equip_no"
         label="机台"
       />
       <el-table-column
-        prop="recipe"
+        prop="product_no"
         label="配方"
       />
       <el-table-column
-        prop="type"
+        prop="material_type"
         label="物料类别"
       />
       <el-table-column
-        prop="name"
+        prop="material_name"
         label="物料名称"
       />
       <el-table-column
-        prop="weight"
+        prop="actual_weight"
         label="实际重量"
       />
     </el-table>
+    <page :total="total" @currentChange="currentChange" />
   </div>
 </template>
 
 <script>
+import { getMaterialStatistics } from '@/api/material-statistics'
+import page from '@/components/page'
+import EquipSelect from '@/components/EquipSelect'
+
 export default {
+  components: { page, EquipSelect },
   data() {
     return {
-      tableData: [
-        {
-          machine: '1#密炼机',
-          recipe: 'C-MB1-1066-01',
-          type: '胶料',
-          name: 'C-MB1-1066-01',
-          weight: '200.5'
-        },
-        {
-          machine: '2#密炼机',
-          recipe: 'C-MB1-1066-01',
-          type: '胶料',
-          name: 'C-MB1-1066-01',
-          weight: '200.5'
-        },
-        {
-          machine: '3#密炼机',
-          recipe: 'C-MB1-1066-01',
-          type: '胶料',
-          name: 'C-MB1-1066-01',
-          weight: '200.5'
-        },
-        {
-          machine: '4#密炼机',
-          recipe: 'C-MB1-1066-01',
-          type: '胶料',
-          name: 'C-MB1-1066-01',
-          weight: '200.5'
-        }
-      ]
+      tableData: [],
+      total: 0,
+      params: {
+        page: 1,
+        st: null,
+        et: null,
+        material_type: null,
+        equip_no: null,
+        product_no: null
+      }
+    }
+  },
+  created() {
+  },
+  methods: {
+    getMaterialStatistics() {
+      getMaterialStatistics(this.params).then(response => {
+        this.tableData = response.results || []
+        this.total = response.count
+      })
+    },
+    currentChange(page) {
+      this.params.page = page
+      this.getMaterialStatistics()
     }
   }
 }
