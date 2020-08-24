@@ -36,20 +36,23 @@
         label="炭黑罐">
       </el-table-column>
       <el-table-column
-        prop="masterial_name"
+        prop="material_name"
         label="物料名称">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
+          {{ scope.row.material_name }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="low_value"
         label="慢称值">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.low_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="advance_value"
         label="提前量">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.advance_value"></el-input>
         </template>
       </el-table-column>
@@ -59,28 +62,28 @@
       <el-table-column
         prop="adjust_value"
         label="调整值">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.adjust_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="dot_time"
         label="点动时间">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.dot_time"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="fast_speed"
         label="快称速度">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.fast_speed"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="low_speed"
         label="慢称速度">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.low_speed"></el-input>
         </template>
       </el-table-column>
@@ -97,34 +100,37 @@
         label="油料罐">
       </el-table-column>
       <el-table-column
-        prop="masterial_name"
+        prop="material_name"
         label="物料名称">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
+          {{ scope.row.material_name }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="low_value"
         label="慢称值">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.low_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="advance_value"
         label="提前量">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.advance_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="adjust_value"
         label="调整值">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.adjust_value"></el-input>
         </template>
       </el-table-column>
       <el-table-column
         prop="dot_time"
         label="点动时间">
-        <template slot-scope="scope" v-if="scope.row.masterial_name">
+        <template slot-scope="scope" v-if="scope.row.used_flag">
           <el-input type="number" min="0" v-model="scope.row.dot_time"></el-input>
         </template>
       </el-table-column>
