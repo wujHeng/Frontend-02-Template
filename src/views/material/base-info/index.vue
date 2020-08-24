@@ -175,6 +175,7 @@ export default {
     },
     materialTypeChange() {
       this.params.material_type_id = this.materialType
+      this.params.page = 1
       this.getMaterialList()
     },
     formatter: function(row, column) {

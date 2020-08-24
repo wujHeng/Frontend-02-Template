@@ -3,7 +3,7 @@ import API from '@/api/url'
 
 export function getMaterials(params) {
   return request({
-    url: API.materialsUrl,
+    url: API.MaterialsUrl,
     method: 'get',
     params
   })
@@ -11,7 +11,7 @@ export function getMaterials(params) {
 
 export function updateMaterial(data, id) {
   return request({
-    url: API.materialsUrl + id + '/',
+    url: API.MaterialsUrl + id + '/',
     method: 'put',
     data
   })
@@ -19,14 +19,14 @@ export function updateMaterial(data, id) {
 
 export function deleteMaterial(id) {
   return request({
-    url: API.materialsUrl + id + '/',
-    method: 'delete',
+    url: API.MaterialsUrl + id + '/',
+    method: 'delete'
   })
 }
 
 export function createMaterial(data) {
   return request({
-    url: API.materialsUrl,
+    url: API.MaterialsUrl,
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function createMaterial(data) {
 
 export function getMaterialTypes() {
   return request({
-    url: API.globalCodesUrl,
+    url: API.GlobalCodesUrl,
     method: 'get',
     params: {
       class_name: '原材料类别'
@@ -44,7 +44,7 @@ export function getMaterialTypes() {
 
 export function getPackingUnits() {
   return request({
-    url: API.globalCodesUrl,
+    url: API.GlobalCodesUrl,
     method: 'get',
     params: {
       class_name: '包装单位'
