@@ -3,11 +3,11 @@
   <el-row>
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item style="float: right">
-      <el-button type="info" @click="dialogVisibleFind = true">查询</el-button>
+      <el-button type="info" @click="showFindDialog">查询</el-button>
       <el-button type="info">新增</el-button>
-      <el-button type="info">停止</el-button>
-      <el-button type="info">删除</el-button>
-      <el-button type="info">下达</el-button>
+      <el-button type="info" @click="stopPlan" :disabled="disabled">停止</el-button>
+      <el-button type="info" @click="delPlan" :disabled="disabled">删除</el-button>
+      <el-button type="info" @click="issuedPlan" :disabled="disabled">下达</el-button>
     </el-form-item>
   </el-form>
   </el-row>
@@ -20,17 +20,17 @@
           v-model="equip" placeholder="请选择">
         <el-option
           v-for="item in equipOptions"
-          :key="item"
-          :label="item"
-          :value="item">
+          :key="item.equip_no"
+          :label="item.equip_no"
+          :value="item.equip_no">
         </el-option>
       </el-select>
     </el-form-item>
     <el-form-item style="float: right">
-      <el-button type="info">上调</el-button>
-      <el-button type="info">下调</el-button>
-      <el-button type="info" @click="dialogVisibleAlterTrainNumber = true">修改车次</el-button>
-      <el-button type="info" style="width: 120px">重传</el-button>
+      <el-button type="info" @click="upPlan" :disabled="disabled">上调</el-button>
+      <el-button type="info" @click="downPlan" :disabled="disabled">下调</el-button>
+      <el-button type="info" @click="showAlterTrainNumberDialog" :disabled="disabled">修改车次</el-button>
+      <el-button type="info" style="width: 120px" @click="retransmissionpPlan" :disabled="disabled">重传</el-button>
     </el-form-item>
   </el-form>
   </el-row>
@@ -38,37 +38,37 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-input type="text" v-model="equip" :disabled="true"></el-input>
+          <el-input type="text" disabled></el-input>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="开始">
-          <el-input type="text" v-model="currentRow.start_name" style="float: left"></el-input>
+          <el-input type="text" style="float: left" disabled></el-input>
         </el-form-item>
         <el-form-item label="配方">
           <span style="float: right; margin-left: 30px"></span>
-          <el-input type="text" v-model="currentRow.recipe_name" style="float: right"></el-input>
+          <el-input type="text" style="float: right" disabled></el-input>
         </el-form-item>
         <el-form-item label="设定车次">
-          <el-input type="text" v-model="currentRow.setting" style="float: left"></el-input>
+          <el-input type="text" style="float: left" disabled></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-input type="text" v-model="currentRow.state" style="float: left"></el-input>
+          <el-input type="text" style="float: left" disabled></el-input>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="结束">
-          <el-input type="text" v-model="currentRow.end_time"></el-input>
+          <el-input type="text" disabled></el-input>
         </el-form-item>
         <el-form-item label="当前计划">
-          <el-input type="text" v-model="currentRow.plan_no"></el-input>
+          <el-input type="text" disabled></el-input>
         </el-form-item>
         <el-form-item label="当前车次">
-          <el-input type="text" v-model="currentRow.finish"></el-input>
+          <el-input type="text" disabled></el-input>
         </el-form-item>
       </el-form>
     </el-row>
@@ -84,19 +84,19 @@
       width="55">
     </el-table-column>
     <el-table-column
-      prop="plan_no"
+      prop="plan_classes_uid"
       label="计划编号">
     </el-table-column>
     <el-table-column
-      prop="sno"
+      prop="sn"
       label="序号">
     </el-table-column>
     <el-table-column
-      prop="recipe_name"
+      prop="stage_product_batch_no"
       label="配方名称">
     </el-table-column>
     <el-table-column
-      prop="start_name"
+      prop="begin_time"
       label="开始时间">
     </el-table-column>
     <el-table-column
@@ -104,41 +104,44 @@
       label="结束时间">
     </el-table-column>
     <el-table-column
-      prop="equip"
+      prop="equip_name"
       label="机台">
     </el-table-column>
     <el-table-column
-      prop="calsses"
+      prop="classes"
       label="班次">
     </el-table-column>
     <el-table-column
-      prop="setting"
+      prop="plan_trains"
       label="设定">
     </el-table-column>
     <el-table-column
-      prop="finish"
+      prop="actual_trains"
       label="完成">
     </el-table-column>
     <el-table-column
-      prop="used_name"
+      prop="operation_user"
       label="操作员">
     </el-table-column>
     <el-table-column
-      prop="state"
+      prop="status"
       label="状态">
     </el-table-column>
 
   </el-table>
+  <page :total="total" @currentChange="currentChange" />
   <el-dialog
     title="查询计划"
-    :visible.sync="dialogVisibleFind"
+    :visible.sync="findDialogVisible"
     width="30%">
     <el-form :inline="true">
       <el-row>
       <el-form-item label="开始时间: ">
         <el-date-picker
-          v-model="startDateTime"
+          v-model="beginTime"
           type="datetime"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -146,8 +149,10 @@
       <el-row>
       <el-form-item label="结束时间: ">
         <el-date-picker
-          v-model="endDateTime"
+          v-model="endTime"
           type="datetime"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -156,12 +161,12 @@
       <el-form-item label="班次: ">
         <el-select
           clearable
-          v-model="calsses" placeholder="请选择">
+          v-model="calss" placeholder="请选择">
           <el-option
-            v-for="item in calssesOptions"
-            :key="item"
-            :label="item"
-            :value="item">
+            v-for="item in calssOptions"
+            :key="item.global_name"
+            :label="item.global_name"
+            :value="item.global_name">
           </el-option>
         </el-select>
       </el-form-item>
@@ -173,127 +178,214 @@
           v-model="recipe" placeholder="请选择">
           <el-option
             v-for="item in recipeOptions"
-            :key="item"
-            :label="item"
-            :value="item">
+            :key="item.stage_product_batch_no"
+            :label="item.stage_product_batch_no"
+            :value="item.stage_product_batch_no">
           </el-option>
         </el-select>
       </el-form-item>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisibleFind = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisibleAlterTrainNumber = false">确 定</el-button>
+      <el-button @click="findDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="findAlterTrainNumberSubmit">确 定</el-button>
       <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
     </div>
   </el-dialog>
-  <el-dialog
-    title="查询计划"
-    :visible.sync="dialogVisibleAlterTrainNumber"
-    width="30%">
-    <el-form :inline="true">
-      <el-row>
-      <el-form-item label="计划编号: ">
-        <el-input type="text" v-model="currentRow.plan_no" :disabled="true"></el-input>
-      </el-form-item>
-      </el-row>
-      <el-row>
-      <el-form-item label="配方名称: ">
-        <el-input type="text" v-model="currentRow.recipe_name" :disabled="true"></el-input>
-      </el-form-item>
-      </el-row>
-      <el-row>
-      <el-form-item label="原设定车次: ">
-        <el-input type="text" v-model="currentRow.setting" :disabled="true"></el-input>
-      </el-form-item>
-      </el-row>
-      <el-row>
-      <el-form-item label="修改后车次: ">
-        <el-input type="text" v-model="currentRow.finish"></el-input>
-      </el-form-item>
-      </el-row>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisibleAlterTrainNumber = false">取 消</el-button>
-      <el-button type="primary" @click="alterTrainNumberSubmit">确 定</el-button>
-      <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
-    </div>
-  </el-dialog>
+  <alter-train-number-dialog
+    ref="alterTrainNumberDialog"
+    @handleSuccessed="getPlanList"
+    />
+  
 </div>
 
 </template>
 
 <script>
-export default {
+import { equip, palletFeedBacks, delPalletFeedBacks, issuedPlan, stopPlan, retransmissionpPlan, upRegulation, downRegulation, updateTrains, productDayPlanManycreate, globalCodes, productbatching } from '@/api/plan'
+import AlterTrainNumberDialog from './AlterTrainNumberDialog'
+import page from '@/components/page'
 
+export default {
+  components: { page, AlterTrainNumberDialog },
   data: function() {
     return {
-      equip: '1#密炼机',
-      equipOptionsUrl: '',
-      equipOptions: ['1#密炼机','2#密炼机','3#密炼机',],
-      start:'',
-      tableData: [{
-        plan_no: 1,
-        sno: 1,
-        recipe_name: '配方1',
-        start_name: '2020/01/01 10:00',
-        end_time: '2020/01/01 17:00',
-        equip: '1#密炼机',
-        calsses: '早班',
-        setting: 40,
-        finish: 40,
-        used_name: '张三',
-        state: '完成',
+      equip: '',
+      equipOptions: [],
+      params: {
+        'page': 1,
       },
-      {
-        plan_no: 1,
-        sno: 1,
-        recipe_name: '配方1',
-        start_name: '2020/01/01 10:00',
-        end_time: '2020/01/01 17:00',
-        equip: '1#密炼机',
-        calsses: '早班',
-        setting: 40,
-        finish: 40,
-        used_name: '张三',
-        state: '完成',
-      },
-      {
-        plan_no: 1,
-        sno: 1,
-        recipe_name: '配方1',
-        start_name: '2020/01/01 10:00',
-        end_time: '2020/01/01 17:00',
-        equip: '1#密炼机',
-        calsses: '早班',
-        setting: 40,
-        finish: 20,
-        used_name: '张三',
-        state: '运行中',
-      },],
-      dialogVisibleFind: false,
+      tableData: [],
+      currentRow: {},
+      total: 0,
+      page: 1,
+
+      findDialogVisible: false,
+      beginTime: '',
+      endTime: '',
       recipe: '',
-      calsses: '',
-      dialogVisibleAlterTrainNumber: false,
-      AlterTrainNumberFrom: {
-        plan_no: '',
-        recipe_name: '',
-        setting: ''
+      recipeOptions: [],
+      calss: '',
+      calssOptions: [],
+      findForm: {  
       },
-      currentRow: {}
+      formError: { 
+      },
+
+      updateTrainsId: '',
+      disabled: true,
     }
   },
+  created() {
+    this.getPlanList()
+    this.getEquipList()
+  },
   methods: {
-    // clickUpdateTrainnum() {
-    //   this.dialogVisibleAlterTrainNumber = true;
-    //   console.log(this.currentRow);
-    // },
-    alterTrainNumberSubmit(){
-      
+    async getPlanList(){
+      this.params['page'] = this.page
+      this.params['equip_no'] = this.equip
+      try{
+        let Data = await palletFeedBacks('get', { params: this.params })
+        this.tableData = Data.results
+        this.total = Data.count
+      }catch(e){}
+    },
+
+    async getEquipList(){
+      try{
+        let equipData = await equip('get')
+        this.equipOptions = equipData.results
+      }catch(e){}
+    },
+    equipChange() {
+      console.log(this.equip);
+      this.params = {},
+      this.getPlanList()
+    },
+
+    async getClassList(){
+      try{
+        let classData = await globalCodes('get', { params: { all: 1, class_name: '班次' } })
+        this.calssOptions = classData.results
+      }catch(e){}
+    },
+    async getrecipeList(){
+      try{
+        let recipeData = await productbatching('get', { params: { all: 1 } })
+        this.recipeOptions = recipeData.results
+      }catch(e){}
+    },
+    clearFindForm() {
+      this.beginTime = ''
+      this.endTime = ''
+      this.calss = ''
+      this.recipe = ''
+    },
+    clearFindFormError() {
+      this.formError = {  
+      }
+    },
+    showFindDialog(){
+      this.clearFindForm()
+      this.clearFindFormError()
+      this.getClassList()
+      this.getrecipeList()
+      console.log(this.calssOptions);
+      this.findDialogVisible = true
+    },
+    findAlterTrainNumberSubmit(){
+      if(this.beginTime){this.params['begin_time'] = this.beginTime}
+      if(this.endTime){this.params['end_time'] = this.endTime}
+      if(this.calss){this.params['classes'] = this.beginTcalssime}
+      if(this.recipe){this.params['product_no'] = this.recipe}
+      this.getPlanList()
+      this.findDialogVisible = false
+    },
+
+    delPlan(){
+      this.$confirm('此操作将永久删除' + this.currentRow.plan_classes_uid + ', 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delPalletFeedBacks(this.currentRow.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        this.getPlanList()
+        })
+      })
+    },
+
+    upPlan(){
+      upRegulation(this.params, this.currentRow.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '上调成功!'
+          })
+          this.getPlanList()
+      })
+    },
+
+    downPlan(){
+      try{downRegulation(this.params, this.currentRow.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '下调成功!'
+          })
+          this.getPlanList()
+      })}catch(error) {
+                this.$message.error(error);
+            }
+    },
+
+    stopPlan(){
+      stopPlan({id: this.currentRow.id, equip_no: this.equip }).then(response => {
+          this.$message({
+            type: 'success',
+            message: '停止成功!'
+          })
+          this.getPlanList()
+      })
+    },
+
+    retransmissionpPlan(){
+      retransmissionpPlan({id: this.currentRow.id, equip_no: this.equip, plan_trains: this.currentRow.plan_trains }).then(response => {
+          this.$message({
+            type: 'success',
+            message: '重传成功!'
+          })
+          this.getPlanList()
+      })
+    },
+
+    issuedPlan(){
+      issuedPlan(this.currentRow).then(response => {
+          this.$message({
+            type: 'success',
+            message: '下达成功!'
+          })
+          this.getPlanList()
+      })
+    },
+
+    showAlterTrainNumberDialog(){
+      // this.updateTrainsId = this.currentRow.id
+      this.$refs.alterTrainNumberDialog.show(this.currentRow)
     },
     handleCurrentChange(val) {
         this.currentRow = val;
-      }
+        if(val){
+          this.disabled = false
+        }else{
+          this.disabled = true
+        }
+    },
+    currentChange(page) {
+      this.page = page
+      this.getPlanList()
+    }
   }
 }
 </script>
