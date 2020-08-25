@@ -24,8 +24,8 @@ export default {
   },
   data() {
     return {
-      title: '安吉项目项目',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '上辅机群控系统',
+      logo: ''
     }
   }
 }

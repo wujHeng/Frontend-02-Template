@@ -7,24 +7,19 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: '/api', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 10000 // request timeout
+  timeout: 10000000000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    if (config.method === 'get') {
-      // console.log(config, 'config')
-      // config.url = config.url
+    // if (config.method === 'get') {
       // let urlTest = config.url
       // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
       // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
       // let result = params_.substring(1, params_.length - 1)
-
-      // console.log(config.parame,999)
-      // config.url+'/'+
-    }
+    // }
     if (store.getters.token) {
       config.headers['Authorization'] = 'JWT ' + getToken()
     }
