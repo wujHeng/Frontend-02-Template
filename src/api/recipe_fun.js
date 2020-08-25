@@ -17,9 +17,14 @@ export function recipe_list(method, id=null, data={}) {
     
     }
 
-export function rubber_process_url(method, data={}) {
+export function rubber_process_url(method, id=null, data={}) {
+    if(id){
+        var v_url = API.RubberProcessStepUrl + id + '/'
+    }else{
+        var v_url = API.RubberProcessStepUrl
+    }
     let obj = {
-        url: API.RubberProcessStepUrl,
+        url: v_url,
         method: method
     }
     Object.assign(obj, data)
@@ -89,9 +94,9 @@ export function global_SITE_url(method, data={}) {
 // 原材料接口
 export function raw_material_url(method, id=null, data={}) {
     if(id){
-        var v_url = API.materialsUrl + id + '/'
+        var v_url = API.MaterialsUrl + id + '/'
     }else{
-        var v_url = API.materialsUrl
+        var v_url = API.MaterialsUrl
     }
 
     let obj = {
@@ -102,7 +107,15 @@ export function raw_material_url(method, id=null, data={}) {
     return request(obj)
     
     }
-
+// 原材料类别接口
+export function material_type_url(method, data={}) {
+    let obj = {
+        url: API.MaterialTypelUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
 // 状态接口函数
 export function condition_url(method, data={}) {
         let obj = {
@@ -121,3 +134,4 @@ export function action_url(method, data={}) {
         Object.assign(obj, data)
         return request(obj)
     }
+

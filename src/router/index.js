@@ -92,7 +92,7 @@ export const asyncRoutes = [
       },
       {
         path: 'create',
-        component: () => import('@/views/recipe/create/index'),
+        component: () => import('@/views/recipe/list/recipe_create'),
         name: 'RecipeCreate',
         meta: { title: '新增配方' }
       },

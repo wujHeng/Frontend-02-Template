@@ -14,7 +14,7 @@
           <el-option
             v-for="item in SelectEquipOptions"
             :key="item.id"
-            :label="item.global_name"
+            :label="item.equip_name"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -30,9 +30,9 @@
         >
           <el-option
             v-for="item in SelectRecipeStatusOptions"
-            :key="item.id"
-            :label="item.global_name"
-            :value="item.id"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -82,19 +82,16 @@
       </el-form-item>
       <br />
       <el-form-item style="float: right">
-        <el-button @click="showAddRubberMaterialDialog">复制新增</el-button>
+        <el-button>复制新增</el-button>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button @click="showAddRubberMaterialDialog">删除</el-button>
+        <el-button>删除</el-button>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button @click="showAddRubberMaterialDialog">修改</el-button>
+        <el-button :disabled="currentRow.equip === null"  @click="ModifyRecipeButton">修改</el-button>
       </el-form-item>
       <el-form-item style="float: right">
         <el-button @click="AddRecipeButton">新增</el-button>
-      </el-form-item>
-      <el-form-item style="float: right">
-        <el-button @click="showAddRubberMaterialDialog">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -116,7 +113,9 @@
         </el-table-column>
       <el-table-column align="center" prop="stage_product_batch_no" label="胶料编码"></el-table-column>
       <el-table-column align="center" prop="product_name" label="胶料名称"></el-table-column>
-      <el-table-column align="center" width="100%" prop="equip" label="机台"></el-table-column>
+      <el-table-column align="center" width="100%" prop="equip_no" label="机台编号"></el-table-column>
+      <el-table-column align="center" width="100%" prop="equip" label="机台id" v-if='false'></el-table-column>
+      <el-table-column align="center" width="100%" prop="equip_name" label="机台名称" v-if='false'></el-table-column>
       <el-table-column align="center" width="100%" prop="dev_type_name" label="炼胶机类型"></el-table-column>
       <el-table-column align="center" prop="used_type" label="状态" :formatter="usedTypeFormatter"></el-table-column>
       <el-table-column align="center" prop="batching_weight" label="配料重量"></el-table-column>
@@ -138,15 +137,38 @@
 </template>
 
 <script>
-import { recipe_list } from "@/api/recipe_fun";
+import { recipe_list, equip_url, site_url, stage_url } from "@/api/recipe_fun";
 import { constantRoutes } from "@/router";
 import { dataTool } from "echarts/lib/echarts";
 
 export default {
   data: function () {
     return {
+      SelectEquipOptions:[],
+      SelectRecipeStatusOptions: [{
+        value: 1, label: '编辑'
+      }, {
+        value: 2, label: '提交'
+      }, {
+        value: 3, label: '校对'
+      }, {
+        value: 4, label: '启用'
+      }, {
+        value: 5, label: '驳回'
+      }, {
+        value: 6, label: '废弃'
+      }],
+      SelectSiteOptions:[],
+      SelectStageOptions:[],
+      SelectEquip:null,
+      SelectRecipeStatus:null,
+      SelectSite:null,
+      SelectStage:null,
+      input_rubber_no:null,
       tableData: [],
-      currentRow: {},
+      currentRow: {
+        equip:null
+      },
       currentPage: 1,
       pageSize: 10,
       tableDataTotal: 0,
@@ -154,6 +176,9 @@ export default {
   },
   created() {
     this.get_recipe_list();
+    this.equip_list();
+    this.site_list();
+    this.stage_list();
   },
   methods: {
     async get_recipe_list(val = 1) {
@@ -165,6 +190,40 @@ export default {
         this.tableDataTotal = recipe_listData.count;
       } catch (e) {}
     },
+    async search_recipe_list(obj) {
+      try {
+        let search_recipe_list = await recipe_list("get", null, obj);
+        this.tableData = search_recipe_list.results;
+        this.tableDataTotal = search_recipe_list.count;
+      } catch (e) {}
+    },
+
+    async equip_list() {
+      try {
+        let equip_list = await equip_url("get", {
+          params: { },
+        });
+        this.SelectEquipOptions = equip_list.results
+      } catch (e) {}
+    },
+    async site_list() {
+      try {
+        let site_list = await site_url("get", {
+          params: { },
+        });
+        this.SelectSiteOptions = site_list.results
+      } catch (e) {}
+    },
+    async stage_list() {
+      try {
+        let stage_list = await stage_url("get", {
+          params: { },
+        });
+        this.SelectStageOptions = stage_list.results
+      } catch (e) {}
+    },
+
+
     handleCurrentChange: function (val) {
       this.currentRow = val;
     },
@@ -192,10 +251,40 @@ export default {
           return "废弃";
       }
     },
-    SelectSiteChange: function () {},
-    SelectRecipeStatusChange: function () {},
-    SelectSiteChange: function () {},
-    input_rubber_noChanged: function () {},
+
+    getList() {
+        var v_SelectEquip = this.SelectEquip?this.SelectEquip:''
+        var v_SelectRecipeStatus = this.SelectRecipeStatus?this.SelectRecipeStatus:''
+        var v_SelectSite = this.SelectSite?this.SelectSite:''
+        var v_SelectStage = this.SelectStage?this.SelectStage:''
+        var v_input_rubber_no = this.input_rubber_no?this.input_rubber_no:''
+        this.search_recipe_list({params:{
+          equip_id:v_SelectEquip,
+          used_type:v_SelectRecipeStatus,
+          factory_id:v_SelectSite,
+          stage_id:v_SelectStage,
+          stage_product_batch_no:v_input_rubber_no
+        }})
+    },
+
+    SelectEquipChange: function () {
+      this.getList()
+    },
+    SelectRecipeStatusChange: function () {
+      this.getList()
+    },
+    SelectSiteChange: function () {
+      this.getList()
+    },
+    SelectStageChange: function() {
+      this.getList()
+    },
+    input_rubber_noChanged: function () {
+      this.getList()
+    },
+
+
+
     recipe_display_change: function(raw) {
         this.$router.push({name:'RecipeDisplay', params: raw})
         this.$route.params
@@ -203,6 +292,12 @@ export default {
     AddRecipeButton: function(){
         this.$router.push({name:'RecipeCreate', params: {}})
         this.$route.params
+    },
+    ModifyRecipeButton: function(){
+      console.log('-------------')
+      console.log(this.currentRow)
+      this.$router.push({name:'RecipeModify', params: this.currentRow})
+      this.$route.params
     },
   },
 };
