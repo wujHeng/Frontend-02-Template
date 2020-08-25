@@ -160,13 +160,13 @@ export default {
   methods: {
     async getCbList(){
       try{
-        let cbData = await weighCb('get', {params: {equip_no: this.equip}})
+        let cbData = await weighCb('get', {params: {equip_no: this.equip, all: 1}})
         this.tableBinCbData = cbData.results
       }catch(e){}
     },
     async getOilList(){
       try{
-        let oilData = await weighOil('get', {params: {equip_no: this.equip}})
+        let oilData = await weighOil('get', {params: {equip_no: this.equip,  all: 1}})
         this.tableBinOilData = oilData.results
       }catch(e){}
     },

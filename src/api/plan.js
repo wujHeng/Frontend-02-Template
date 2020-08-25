@@ -1,0 +1,103 @@
+import request from '@/utils/request'
+import API from '@/api/url'
+
+export function equip(method, data = { params: { all: 1 } }) {
+    let obj = {
+        url: API.EquipUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+
+export function palletFeedBacks(method, data = {}) {
+    let obj = {
+        url: API.PalletFeedBacksUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+
+export function delPalletFeedBacks(id) {
+    return request({
+      url: API.PalletFeedBacksUrl + id + '/',
+      method: 'DELETE',
+    })
+}
+
+export function issuedPlan(params) {
+    return request({
+      url: API.IssuedPlanUrl,
+      method: 'get',
+      params
+    })
+}
+
+export function stopPlan(params) {
+    return request({
+      url: API.StopPlanUrl,
+      method: 'get',
+      params
+    })
+}
+
+export function retransmissionpPlan(params) {
+    return request({
+      url: API.RetransmissionpPlanUrl,
+      method: 'get',
+      params
+    })
+}
+
+export function upRegulation(data, id) {
+    return request({
+      url: API.UpRegulationUrl + id + '/',
+      method: 'put',
+      data
+    })
+}
+
+export function downRegulation(data, id) {
+    return request({
+      url: API.DownRegulationUrl + id + '/',
+      method: 'put',
+      data
+    })
+}
+
+export function updateTrains(data, id) {
+    return request({
+      url: API.UpdateTrainsUrl + id + '/',
+      method: 'put',
+      data
+    })
+}
+
+export function productDayPlanManycreate(method, data = {}) {
+    let obj = {
+        url: API.ProductDayPlanManycreateUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+
+export function productbatching(method, data = {}) {
+    let obj = {
+        url: API.ProductbatchingUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+
+export function globalCodes(method, data = {}) {
+    let obj = {
+        url: API.GlobalCodesUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+

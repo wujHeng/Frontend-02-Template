@@ -62,5 +62,17 @@ export default {
   EquipDetailedListUrl: '/api/v1/production/equip-detailed-list/',
   EquipDetailedList: '/api/v1/production/equip-detailed-list/',
 
-  MaterialStatisticsUrl: '/api/v1/production/material-statistics/'
+  MaterialStatisticsUrl: '/api/v1/production/material-statistics/',
+
+  // 计划
+  PalletFeedBacksUrl: '/api/v1/plan/pallet-feed-backs/', // 计划首页展示
+  IssuedPlanUrl: '/api/v1/plan/issued-plan/', // 下达
+  StopPlanUrl: '/api/v1/plan/stop-plan/', // 停止
+  RetransmissionpPlanUrl: '/api/v1/plan/retransmission-plan/', // 重传
+  UpRegulationUrl: '/api/v1/plan/up-regulation/', // 上调
+  DownRegulationUrl: '/api/v1/plan/down-regulation/', // 下调
+  UpdateTrainsUrl: '/api/v1/plan/update-trains/', // 修改车次
+  ProductDayPlanManycreateUrl: '/api/v1/plan/product-day-plan-manycreate/', // 新增
+  ProductbatchingUrl: '/api/v1/recipe/product-batching/', // 配方
+
 }

@@ -29,7 +29,7 @@ export function materials(method, data = {}) {
     return request(obj)
 }
 
-export function equip(method, data = { params: { page_size: 10000 } }) {
+export function equip(method, data = { params: { all: 1 } }) {
     let obj = {
         url: API.EquipUrl,
         method: method
