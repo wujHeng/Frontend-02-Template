@@ -26,7 +26,7 @@ export default {
     currentPage:{
       type: Number,
       default: 1,
-    }
+    },
   },
   data() {
     return {
@@ -34,10 +34,10 @@ export default {
   },
   methods: {
     currentChange(page) {
-      this.$emit("currentChange", page);
-    },
-  },
-};
+      this.$emit('currentChange', page)
+    }
+  }
+}
 </script>
 
 <style>
