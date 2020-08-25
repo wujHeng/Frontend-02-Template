@@ -223,7 +223,6 @@ export default {
         ],
         rows: [],
       },
-      currentPage: 1,
       total:0
     };
   },

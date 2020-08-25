@@ -20,10 +20,11 @@
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
-      <div v-if="!item.meta.navHidden">
+      <div v-for="child in item.children" :key="child.path">
+        <!-- v-for="child in item.children"
+        :key="child.path"-->
         <sidebar-item
-          v-for="child in item.children"
-          :key="child.path"
+          v-if="!child.meta.navHidden"
           :is-nest="true"
           :item="child"
           :base-path="resolvePath(child.path)"

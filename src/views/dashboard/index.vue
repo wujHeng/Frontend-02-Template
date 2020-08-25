@@ -39,7 +39,7 @@
       <div v-loading="dialogLoading">
         <div v-if="!dialogLoading">
           <!-- <div>{{chartDataList[currentIndex].equip_no}}#机台：在线</div> -->
-          <!-- <span
+          <span
             class="visibleTitle"
             style="padding-left:0;"
           >当前规格：{{infoData.product_no_classes.product_no || ''}}</span>
@@ -48,7 +48,7 @@
           <span class="visibleTitle">
             设备状态：
             <span>{{infoData.status_current_trains.status}}</span>
-          </span> -->
+          </span>
         </div>
         <div v-if="!dialogLoading">
           <div style="height:390px;display:flex">
@@ -176,6 +176,7 @@ export default {
     },
     async getEquipDetailedList(id) {
       try {
+        this.chartDataLeft.rows = []
         this.dialogLoading = true;
         let data = await equipDetailedList("get", { params: { id: id } });
         this.infoData = data || {};
