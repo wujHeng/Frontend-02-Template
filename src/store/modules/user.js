@@ -47,7 +47,7 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        console.log(response, 888888)
+
         commit('SET_TOKEN', response.token)
         commit('SET_NAME', response.username)
         commit('SET_ROLES', JSON.stringify(response.results));
@@ -77,15 +77,15 @@ const actions = {
       //   reject('getInfo: roles must be a non-null array!')
       // }
 
-      // 其他列表按钮的权限写这里，获取权限存起来
-      let data = {
-        roles: ['admin'],
-        name: 'name-admin', avatar: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2310890073,3469009192&fm=26&gp=0.jpg'
-      }
+      // // 其他列表按钮的权限写这里，获取权限存起来
+      // let data = {
+      //   roles: ['admin'],
+      //   name: 'name-admin', avatar: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2310890073,3469009192&fm=26&gp=0.jpg'
+      // }
 
-      commit('SET_ROLES', JSON.stringify(data.results))
-      commit('SET_AVATAR', data.avatar)
-      resolve(data)
+      // commit('SET_ROLES', JSON.stringify(data.results))
+      // commit('SET_AVATAR', data.avatar)
+      // resolve(data)
       // }).catch(error => {
       //   reject(error)
       // })
@@ -98,7 +98,9 @@ const actions = {
       // logout(state.token).then(() => {
       removeToken() // must remove  token  first
       resetRouter()
-      commit('RESET_STATE')
+      commit('RESET_STATE','')
+      commit('SET_ROLES', '')
+      commit('SET_NAME','')
       resolve()
       // }).catch(error => {
       //   reject(error)
@@ -107,13 +109,13 @@ const actions = {
   },
 
   // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
-  }
+  // resetToken({ commit }) {
+    // return new Promise(resolve => {
+    //   removeToken() // must remove  token  first
+    //   commit('RESET_STATE','')
+    //   resolve()
+    // })
+  // }
 }
 
 export default {

@@ -21,7 +21,6 @@ router.beforeEach(async (to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
   const hasRoles = store.getters.roles && JSON.stringify(store.getters.roles) !== "{}"
-  console.log(hasRoles, 'hasRoles')
 
   if (hasToken && hasRoles) {
     // 有登录
@@ -48,7 +47,7 @@ router.beforeEach(async (to, from, next) => {
         next()
       } catch (error) {
         // remove token and go to login page to re-login
-        await store.dispatch('user/resetToken')
+        await store.dispatch('user/logout')
         Message.error(error || 'Has Error')
         next(`/login?redirect=${to.path}`)
         NProgress.done()
