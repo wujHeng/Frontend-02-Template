@@ -6,34 +6,34 @@ import router from '@/router'
  * @param roles
  * @param route
  */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
+// function hasPermission(roles, route) {
+//   if (route.meta && route.meta.roles) {
+//     return roles.some(role => route.meta.roles.includes(role))
+//   } else {
+//     return true
+//   }
+// }
 
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
  * @param roles
  */
-export function filterAsyncRoutes(routes, roles) {
-  const res = []
+// export function filterAsyncRoutes(routes, roles) {
+//   const res = []
 
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
-    }
-  })
+//   routes.forEach(route => {
+//     const tmp = { ...route }
+//     if (hasPermission(roles, tmp)) {
+//       if (tmp.children) {
+//         tmp.children = filterAsyncRoutes(tmp.children, roles)
+//       }
+//       res.push(tmp)
+//     }
+//   })
 
-  return res
-}
+//   return res
+// }
 
 const state = {
   routes: [],
@@ -48,20 +48,51 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit, rootState }, roles) {
+  generateRoutes({ commit, state }, roles) {
     return new Promise(resolve => {
       let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      if (state.addRoutes.length === 0) {
+        let rolesObj = JSON.parse(roles)
+
+        accessedRoutes = filterAsyncRoutesMy(asyncRoutes, rolesObj)
+        //添加的路由
+        commit('SET_ROUTES', accessedRoutes)
+        // 使用router.addRoutes传accessedRoutes过去相当于push
+        //使用options.routes传allRoutes过去相当于替换
+        // console.log(accessedRoutes, 'accessedRoutes')
+        let allRoutes = constantRoutes.concat(accessedRoutes)
+
+        router.options.routes = allRoutes;
+        router.addRoutes(allRoutes)
       }
-      commit('SET_ROUTES', accessedRoutes)
-      // 使用router.addRoutes传accessedRoutes过去相当于push
-      //使用options.routes传allRoutes过去相当于替换
-      let allRoutes = constantRoutes.concat(accessedRoutes)
-      resolve(allRoutes)
+      resolve()
     })
+  }
+}
+
+export function filterAsyncRoutesMy(routes, roles) {
+  const res = []
+
+  routes.forEach(route => {
+    const tmp = { ...route }
+
+    if (hasPermissionMy(roles, tmp)) {
+      if (tmp.children) {
+        if (tmp.meta) {
+          tmp.children = filterAsyncRoutesMy(tmp.children, roles[tmp.meta.rolesName])
+        }
+      }
+      res.push(tmp)
+    }
+  })
+
+  return res
+}
+function hasPermissionMy(roles, route) {
+  if (route.meta && route.meta.rolesName) {
+    return roles[route.meta.rolesName]
+  } else {
+    return true
   }
 }
 

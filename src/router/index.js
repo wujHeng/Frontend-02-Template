@@ -80,13 +80,27 @@ export const asyncRoutes = [
         path: 'list',
         component: () => import('@/views/recipe/list/index'),
         name: 'RecipeList',
-        meta: { title: '配方列表' }
+        meta: { title: '配方列表'},
+  
+      },
+      {
+        path: 'recipe_display',
+        component: () => import('@/views/recipe/list/recipe_display'),
+        name: 'RecipeDisplay',
+        meta: { title: '配方详情', navHidden:true},
+  
       },
       {
         path: 'create',
-        component: () => import('@/views/recipe/create/index'),
-        name: 'RecipeList',
-        meta: { title: '新增配方' }
+        component: () => import('@/views/recipe/list/recipe_create'),
+        name: 'RecipeCreate',
+        meta: { title: '新增配方', navHidden:true}
+      },
+      {
+        path: 'modify',
+        component: () => import('@/views/recipe/list/recipe_modify'),
+        name: 'RecipeModify',
+        meta: { title: '修改配方', navHidden:true}
       }
     ]
   },

@@ -3,7 +3,7 @@ import API from '@/api/url'
 
 export function reportBatch(method, data) {
     let obj = {
-        url: API.reportBatchUrl,
+        url: API.ReportBatchUrl,
         method: method
     }
     Object.assign(obj, data)
@@ -53,6 +53,39 @@ export function trainsFeedbacks(method, data) {
 export function echartsListUrl(method, data) {
     let obj = {
         url: API.EchartsListUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+
+export function operatorList(method, data) {
+    let obj = {
+        url: API.PersonnelsUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+export function weighInformation(method, data) {
+    let obj = {
+        url: API.WeighInformationUrl + data.params.id + '/',
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+export function mixerInformation(method, data) {
+    let obj = {
+        url: API.MixerInformationUrl + data.params.id + '/',
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+export function curveInformation(method, data) {
+    let obj = {
+        url: API.CurveInformationUrl + data.params.id + '/',
         method: method
     }
     Object.assign(obj, data)

@@ -30,14 +30,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="机台">
-        <el-select v-model="getParams.equip_no" @change="changeSearch" clearable placeholder="请选择">
-          <el-option
-            v-for="item in machineList"
-            :key="item.equip_no"
-            :label="item.equip_no"
-            :value="item.equip_no"
-          ></el-option>
-        </el-select>
+        <selectEquip :equip_no_props.sync="getParams.equip_no" @changeSearch="changeSearch"></selectEquip>
       </el-form-item>
       <el-form-item label="班次">
         <el-select v-model="getParams.classes" placeholder="请选择" @change="changeSearch" clearable>
@@ -85,7 +78,7 @@
       <el-table-column prop="operation_user" label="作业者"></el-table-column>
     </el-table>
 
-    <page @currentChange="currentChange" :pagination="pagination"></page>
+    <page @currentChange="currentChange" :total="total"></page>
 
     <el-dialog title="胶料产出反馈" :visible.sync="dialogVisibleRubber">
       <el-form :inline="true">
@@ -168,6 +161,7 @@
 <script>
 import { setDate } from "@/utils/index";
 import page from "@/components/page";
+import selectEquip from "@/components/select_w/equip";
 import {
   reportBatch,
   rubberMaterial,
@@ -178,7 +172,7 @@ import {
   echartsListUrl,
 } from "@/api/reportBatch";
 export default {
-  components: { page },
+  components: { page,selectEquip },
   data() {
     this.chartSettings = {
       labelMap: {
@@ -210,7 +204,6 @@ export default {
       tableDataBAT: [],
       dialogVisibleBAT: false,
       glueList: [],
-      machineList: [],
       classesList: [],
       //24小时，转换为时间戳24*60*60*1000
       fixedTime: 24 * 60 * 60 * 1000,
@@ -230,20 +223,18 @@ export default {
         ],
         rows: [],
       },
-      pagination: {},
-      currentPage: 1,
+      total:0
     };
   },
   created() {
     this.getList();
     this.getGlueList(); //获取胶料列表
-    this.getMachineList(); //获取机台列表
     this.getClassesList(); //获取班次列表
 
     var _setDateCurrent = setDate();
-    // this.getParams.st = _setDateCurrent + " 00:00:00";
+    this.getParams.st = _setDateCurrent + " 00:00:00";
     this.getParams.et = _setDateCurrent + " 23:59:59";
-    this.getParams.st = "2020-06-01" + " 00:00:00";
+    // this.getParams.st = "2020-06-01" + " 00:00:00";
     // this.getParams.et = '2020-06-01' + ' 23:59:59'
     this.search_date = [this.getParams.st, this.getParams.et];
   },
@@ -254,7 +245,7 @@ export default {
         .then(function (response) {
           _this.tableData = response.results || [];
 
-         _this.pagination = response
+         _this.total = response.count || 0
         })
         .catch(function (error) {
           // this.$message.error("请求错误");
@@ -278,14 +269,6 @@ export default {
             return item;
           }, []);
           _this.glueList = newArr;
-        })
-        .catch(function (error) {});
-    },
-    getMachineList() {
-      var _this = this;
-      equip("get", { params: { page_size: 1000000 } })
-        .then(function (response) {
-          _this.machineList = response.results || [];
         })
         .catch(function (error) {});
     },
@@ -365,7 +348,7 @@ export default {
         },
       })
         .then(function (response) {
-          var results = response.results;
+          var results = response;
           results.forEach((element) => {
             element.created_date_date = element.created_date.split(" ")[1];
           });

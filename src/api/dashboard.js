@@ -11,7 +11,7 @@ export function equipStatusSlanList(method, data) {
 }
 export function equipDetailedList(method, data) {
     let obj = {
-        url: API.EquipDetailedList + data.params.id + '/',
+        url: API.EquipDetailedListUrl + data.params.id + '/',
         method: method
     }
     Object.assign(obj, data)

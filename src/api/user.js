@@ -4,28 +4,18 @@ import API from '@/api/url'
 
 export function login(data) {
   return request({
-    url: API.loginUrl,
+    url: API.LoginUrl,
     method: 'post',
     data
   })
 }
-// post {}
-// get  params: { token }
-export function weigh(method, data={}) {
-  return request({
-    url: API.weighUrl,
-    method: method,
-    data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
+// export function getInfo(token) {
+//   return request({
+//     url: API.UserInfoUrl,
+//     method: 'post',
+//     data:{token}
+//   })
+// }
 
 export function logout() {
   return request({

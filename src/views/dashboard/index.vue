@@ -1,57 +1,72 @@
 <template>
-  <div class="dashboard">
-    <div class="dashboard_box" v-for="(item,index) in chartDataList" :key="index">
-      <div class="dashboard_boxTitle" @click="clickBoxTitle(item.id)">{{index+1}}#机台</div>
-      <div style="height:300px">
-        <ve-histogram
-          width="100%"
-          height="100%"
-          :data="item.chartData"
-          :settings="chartSettings"
-          :after-set-option="afterSetOption"
-        ></ve-histogram>
+  <div class="dashboard" v-loading="loading">
+    <div v-if="!loading" style="display:flex;flex-wrap:wrap">
+      <div class="dashboard_box" v-for="(item,index) in chartDataList" :key="index">
+        <div v-if="item.chartData.rows[0].actual_num||item.chartData.rows[0].plan_num">
+          <div class="dashboard_boxTitle" @click="clickBoxTitle(item.chartData.rows[0].id,index)">{{item.equip_no}}#机台</div>
+          <div style="height:300px">
+            <ve-histogram
+              width="100%"
+              height="100%"
+              :data="item.chartData"
+              :settings="chartSettings"
+              :after-set-option="afterSetOption"
+            ></ve-histogram>
+          </div>
+          <el-form ref="form" :model="form" label-width="90px">
+            <el-form-item
+              label="当前规格:"
+            >{{item.chartData.rows[0].product_no?item.chartData.rows[0].product_no:'--'}}</el-form-item>
+            <el-form-item label="收皮数量:">{{item.chartData.rows[0].current_trains}}</el-form-item>
+            <el-form-item label="设备状态:">{{item.chartData.rows[0].status}}</el-form-item>
+            <!-- <el-form-item label="活动名称:">66666</el-form-item> -->
+          </el-form>
+        </div>
+        <div v-else>
+          <div class="dashboard_boxTitle">{{item.equip_no}}#机台</div>
+          <span class="nodeData">暂无数据</span>
+        </div>
       </div>
-      <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="当前规格:">{{item.product_no?item.product_no:'--'}}</el-form-item>
-        <el-form-item label="收皮数量:">{{item.current_trains}}</el-form-item>
-        <el-form-item label="设备状态:">{{item.status}}</el-form-item>
-        <!-- <el-form-item label="活动名称:">66666</el-form-item> -->
-      </el-form>
     </div>
     <div v-if="chartDataList.length===0">暂无数据</div>
     <el-dialog
-      title="1#机台 生产信息统计"
+      :title="chartDataList.length>0?chartDataList[currentIndex].equip_no+'#机台 生产信息统计':''"
       center
       :visible.sync="dialogVisible"
       width="700px"
       :before-close="handleClose"
     >
-      <div>
-        <div>1#机台：在线</div>
-        <span class="visibleTitle" style="padding-left:0;">当前规格：C-MB1-1060-01</span>
-        <span class="visibleTitle">班次：C-MB1-1060-01</span>
-        <span class="visibleTitle">收皮数量：50</span>
-        <span class="visibleTitle">
-          设备状态：
-          <span>运行中</span>
-        </span>
-      </div>
-      <div>
-        <div style="height:390px;display:flex">
-          <div class="visibleLeftBox">
-            <div class="visibleTitleLeft">甲班 规格别成绩</div>
-            <div style="height:350px">
-              <ve-histogram
-                height="100%"
-                :data="chartDataLeft"
-                :settings="chartSettingsLeft"
-                :after-set-option="afterSetOptionLeft"
-              ></ve-histogram>
+      <div v-loading="dialogLoading">
+        <div v-if="!dialogLoading">
+          <!-- <div>{{chartDataList[currentIndex].equip_no}}#机台：在线</div> -->
+          <span
+            class="visibleTitle"
+            style="padding-left:0;"
+          >当前规格：{{infoData.product_no_classes.product_no || ''}}</span>
+          <span class="visibleTitle">班次：{{infoData.product_no_classes.classes}}</span>
+          <span class="visibleTitle">收皮数量：{{infoData.status_current_trains.current_trains}}</span>
+          <span class="visibleTitle">
+            设备状态：
+            <span>{{infoData.status_current_trains.status}}</span>
+          </span>
+        </div>
+        <div v-if="!dialogLoading">
+          <div style="height:390px;display:flex">
+            <div class="visibleLeftBox">
+              <div class="visibleTitleLeft">{{infoData.group_name}} 规格别成绩</div>
+              <div style="height:350px">
+                <ve-histogram
+                  height="100%"
+                  :data="chartDataLeft"
+                  :settings="chartSettingsLeft"
+                  :after-set-option="afterSetOptionLeft"
+                ></ve-histogram>
+              </div>
             </div>
-          </div>
-          <div class="visibleRightBox">
-            <div class="visibleTitleLeft">设备运行时间统计</div>
-            <ve-ring :data="chartDataRight" :after-set-option="afterSetOptionRight"></ve-ring>
+            <div class="visibleRightBox">
+              <div class="visibleTitleLeft">设备运行时间统计</div>
+              <ve-ring :data="chartDataRight" :after-set-option="afterSetOptionRight"></ve-ring>
+            </div>
           </div>
         </div>
       </div>
@@ -60,58 +75,43 @@
 </template>
 
 <script>
-import { equipStatusSlanList,equipDetailedList } from "@/api/dashboard";
+import { equipStatusSlanList, equipDetailedList } from "@/api/dashboard";
 export default {
   name: "Dashboard",
   data() {
     this.chartSettings = {
       labelMap: {
         global_name: "班次",
-        plan_sum: "计划车次",
-        actual_trains: "实际车次",
+        plan_num: "计划车次",
+        actual_num: "实际车次",
       },
     };
-    this.chartSettingsLeft = {};
+    this.chartSettingsLeft = {
+      labelMap: {
+        pb_day_plan__product_batching__stage_product_batch_no: "班次",
+        sum_trains: "计划车次",
+        trains_plan: "实际车次",
+      },
+    };
     return {
       dialogVisible: false,
       form: {},
-      chartDataList: [
-        {
-          equip_no: "115A01",
-          id: 1,
-          status: "运行",
-          current_trains: 123,
-          product_no: null,
-          group_name_list: [
-            {
-              global_name: "a班",
-              plan_sum: 48,
-              actual_trains: 652,
-            },
-            {
-              global_name: "c班",
-              plan_sum: 12,
-              actual_trains: 321,
-            },
-          ],
-        },
-      ],
+      chartDataList: [],
       options: {
         grid: {
           y: 30,
           y2: 10,
         },
       },
+      //详情
+      infoData: {},
       chartDataLeft: {
-        columns: ["日期", "访问用户", "下单用户"],
-        rows: [
-          { 日期: "1/1", 访问用户: 1393, 下单用户: 1093 },
-          { 日期: "1/2", 访问用户: 3530, 下单用户: 3230 },
-          { 日期: "1/3", 访问用户: 2923, 下单用户: 2623 },
-          { 日期: "1/4", 访问用户: 1723, 下单用户: 1423 },
-          { 日期: "1/5", 访问用户: 3792, 下单用户: 3492 },
-          { 日期: "1/6", 访问用户: 4593, 下单用户: 4293 },
+        columns: [
+          "pb_day_plan__product_batching__stage_product_batch_no",
+          "sum_trains",
+          "trains_plan",
         ],
+        rows: [],
       },
       optionsLeft: {
         grid: {
@@ -120,14 +120,11 @@ export default {
         },
       },
       chartDataRight: {
-        columns: ["日期", "访问用户"],
-        rows: [
-          { 日期: "1/1", 访问用户: 1393 },
-          { 日期: "1/2", 访问用户: 3530 },
-          { 日期: "1/3", 访问用户: 2923 },
-        ],
+        columns: ["status", "num"],
+        rows: [],
       },
       optionsRight: {
+        tooltip: {},
         series: [
           {
             labelLine: {
@@ -136,35 +133,60 @@ export default {
             label: {
               show: false,
             },
+            // label: {
+            //   normal: {
+            //     position: "inner",
+            //     show: false,
+            //   },
+            // },
           },
         ],
       },
-      current_equip_no:''
+      current_equip_no: "",
+      currentIndex: 0,
+      loading: true,
+      dialogLoading: true,
     };
   },
-  created() {
-    this.getList();
+  async created() {
+    await this.getList();
   },
   methods: {
     async getList() {
       try {
         let data = await equipStatusSlanList("get");
-        // console.log(data.results, "data");
-        // this.chartDataList = data.results || [];
-        this.chartDataList.forEach((D) => {
-          D.chartData = {
-            columns: ["global_name", "plan_sum", "actual_trains"],
-            rows: D.group_name_list,
-          };
-        });
-        this.chartDataList.splice()
-      } catch (e) {}
-    },
-    async getEquipDetailedList(id){
-        try {
-        let data = await equipDetailedList("get",{params:{id:id}});
-        
+        let dataArr = data || [];
+
+        this.loading = false;
+        let arr = [];
+
+        for (let key in dataArr) {
+          arr.push({
+            equip_no: key,
+            chartData: {
+              columns: ["global_name", "plan_num", "actual_num"],
+              rows: dataArr[key],
+            },
+          });
+        }
+        this.chartDataList = arr;
       } catch (e) {
+        this.loading = false;
+      }
+    },
+    async getEquipDetailedList(id) {
+      try {
+        this.chartDataLeft.rows = []
+        this.dialogLoading = true;
+        let data = await equipDetailedList("get", { params: { id: id } });
+        this.infoData = data || {};
+
+        this.chartDataLeft.rows = this.infoData.group_product;
+        this.chartDataRight.rows = this.infoData.statusinfo;
+
+        this.dialogLoading = false;
+      } catch (e) {
+        this.dialogLoading = false;
       }
     },
     afterSetOption(chartObj) {
@@ -173,9 +195,10 @@ export default {
     handleClose(done) {
       done();
     },
-    clickBoxTitle(id) {
+    clickBoxTitle(id, index) {
       this.dialogVisible = true;
-      this.getEquipDetailedList(id)
+      this.currentIndex = index;
+      this.getEquipDetailedList(id);
     },
     afterSetOptionLeft(chartObj) {
       chartObj.setOption(this.optionsLeft);
@@ -232,6 +255,12 @@ export default {
     width: 40%;
     background: rgba(239, 239, 239, 0.5);
     padding: 5px;
+  }
+  .nodeData {
+    display:inline-block;
+    width: 100%;
+    margin-top: 100px;
+    text-align: center;
   }
 }
 </style>
