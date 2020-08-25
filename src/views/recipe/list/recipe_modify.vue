@@ -67,8 +67,16 @@
         <el-radio v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
     </el-form-item>
     <el-form-item label="收皮">
-        <el-input size="mini" v-model="sp_num"  style="width: 70px" ></el-input>
+        <el-select size="mini" style="width: 85px" v-model="sp_num" placeholder="请选择">
+                <el-option
+                v-for="item in sp_num_options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+        </el-select>
     </el-form-item>
+    
     <el-form-item label="配方停用">
         <el-checkbox v-model="used_flag"></el-checkbox>
     </el-form-item>
@@ -370,6 +378,22 @@ export default {
         SelectConditionOptions:[],
         SelectActionOptions:[],
         materialTypeOptions:[],
+        sp_num_options:[{
+          value: '1',
+          label: '1车/托'
+        }, {
+          value: '2',
+          label: '2车/托'
+        }, {
+          value: '3',
+          label: '3车/托'
+        }, {
+          value: '4',
+          label: '4车/托'
+        }, {
+          value: '5',
+          label: '5车/托'
+        }],
         materialType:null,
         search_material_no:null,
         search_material_name:null,
@@ -571,7 +595,7 @@ export default {
 
         });
     },
-    
+
         get_material_List() {
                 var v_materialType = this.materialType?this.materialType:''
                 var v_search_material_no = this.search_material_no?this.search_material_no:''
