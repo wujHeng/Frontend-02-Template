@@ -5,14 +5,21 @@ import Cookies from 'js-cookie'
 
 const getDefaultState = () => {
   return {
-    token: getToken(),
+    token: '',
     name: '',
     avatar: '',
     roles: ''
   }
 }
 
-const state = getDefaultState()
+const state = () => {
+  return {
+    token: getToken(),
+    name: Cookies.get('name'),
+    avatar: '',
+    roles: localStorage.getItem("roles")
+  }
+}
 
 const mutations = {
   RESET_STATE: (state) => {
@@ -23,12 +30,14 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+    Cookies.set('name', name)
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+    localStorage.setItem("roles", roles);
   }
 }
 
@@ -38,11 +47,16 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
+        console.log(response, 888888)
         commit('SET_TOKEN', response.token)
+        commit('SET_NAME', response.username)
+        commit('SET_ROLES', JSON.stringify(response.results));
+
         //登录获取token,存到全局中
         setToken(response.token)
         resolve()
       }).catch(error => {
+        console.log(error, 'error')
         reject(error)
       })
     })
@@ -52,14 +66,12 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       // getInfo(state.token).then(response => {
-      // const { data } = response
+      // let data = response
+      // console.log(data, 'response')
 
       // if (!data) {
       //   return reject('Verification failed, please Login again.')
       // }
-
-      // const { roles, name, avatar } = data
-
       // roles must be a non-empty array登录权限
       //  if (!roles || roles.length <= 0) {
       //   reject('getInfo: roles must be a non-null array!')
@@ -71,8 +83,7 @@ const actions = {
         name: 'name-admin', avatar: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2310890073,3469009192&fm=26&gp=0.jpg'
       }
 
-      commit('SET_ROLES', data.roles)
-      commit('SET_NAME', data.name)
+      commit('SET_ROLES', JSON.stringify(data.results))
       commit('SET_AVATAR', data.avatar)
       resolve(data)
       // }).catch(error => {

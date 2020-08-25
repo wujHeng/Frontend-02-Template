@@ -1,5 +1,6 @@
 export default {
-  LoginUrl: '/api/v1/docs/login',
+  LoginUrl: '/api/v1/system/login/',
+  // UserInfoUrl: '/api/v1/system/user-permissions/',
   globalTypesUrl: '/api/v1/basics/global-types/',
   globalCodesUrl: '/api/v1/basics/global-codes/',
   weighCbUrl: '/api/v1/production/weigh-cb/',

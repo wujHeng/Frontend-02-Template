@@ -43,7 +43,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="showRowTable = true">展示详情</el-button>
+        <!-- <el-button @click="showRowTable = true">展示详情</el-button> -->
         <el-button @click="showRowTable = false">关闭详情</el-button>
 
         <!-- <el-button @click="selectRubber">导出批记录</el-button>
