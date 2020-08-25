@@ -85,16 +85,16 @@
         </el-select>
       </el-form-item>
 
-        <el-form-item label="版本" prop="version">
-                <el-input style="width: 65%" size="mini" v-model="generateRecipeForm.version" placeholder="版本"></el-input>
-        </el-form-item>
-        <el-form-item label="方案">
-                <el-input style="width: 65%" size="mini" v-model="generateRecipeForm.scheme" placeholder="方案"></el-input>
-        </el-form-item>
-
-      <el-form-item style="float: right">
-        <el-button type="primary" @click="generateRecipeButton('generateRecipeForm')">生成</el-button>
+      <el-form-item label="版本" prop="version">
+              <el-input style="width: 65%" size="mini" v-model="generateRecipeForm.version" placeholder="版本"></el-input>
+      </el-form-item> 
+      <el-form-item label="方案">
+              <el-input style="width: 65%" size="mini" v-model="generateRecipeForm.scheme" placeholder="方案"></el-input>
       </el-form-item>
+
+      <!-- <el-form-item style="float: right">
+        <el-button type="primary" @click="generateRecipeButton('generateRecipeForm')">生成</el-button>
+      </el-form-item> -->
       <el-form-item style="float: right">
         <el-button type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
       </el-form-item>
@@ -242,22 +242,18 @@
             </thead>
                 <tbody style="color: #606266;">
                 <tr v-for="(step_ele, index) in RecipeMaterialList" :key="index">
+                        <td style="text-align: center">{{ index + 1 }}</td>
                         <td style="text-align: center">
-                        <el-input size="mini" style="width:50px" controls-position="right" v-model="step_ele.sn"></el-input>
-                        </td>
-                        <td style="text-align: center">
-                        <el-form>
-                        <el-form-item>
-                                <el-select size="mini" style="width: 100px" clearable v-model="step_ele.condition" placeholder="请选择">
-                                <el-option
-                                v-for="item in SelectConditionOptions"
-                                :key="item.id"
-                                :label="item.condition"
-                                :value="item.id"
-                                ></el-option>
-                                </el-select>
-                        </el-form-item>
-                        </el-form>
+                        
+                        <el-select size="mini" style="width: 100px" clearable v-model="step_ele.condition" placeholder="请选择">
+                        <el-option
+                        v-for="item in SelectConditionOptions"
+                        :key="item.id"
+                        :label="item.condition"
+                        :value="item.id"
+                        ></el-option>
+                        </el-select>
+                        
                         </td>
                         <td style="text-align: center">
                         <el-input size="mini" controls-position="right" v-model="step_ele.time"></el-input>
@@ -272,18 +268,18 @@
                         <el-input size="mini" controls-position="right" v-model="step_ele.power"></el-input>
                         </td>
                         <td style="text-align: center">
-                                <el-form>
-                        <el-form-item>
-                                <el-select size="mini" style="width: 100px" clearable v-model="step_ele.action" placeholder="请选择">
-                                <el-option
-                                v-for="item in SelectActionOptions"
-                                :key="item.id"
-                                :label="item.action"
-                                :value="item.id"
-                                ></el-option>
-                                </el-select>
-                        </el-form-item>
-                                </el-form>
+                                
+                  
+                        <el-select size="mini" style="width: 100px" clearable v-model="step_ele.action" placeholder="请选择">
+                        <el-option
+                        v-for="item in SelectActionOptions"
+                        :key="item.id"
+                        :label="item.action"
+                        :value="item.id"
+                        ></el-option>
+                        </el-select>
+                        
+                                
                         </td>
                         <td style="text-align: center">
                         <el-input size="mini" controls-position="right" v-model="step_ele.pressure"></el-input>
@@ -374,7 +370,7 @@
             :close-on-press-escape="false"
             width="70%" title="原材料选择" :visible.sync="dialogRawMaterialSync">
 
-        <!-- <el-form :inline="true">
+        <el-form :inline="true">
             <el-form-item label="原材料类别">
                 <el-select
                         clearable
@@ -390,7 +386,7 @@
             </el-form-item>
             原材料编号:<el-input  v-model="search_material_no" v-on:input="search_material_no_Change" style="width: 20%" ></el-input>
             原材料名称:<el-input  v-model="search_material_name" v-on:input="search_material_name_Change" style="width: 20%" ></el-input>
-        </el-form> -->
+        </el-form>
 
 
         <el-table
@@ -446,7 +442,7 @@
 
 
 <script>
-import { recipe_list, rubber_process_url, equip_url, site_url, recipe_no_url, stage_url, dev_type_url, global_SITE_url, raw_material_url, condition_url, action_url } from "@/api/recipe_fun";
+import { recipe_list, rubber_process_url, equip_url, site_url, recipe_no_url, stage_url, dev_type_url, global_SITE_url, raw_material_url, material_type_url, condition_url, action_url } from "@/api/recipe_fun";
 import { constantRoutes } from "@/router";
 import { dataTool } from "echarts/lib/echarts";
 
@@ -460,6 +456,10 @@ export default {
         SelectStageOptions:[],
         SelectConditionOptions:[],
         SelectActionOptions:[],
+        materialTypeOptions:[],
+        materialType:null,
+        search_material_no:null,
+        search_material_name:null,
         sp_num_options:[{
           value: '1',
           label: '1车/托'
@@ -549,6 +549,7 @@ export default {
         this.raw_material_list();
         this.condition_list();
         this.action_list();
+        this.material_type_list();
   },
   methods: {
         //   以下6个函数用于初始化下拉框的接口(密炼机类型暂时不用)
@@ -628,6 +629,21 @@ export default {
         this.tableDataTotal = raw_material_list.count;
       } catch (e) {}
     },
+    async search_raw_material_list(obj) {
+      try {
+        let search_raw_material_list = await raw_material_url("get", null, obj);
+        this.tableData = search_raw_material_list.results;
+        this.tableDataTotal = search_raw_material_list.count;
+      } catch (e) {}
+    },
+    async material_type_list() {
+      try {
+        let material_type_list = await material_type_url("get", {
+          params: { },
+        });
+        this.materialTypeOptions = material_type_list.results
+      } catch (e) {}
+    },
     async post_recipe_list(obj) {
         try {
                 let recipe_listData = await recipe_list("post", null,obj);
@@ -636,9 +652,7 @@ export default {
         },
     async post_recipe_info_step_list(obj) {
         try {
-                console.log('---------------------')
-                console.log(obj)
-                let recipe_info_step_list = await rubber_process_url("post", obj);
+                let recipe_info_step_list = await rubber_process_url("post", null, obj);
                 console.log(recipe_info_step_list)
         } catch (e) {}
         },
@@ -807,6 +821,27 @@ export default {
                 });
 
         },
+        get_material_List() {
+                var v_materialType = this.materialType?this.materialType:''
+                var v_search_material_no = this.search_material_no?this.search_material_no:''
+                var v_search_material_name = this.search_material_name?this.search_material_name:''
+
+                this.search_raw_material_list({params:{
+                  material_type_id:v_materialType,
+                  material_no:v_search_material_no,
+                  material_name:v_search_material_name
+                }})
+        },
+        materialTypeChange: function(){
+          this.get_material_List()
+        },
+        search_material_no_Change: function(){
+          this.get_material_List()
+        },
+        search_material_name_Change: function(){
+          this.get_material_List()
+        },
+
         insert_material_changed: function() {
                 this.ProductRecipe.push({
                     material:"",
