@@ -240,6 +240,13 @@ export default {
       var workSchedule = this.workSchedules.find((workSchedule) => {
         return workSchedule.id === planSchedule.work_schedule
       })
+      if (!planSchedule.work_schedule_plan) {
+        this.$alert('无排班数据', '错误', {
+          confirmButtonText: '确定'
+        })
+        console.log(planSchedule)
+        return
+      }
       if (!planSchedule.work_schedule_plan.length) {
         this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
           confirmButtonText: '确定'
