@@ -51,7 +51,6 @@ const actions = {
   generateRoutes({ commit, state }, roles) {
     return new Promise(resolve => {
       let accessedRoutes
-      // if (state.addRoutes.length === 0) {
       let rolesObj = JSON.parse(roles)
 
       accessedRoutes = filterAsyncRoutesMy(asyncRoutes, rolesObj)
@@ -59,19 +58,11 @@ const actions = {
       commit('SET_ROUTES', accessedRoutes)
       // 使用router.addRoutes传accessedRoutes过去相当于push
       //使用options.routes传allRoutes过去相当于替换
-      // console.log(accessedRoutes, 'accessedRoutes')
       const allRoutes = constantRoutes.concat(accessedRoutes)
 
-      // console.log(allRoutes,'allRoutes')
-      console.log(asyncRoutes, 'asyncRoutes')
-      console.log(allRoutes, 'allRoutes')
-      // console.log(accessedRoutes,'accessedRoutes')
       // router.options.routes = allRoutes;
       // router.addRoutes(allRoutes)
       resolve(allRoutes)
-      // }else{
-      //   resolve(state.routes)
-      // }
     })
   }
 }

@@ -93,11 +93,13 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       // logout(state.token).then(() => {
       removeToken() // must remove  token  first
       resetRouter()
+      rootState.permission.addRoutes = []
+      
       commit('RESET_STATE','')
       commit('SET_ROLES', '')
       commit('SET_NAME','')

@@ -9,6 +9,15 @@ export function reportBatch(method, data) {
     Object.assign(obj, data)
     return request(obj)
 }
+
+export function rubberList(method, data) {
+    let obj = {
+        url: API.RubberListUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
 export function rubberMaterial(method, data) {
     let obj = {
         url: API.RubberMaterialUrl,
@@ -35,7 +44,15 @@ export function classesList(method, data) {
 }
 export function palletFeedBacks(method, data) {
     let obj = {
-        url: API.PalletFeedBacksUrl,
+        url: API.ProductionPalletFeedBacksUrl,
+        method: method
+    }
+    Object.assign(obj, data)
+    return request(obj)
+}
+export function productionTrainsFeedbacks(method, data) {
+    let obj = {
+        url: API.ProductionTrainsFeedbacksUrl,
         method: method
     }
     Object.assign(obj, data)

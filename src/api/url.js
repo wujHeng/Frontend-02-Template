@@ -1,5 +1,6 @@
 export default {
   LoginUrl: '/api/v1/system/login/',
+
   GlobalTypesUrl: '/api/v1/basics/global-types/', // 公共代码类别
   GlobalCodesUrl: '/api/v1/basics/global-codes/', // 公共代码
   // 日料罐、称量参数接口
@@ -9,7 +10,7 @@ export default {
   MaterialsUrl: '/api/v1/recipe/materials/', // 原材料
 
   // 胶料配料标准管理接口
-  RubberMaterialUrl: '/api/v1/recipe/product-batching/',
+  RubberMaterialUrl: '/api/v1/recipe/product-batching/?all=1',
   // 胶料配料步序接口
   RubberProcessStepUrl: '/api/v1/recipe/process-steps/',
   // 设备/机台接口
@@ -35,7 +36,11 @@ export default {
   ClassesListUrl: '/api/v1/basics/classes/',
   ReportBatchUrl: '/api/v1/production/production-record/',
   EchartsListUrl: '/api/v1/production/equip-status/',
-  // 报表-车次记录-操作人列表
+  // 批次-胶料编码列表
+  ProductionPalletFeedBacksUrl: '/api/v1/production/pallet-feedbacks/',
+  // 批次-Bat查询
+  ProductionTrainsFeedbacksUrl: '/api/v1/production/trains-feedbacks/',
+  // 报表-车次记录-操作人列表?all=1
   PersonnelsUrl: '/api/v1/system/personnels/',
   // 报表-车次记录-称量信息{id}
   WeighInformationUrl: '/api/v1/production/weigh-information-list/',
@@ -43,16 +48,12 @@ export default {
   MixerInformationUrl: '/api/v1/production/mixer-information-list/',
   // 报表-车次记录-曲线图{id}
   CurveInformationUrl: '/api/v1/production/curve-information-list/',
-
-  // 密炼实绩
-  PalletFeedBacksUrl: '/api/v1/production/pallet-feedbacks/',
-  TrainsFeedbacksUrl: '/api/v1/production/trains-feedbacks/',
+  // 报表-车次列表
+  TrainsFeedbacksUrl: '/api/v1/production/trains-feedbacks-apiview/',
 
   // 首页
   EquipStatusSlanListUrl: '/api/v1/production/equip-status-plan-list/',
   EquipDetailedListUrl: '/api/v1/production/equip-detailed-list/',
-  EquipDetailedList: '/api/v1/production/equip-detailed-list/',
-
   MaterialStatisticsUrl: '/api/v1/production/material-statistics/',
 
   // 计划
@@ -66,7 +67,7 @@ export default {
   ProductDayPlanManyCreateUrl: '/api/v1/plan/product-day-plan-manycreate/', // 新增
   ProductbatchingUrl: '/api/v1/recipe/product-batching/', // 配方
   // 新增计划
-  PlanScheduleUrl: "/api/v1/basics/plan-schedule/",
-  WorkSchedulesUrl: "/api/v1/basics/work_schedules/",
+  PlanScheduleUrl: '/api/v1/basics/plan-schedule/',
+  WorkSchedulesUrl: '/api/v1/basics/work_schedules/'
 
 }
