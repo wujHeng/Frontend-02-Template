@@ -1,6 +1,5 @@
 export default {
   LoginUrl: '/api/v1/system/login/',
-  loginUrl: '/api/v1/docs/login',
   GlobalTypesUrl: '/api/v1/basics/global-types/', // 公共代码类别
   GlobalCodesUrl: '/api/v1/basics/global-codes/', // 公共代码
   // 日料罐、称量参数接口
