@@ -324,7 +324,7 @@ export default {
         },
       })
         .then(function (response) {
-          _this.BATList = response || [];
+          _this.BATList = response.results || [];
         })
         .catch(function (error) {});
     },

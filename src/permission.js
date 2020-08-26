@@ -42,9 +42,10 @@ router.beforeEach(async (to, from, next) => {
           next()
         } else {
           const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
+          
           router.options.routes = accessRoutes;
           router.addRoutes(accessRoutes)
-          next({...to})
+          next({ ...to })
         }
       }
       // get user info 拿到权限数组
