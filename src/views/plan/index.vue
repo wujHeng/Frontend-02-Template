@@ -4,7 +4,7 @@
   <el-form style="margin-left: 10px" :inline="true">
     <el-form-item style="float: right">
       <el-button type="info" @click="showFindDialog">查询</el-button>
-      <el-button type="info">新增</el-button>
+      <el-button type="info" @click="showAddPlanDialog">新增</el-button>
       <el-button type="info" @click="stopPlan" :disabled="disabled">停止</el-button>
       <el-button type="info" @click="delPlan" :disabled="disabled">删除</el-button>
       <el-button type="info" @click="issuedPlan" :disabled="disabled">下达</el-button>
@@ -78,6 +78,7 @@
     border
     highlight-current-row
     @current-change="handleCurrentChange"
+    :default-sort = "{prop: 'sn'}"
     style="width: 100%">
     <el-table-column
 
@@ -196,6 +197,11 @@
     ref="alterTrainNumberDialog"
     @handleSuccessed="getPlanList"
     />
+
+  <add-plan-dialog
+    ref="addPlanDialog"
+    @handleSuccessed="getPlanList"
+    />
   
 </div>
 
@@ -204,10 +210,11 @@
 <script>
 import { equip, palletFeedBacks, delPalletFeedBacks, issuedPlan, stopPlan, retransmissionpPlan, upRegulation, downRegulation, updateTrains, productDayPlanManycreate, globalCodes, productbatching } from '@/api/plan'
 import AlterTrainNumberDialog from './AlterTrainNumberDialog'
+import AddPlanDialog from './AddPlanDialog'
 import page from '@/components/page'
 
 export default {
-  components: { page, AlterTrainNumberDialog },
+  components: { page, AlterTrainNumberDialog, AddPlanDialog },
   data: function() {
     return {
       equip: '',
@@ -371,8 +378,10 @@ export default {
     },
 
     showAlterTrainNumberDialog(){
-      // this.updateTrainsId = this.currentRow.id
       this.$refs.alterTrainNumberDialog.show(this.currentRow)
+    },
+    showAddPlanDialog(){
+      this.$refs.addPlanDialog.show()
     },
     handleCurrentChange(val) {
         this.currentRow = val;
