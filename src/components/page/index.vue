@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-pagination
-      layout="total, prev, pager, next"
+      layout="total,prev,pager,next"
       :total="total"
-      :page-size="page_size"
+      :page-size="pageSize"
       :current-page.sync="currentPage"
       @current-change="currentChange"
-    ></el-pagination>
+    />
   </div>
 </template>
 
@@ -16,13 +16,13 @@ export default {
     // 总页数，需要传进来
     total: {
       type: Number,
-      default: 0,
+      default: 0
     },
-     //统一的当前展示多少页，一般不会用到
-    page_size: {
+    // 统一的当前展示多少页，一般不会用到
+    pageSize: {
       type: Number,
-      default: 10,
-    },
+      default: 10
+    }
     // currentPage:{
     //   type: Number,
     //   default: 1,
@@ -30,8 +30,8 @@ export default {
   },
   data() {
     return {
-      currentPage:1
-    };
+      currentPage: 1
+    }
   },
   methods: {
     currentChange(page) {

@@ -2,7 +2,6 @@
   <el-select
     v-model="materialType"
     clearable
-    clearable
     placeholder="请选择"
     @change="materialTypeChanged"
   >
