@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import Cookies from 'js-cookie'
@@ -17,7 +17,7 @@ const state = () => {
     token: getToken(),
     name: Cookies.get('name'),
     avatar: '',
-    roles: localStorage.getItem("roles")
+    roles: localStorage.getItem('roles')
   }
 }
 
@@ -37,7 +37,7 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
-    localStorage.setItem("roles", roles);
+    localStorage.setItem('roles', roles)
   }
 }
 
@@ -47,12 +47,11 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-
         commit('SET_TOKEN', response.token)
         commit('SET_NAME', response.username)
-        commit('SET_ROLES', JSON.stringify(response.results));
+        commit('SET_ROLES', JSON.stringify(response.results))
 
-        //登录获取token,存到全局中
+        // 登录获取token,存到全局中
         setToken(response.token)
         resolve()
       }).catch(error => {
@@ -99,24 +98,23 @@ const actions = {
       removeToken() // must remove  token  first
       resetRouter()
       rootState.permission.addRoutes = []
-      
-      commit('RESET_STATE','')
+      commit('RESET_STATE', '')
       commit('SET_ROLES', '')
-      commit('SET_NAME','')
+      commit('SET_NAME', '')
       resolve()
       // }).catch(error => {
       //   reject(error)
       // })
     })
-  },
+  }
 
   // remove token
   // resetToken({ commit }) {
-    // return new Promise(resolve => {
-    //   removeToken() // must remove  token  first
-    //   commit('RESET_STATE','')
-    //   resolve()
-    // })
+  // return new Promise(resolve => {
+  //   removeToken() // must remove  token  first
+  //   commit('RESET_STATE','')
+  //   resolve()
+  // })
   // }
 }
 

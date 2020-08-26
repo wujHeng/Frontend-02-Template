@@ -68,6 +68,4 @@ export default {
   ProductbatchingUrl: '/api/v1/recipe/product-batching/', // 配方
   // 新增计划
   PlanScheduleUrl: "/api/v1/basics/plan-schedule/",
-
-
 }

@@ -5,13 +5,13 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -20,7 +20,7 @@ router.beforeEach(async (to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  const hasRoles = store.getters.roles && JSON.stringify(store.getters.roles) !== "{}"
+  const hasRoles = store.getters.roles && JSON.stringify(store.getters.roles) !== '{}'
 
   if (hasToken) {
     // 有登录
@@ -33,17 +33,18 @@ router.beforeEach(async (to, from, next) => {
       // try {
       if (!hasRoles) {
         await store.dispatch('user/logout')
-        Message.error(error || 'Has Error')
+        // eslint-disable-next-line no-undef
+        Message.error('Has Error')
         next(`/login?redirect=${to.path}`)
         NProgress.done()
       } else {
+        // eslint-disable-next-line prefer-const
         let addRoutes = store.getters.addRoutes.length !== 0
         if (addRoutes) {
           next()
         } else {
           const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
-          
-          router.options.routes = accessRoutes;
+          router.options.routes = accessRoutes
           router.addRoutes(accessRoutes)
           next({ ...to })
         }
@@ -66,8 +67,6 @@ router.beforeEach(async (to, from, next) => {
       //   next(`/login?redirect=${to.path}`)
       //   NProgress.done()
       // }
-
-
     }
   } else {
     /* has no token*/
