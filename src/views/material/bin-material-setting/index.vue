@@ -158,7 +158,7 @@ export default {
     async getMaterialsCbList() {
       try {
         let materialsData = await materials("get", {
-          params: { material_type_id: 10, page_size: 10000 },
+          params: { material_type_id: 10, all: 1 },
         });
         this.cbOptions = materialsData.results;
       } catch (e) {}
@@ -166,7 +166,7 @@ export default {
     async getMaterialsOilList() {
       try {
         let materialsData = await materials("get", {
-          params: { material_type_id: 57, page_size: 10000 },
+          params: { material_type_id: 57, all: 1 },
         });
         this.oilOptions = materialsData.results;
       } catch (e) {}
