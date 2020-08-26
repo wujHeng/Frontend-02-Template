@@ -1,9 +1,5 @@
 <template>
-  <el-dialog
-    width="90%"
-    :visible.sync="addPlanDialog"
-    title="添加胶料日生产计划"
-  >
+  <el-dialog width="90%" :visible.sync="addPlanDialog" title="添加胶料日生产计划">
     <div style="margin-bottom: 15px">
       <el-select v-model="equipIdForAdd" placeholder="请选择机台" style="margin-right: 10px">
         <el-option
@@ -33,14 +29,14 @@
       <el-button style="float: right" @click="batchSave">保存</el-button>
       <el-button @click="addOnePlan">添加</el-button>
     </div>
-    <el-table
-      :data="plansForAdd"
-      border
-    >
+    <el-table :data="plansForAdd" border>
       <el-table-column prop="equip_.equip_no" label="机台" width="150" />
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
-          <el-select v-model="scope.row.product_batching" @change="productBatchingChanged(scope.row)">
+          <el-select
+            v-model="scope.row.product_batching"
+            @change="productBatchingChanged(scope.row)"
+          >
             <el-option
               v-for="productBatching in productBatchings"
               :key="productBatching.id"
@@ -55,11 +51,11 @@
       <el-table-column label="当前库存（吨）" />
       <el-table-column label="早班计划">
         <el-table-column label="顺序" width="210">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[0].sn"
-              :min="0"
-            />
+          <template
+            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable"
+            slot-scope="scope"
+          >
+            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[0].sn" :min="0" />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -77,11 +73,11 @@
       </el-table-column>
       <el-table-column label="中班计划">
         <el-table-column label="顺序" width="210">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[1].sn"
-              :min="0"
-            />
+          <template
+            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable"
+            slot-scope="scope"
+          >
+            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[1].sn" :min="0" />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -99,11 +95,11 @@
       </el-table-column>
       <el-table-column label="晚班计划">
         <el-table-column label="顺序" width="210">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[2].sn"
-              :min="0"
-            />
+          <template
+            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable"
+            slot-scope="scope"
+          >
+            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[2].sn" :min="0" />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -124,10 +120,16 @@
 </template>
 
 <script>
-import { updateTrains, equip, getRubberMateria, getWorkSchedules, getPlanSchedules, postProductDayPlanManyCreate } from '@/api/plan'
+import {
+  updateTrains,
+  equip,
+  getRubberMateria,
+  getWorkSchedules,
+  getPlanSchedules,
+  postProductDayPlanManyCreate
+} from '@/api/plan'
 
 export default {
-
   data() {
     return {
       addPlanDialog: false,
@@ -152,9 +154,9 @@ export default {
       this.getWorkSchedules()
     },
 
-    async getEquipList() {
+    async getEquipList() {
       try {
-        const equipData = await equip('get')
+        const equipData = await equip('get')
         this.equips = equipData.results
         this.equips.forEach(function(equip) {
           this.equipById[equip.id] = equip
@@ -163,7 +165,10 @@ export default {
     },
     async getRubberMateria() {
       try {
-        const rubberMateriaData = await getRubberMateria({ all: 1, used_type: 4 })
+        const rubberMateriaData = await getRubberMateria({
+          all: 1,
+          used_type: 4
+        })
         this.productBatchings = rubberMateriaData.results
         response.data.results.forEach(function(batching) {
           this.productBatchingById[batching.id] = batching
@@ -172,13 +177,16 @@ export default {
     },
     async getWorkSchedules() {
       try {
-        const workSchedulesData = await getWorkSchedules({ all: 1 })
+        const workSchedulesData = await getWorkSchedules({ all: 1 })
         this.workSchedules = rubberMateriaData.results
       } catch (e) {}
     },
     async getPlanSchedules() {
       try {
-        const planSchedulesData = await getPlanSchedules({ all: 1, day_time: this.day_time })
+        const planSchedulesData = await getPlanSchedules({
+          all: 1,
+          day_time: this.day_time
+        })
         this.planSchedules = planSchedulesData.results
         this.planScheduleId = null
       } catch (e) {}
@@ -193,38 +201,44 @@ export default {
           plan_.pdp_product_classes_plan = []
           for (var i = 0; i < plan.pdp_product_classes_plan.length; i++) {
             if (plan.pdp_product_classes_plan[i].enable) {
-              plan_.pdp_product_classes_plan.push(plan.pdp_product_classes_plan[i])
+              plan_.pdp_product_classes_plan.push(
+                plan.pdp_product_classes_plan[i]
+              )
             }
           }
           plansForAdd_.push(plan_)
         }
       })
-      if (!plansForAdd_.length) { return }
+      if (!plansForAdd_.length) return
 
       postProductDayPlanManyCreate(plansForAdd_)
         .then(function(response) {
           app.addPlanDialog = false
           app.$message('创建成功')
           app.$emit('handleSuccessed')
-        }).catch(function(error) {
-          app.$alert(JSON.stringify(error.response.data.join(',').trim()), '错误', {
-            confirmButtonText: '确定'
-          })
+        })
+        .catch(function(error) {
+          app.$alert(
+            JSON.stringify(error.response.data.join(',').trim()),
+            '错误',
+            {
+              confirmButtonText: '确定'
+            }
+          )
         })
     },
     addOnePlan() {
       if (!this.equipIdForAdd) {
         return
       }
-      var planSchedule = this.planSchedules.find(planSchedule => {
+      var planSchedule = this.planSchedules.find((planSchedule) => {
         return planSchedule.id === this.planScheduleId
       })
-      var workSchedule = this.workSchedules.find(workSchedule => {
+      var workSchedule = this.workSchedules.find((workSchedule) => {
         return workSchedule.id === planSchedule.work_schedule
       })
-      console.log(planSchedule)
-      if (!planSchedule.work_schedule_plan || !planSchedule.work_schedule_plan.length) {
-        this.$alert('排班' + planSchedule.id + '无数据', '错误', {
+      if (!planSchedule.work_schedule_plan.length) {
+        this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
           confirmButtonText: '确定'
         })
         return
@@ -243,13 +257,12 @@ export default {
           enable
         })
       }
-      var plan =
-            {
-              equip_: this.equipById[this.equipIdForAdd],
-              equip: this.equipIdForAdd,
-              plan_schedule: this.planScheduleId,
-              pdp_product_classes_plan
-            }
+      var plan = {
+        equip_: this.equipById[this.equipIdForAdd],
+        equip: this.equipIdForAdd,
+        plan_schedule: this.planScheduleId,
+        pdp_product_classes_plan
+      }
       if (this.equipFirstIndexInPlansForAdd() === -1) {
         this.plansForAdd.push(plan)
         var planForSum = JSON.parse(JSON.stringify(plan))
@@ -263,7 +276,7 @@ export default {
     },
     equipFirstIndexInPlansForAdd() {
       for (var i = 0; i < this.plansForAdd.length; i++) {
-        if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) { return i }
+        if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) return i
       }
       return -1
     },
@@ -272,30 +285,36 @@ export default {
         if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) {
           var last = true
           for (var j = i + 1; j < this.plansForAdd.length; j++) {
-            if (this.plansForAdd[j] === this.equipIdForAdd) { last = false }
+            if (this.plansForAdd[j] === this.equipIdForAdd) last = false
           }
-          if (last) { return i }
+          if (last) return i
         }
       }
       return -1
     },
     productBatchingChanged() {
-      planForAdd['batching_weight'] = this.productBatchingById[planForAdd.product_batching].batching_weight
-      planForAdd['production_time_interval'] = this.productBatchingById[planForAdd.product_batching].production_time_interval
+      planForAdd['batching_weight'] = this.productBatchingById[
+        planForAdd.product_batching
+      ].batching_weight
+      planForAdd['production_time_interval'] = this.productBatchingById[
+        planForAdd.product_batching
+      ].production_time_interval
       for (var i = 0; i < 3; i++) {
         this.planTrainsChanged(planForAdd, i)
       }
     },
     planTrainsChanged() {
-      if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) { return }
+      if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) return
 
-      planForAdd['pdp_product_classes_plan'][columnIndex]['time'] =
-            (planForAdd['production_time_interval'] *
-                planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']).toFixed(2)
+      planForAdd['pdp_product_classes_plan'][columnIndex]['time'] = (
+        planForAdd['production_time_interval'] *
+        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']
+      ).toFixed(2)
 
-      planForAdd['pdp_product_classes_plan'][columnIndex]['weight'] =
-            (planForAdd['batching_weight'] *
-                planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']).toFixed(2)
+      planForAdd['pdp_product_classes_plan'][columnIndex]['weight'] = (
+        planForAdd['batching_weight'] *
+        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']
+      ).toFixed(2)
       this.statistic()
     },
     statistic() {
@@ -328,21 +347,31 @@ export default {
           production_time_interval += Number(plan.production_time_interval)
           for (var i = 0; i < 3; i++) {
             var class_plan = plan.pdp_product_classes_plan[i]
-            pdp_product_classes_plan[i].plan_trains += Number(class_plan.plan_trains)
+            pdp_product_classes_plan[i].plan_trains += Number(
+              class_plan.plan_trains
+            )
             pdp_product_classes_plan[i].weight += Number(class_plan.weight)
             pdp_product_classes_plan[i].time += Number(class_plan.time)
           }
         })
         for (i = 0; i < 3; i++) {
-          pdp_product_classes_plan[i].weight = pdp_product_classes_plan[i].weight.toFixed(2)
-          pdp_product_classes_plan[i].time = pdp_product_classes_plan[i].time.toFixed(2)
+          pdp_product_classes_plan[i].weight = pdp_product_classes_plan[
+            i
+          ].weight.toFixed(2)
+          pdp_product_classes_plan[i].time = pdp_product_classes_plan[
+            i
+          ].time.toFixed(2)
         }
         batching_weight = batching_weight.toFixed(3)
         production_time_interval = production_time_interval.toFixed(2)
         var equip = this.equipById[equipId]
         planSumByEquipId[equipId].batching_weight = batching_weight
-        planSumByEquipId[equipId].production_time_interval = production_time_interval
-        planSumByEquipId[equipId].pdp_product_classes_plan = pdp_product_classes_plan
+        planSumByEquipId[
+          equipId
+        ].production_time_interval = production_time_interval
+        planSumByEquipId[
+          equipId
+        ].pdp_product_classes_plan = pdp_product_classes_plan
       }
     }
   }

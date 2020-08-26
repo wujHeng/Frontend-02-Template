@@ -14,12 +14,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-select
-            v-model="equip"
-            clearable
-            placeholder="请选择"
-            @change="equipChange"
-          >
+          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange">
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -32,7 +27,12 @@
           <el-button type="info" :disabled="disabled" @click="upPlan">上调</el-button>
           <el-button type="info" :disabled="disabled" @click="downPlan">下调</el-button>
           <el-button type="info" :disabled="disabled" @click="showAlterTrainNumberDialog">修改车次</el-button>
-          <el-button type="info" style="width: 120px" :disabled="disabled" @click="retransmissionpPlan">重传</el-button>
+          <el-button
+            type="info"
+            style="width: 120px"
+            :disabled="disabled"
+            @click="retransmissionpPlan"
+          >重传</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -83,62 +83,21 @@
       style="width: 100%"
       @current-change="handleCurrentChange"
     >
-      <el-table-column
-
-        width="55"
-      />
-      <el-table-column
-        prop="plan_classes_uid"
-        label="计划编号"
-      />
-      <el-table-column
-        prop="sn"
-        label="序号"
-      />
-      <el-table-column
-        prop="stage_product_batch_no"
-        label="配方名称"
-      />
-      <el-table-column
-        prop="begin_time"
-        label="开始时间"
-      />
-      <el-table-column
-        prop="end_time"
-        label="结束时间"
-      />
-      <el-table-column
-        prop="equip_name"
-        label="机台"
-      />
-      <el-table-column
-        prop="classes"
-        label="班次"
-      />
-      <el-table-column
-        prop="plan_trains"
-        label="设定"
-      />
-      <el-table-column
-        prop="actual_trains"
-        label="完成"
-      />
-      <el-table-column
-        prop="operation_user"
-        label="操作员"
-      />
-      <el-table-column
-        prop="status"
-        label="状态"
-      />
-
+      <el-table-column width="55" />
+      <el-table-column prop="plan_classes_uid" label="计划编号" />
+      <el-table-column prop="sn" label="序号" />
+      <el-table-column prop="stage_product_batch_no" label="配方名称" />
+      <el-table-column prop="begin_time" label="开始时间" />
+      <el-table-column prop="end_time" label="结束时间" />
+      <el-table-column prop="equip_name" label="机台" />
+      <el-table-column prop="classes" label="班次" />
+      <el-table-column prop="plan_trains" label="设定" />
+      <el-table-column prop="actual_trains" label="完成" />
+      <el-table-column prop="operation_user" label="操作员" />
+      <el-table-column prop="status" label="状态" />
     </el-table>
     <page :total="total" @currentChange="currentChange" />
-    <el-dialog
-      title="查询计划"
-      :visible.sync="findDialogVisible"
-      width="30%"
-    >
+    <el-dialog title="查询计划" :visible.sync="findDialogVisible" width="30%">
       <el-form :inline="true">
         <el-row>
           <el-form-item label="开始时间: ">
@@ -164,11 +123,7 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select
-              v-model="calss"
-              clearable
-              placeholder="请选择"
-            >
+            <el-select v-model="calss" clearable placeholder="请选择">
               <el-option
                 v-for="item in calssOptions"
                 :key="item.global_name"
@@ -180,11 +135,7 @@
         </el-row>
         <el-row>
           <el-form-item label="配方: ">
-            <el-select
-              v-model="recipe"
-              clearable
-              placeholder="请选择"
-            >
+            <el-select v-model="recipe" clearable placeholder="请选择">
               <el-option
                 v-for="item in recipeOptions"
                 :key="item.stage_product_batch_no"
@@ -198,25 +149,30 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="findDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="findAlterTrainNumberSubmit">确 定</el-button>
-      <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
+        <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
       </div>
     </el-dialog>
-    <alter-train-number-dialog
-      ref="alterTrainNumberDialog"
-      @handleSuccessed="getPlanList"
-    />
+    <alter-train-number-dialog ref="alterTrainNumberDialog" @handleSuccessed="getPlanList" />
 
-    <add-plan-dialog
-      ref="addPlanDialog"
-      @handleSuccessed="getPlanList"
-    />
-
+    <add-plan-dialog ref="addPlanDialog" @handleSuccessed="getPlanList" />
   </div>
-
 </template>
 
 <script>
-import { equip, palletFeedBacks, delPalletFeedBacks, issuedPlan, stopPlan, retransmissionpPlan, upRegulation, downRegulation, updateTrains, productDayPlanManycreate, globalCodes, productbatching } from '@/api/plan'
+import {
+  equip,
+  palletFeedBacks,
+  delPalletFeedBacks,
+  issuedPlan,
+  stopPlan,
+  retransmissionpPlan,
+  upRegulation,
+  downRegulation,
+  updateTrains,
+  productDayPlanManycreate,
+  globalCodes,
+  productbatching
+} from '@/api/plan'
 import AlterTrainNumberDialog from './AlterTrainNumberDialog'
 import AddPlanDialog from './AddPlanDialog'
 import page from '@/components/page'
@@ -228,7 +184,7 @@ export default {
       equip: '',
       equipOptions: [],
       params: {
-        'page': 1
+        page: 1
       },
       tableData: [],
       currentRow: {},
@@ -242,10 +198,8 @@ export default {
       recipeOptions: [],
       calss: '',
       calssOptions: [],
-      findForm: {
-      },
-      formError: {
-      },
+      findForm: {},
+      formError: {},
 
       updateTrainsId: '',
       disabled: true
@@ -256,37 +210,38 @@ export default {
     this.getEquipList()
   },
   methods: {
-    async getPlanList() {
+    async getPlanList() {
       this.params['page'] = this.page
       this.params['equip_no'] = this.equip
       try {
-        const Data = await palletFeedBacks('get', { params: this.params })
+        const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
         this.total = Data.count
       } catch (e) {}
     },
 
-    async getEquipList() {
+    async getEquipList() {
       try {
-        const equipData = await equip('get')
+        const equipData = await equip('get')
         this.equipOptions = equipData.results
       } catch (e) {}
     },
     equipChange() {
-      console.log(this.equip)
-      this.params = {},
-      this.getPlanList()
+      console.log(this.equip);
+      (this.params = {}), this.getPlanList()
     },
 
-    async getClassList() {
+    async getClassList() {
       try {
-        const classData = await globalCodes('get', { params: { all: 1, class_name: '班次' }})
+        const classData = await globalCodes('get', {
+          params: { all: 1, class_name: '班次' }
+        })
         this.calssOptions = classData.results
       } catch (e) {}
     },
-    async getrecipeList() {
+    async getrecipeList() {
       try {
-        const recipeData = await productbatching('get', { params: { all: 1 }})
+        const recipeData = await productbatching('get', { params: { all: 1 }})
         this.recipeOptions = recipeData.results
       } catch (e) {}
     },
@@ -297,8 +252,7 @@ export default {
       this.recipe = ''
     },
     clearFindFormError() {
-      this.formError = {
-      }
+      this.formError = {}
     },
     showFindDialog() {
       this.clearFindForm()
@@ -309,21 +263,33 @@ export default {
       this.findDialogVisible = true
     },
     findAlterTrainNumberSubmit() {
-      if (this.beginTime) { this.params['begin_time'] = this.beginTime }
-      if (this.endTime) { this.params['end_time'] = this.endTime }
-      if (this.calss) { this.params['classes'] = this.beginTcalssime }
-      if (this.recipe) { this.params['product_no'] = this.recipe }
+      if (this.beginTime) {
+        this.params['begin_time'] = this.beginTime
+      }
+      if (this.endTime) {
+        this.params['end_time'] = this.endTime
+      }
+      if (this.calss) {
+        this.params['classes'] = this.beginTcalssime
+      }
+      if (this.recipe) {
+        this.params['product_no'] = this.recipe
+      }
       this.getPlanList()
       this.findDialogVisible = false
     },
 
     delPlan() {
-      this.$confirm('此操作将永久删除' + this.currentRow.plan_classes_uid + ', 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delPalletFeedBacks(this.currentRow.id).then(response => {
+      this.$confirm(
+        '此操作将永久删除' + this.currentRow.plan_classes_uid + ', 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        delPalletFeedBacks(this.currentRow.id).then((response) => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -334,7 +300,7 @@ export default {
     },
 
     upPlan() {
-      upRegulation(this.params, this.currentRow.id).then(response => {
+      upRegulation(this.params, this.currentRow.id).then((response) => {
         this.$message({
           type: 'success',
           message: '上调成功!'
@@ -345,7 +311,7 @@ export default {
 
     downPlan() {
       try {
-        downRegulation(this.params, this.currentRow.id).then(response => {
+        downRegulation(this.params, this.currentRow.id).then((response) => {
           this.$message({
             type: 'success',
             message: '下调成功!'
@@ -358,17 +324,23 @@ export default {
     },
 
     stopPlan() {
-      stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(response => {
-        this.$message({
-          type: 'success',
-          message: '停止成功!'
-        })
-        this.getPlanList()
-      })
+      stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(
+        (response) => {
+          this.$message({
+            type: 'success',
+            message: '停止成功!'
+          })
+          this.getPlanList()
+        }
+      )
     },
 
     retransmissionpPlan() {
-      retransmissionpPlan({ id: this.currentRow.id, equip_no: this.equip, plan_trains: this.currentRow.plan_trains }).then(response => {
+      retransmissionpPlan({
+        id: this.currentRow.id,
+        equip_no: this.equip,
+        plan_trains: this.currentRow.plan_trains
+      }).then((response) => {
         this.$message({
           type: 'success',
           message: '重传成功!'
@@ -378,7 +350,7 @@ export default {
     },
 
     issuedPlan() {
-      issuedPlan(this.currentRow).then(response => {
+      issuedPlan(this.currentRow).then((response) => {
         this.$message({
           type: 'success',
           message: '下达成功!'
@@ -410,5 +382,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
