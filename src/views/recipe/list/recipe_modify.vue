@@ -127,7 +127,8 @@
 
       <el-col :span="14">
         <div class="grid-content bg-purple">
-          密炼规程 <el-button size="mini"  @click="insert_recipe_step">插入一行</el-button><el-button size="mini"  @click="delete_recipe_step">删除一行</el-button>
+          密炼规程 <el-button size="mini"  @click="insert_recipe_step">插入一行</el-button>
+          <!-- <el-button size="mini"  @click="delete_recipe_step">删除一行</el-button> -->
           <table class="table table-bordered"
                style="width: 100%; color: #909399; font-size: 14px;">
             <thead>

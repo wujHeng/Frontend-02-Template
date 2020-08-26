@@ -34,7 +34,7 @@ export function rubber_process_url(method, id=null, data={}) {
 
 export function equip_url(method, data={}) {
     let obj = {
-        url: API.EquipUrl,
+        url: API.EquipAllUrl,
         method: method
     }
     Object.assign(obj, data)
