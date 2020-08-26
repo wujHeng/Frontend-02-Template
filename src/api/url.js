@@ -22,7 +22,7 @@ export default {
   // 胶料配料步序接口
   RubberProcessStepUrl: '/api/v1/recipe/process-steps/',
   // 设备/机台接口
-  EquipUrl: '/api/v1/basics/equips/?all=1',
+  EquipAllUrl: '/api/v1/basics/equips/?all=1',
   // 产地接口
   SiteUrl: '/api/v1/basics/global-codes/?all=1&class_name=产地',
   // 胶料编号接口
