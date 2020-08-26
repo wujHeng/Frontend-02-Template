@@ -12,7 +12,7 @@ export function equip(method, data = { params: { all: 1 } }) {
 
 export function palletFeedBacks(method, data = {}) {
     let obj = {
-        url: API.PalletFeedBacksUrl,
+        url: API.PalletFeedBackUrl,
         method: method
     }
     Object.assign(obj, data)
@@ -21,7 +21,7 @@ export function palletFeedBacks(method, data = {}) {
 
 export function delPalletFeedBacks(id) {
     return request({
-      url: API.PalletFeedBacksUrl + id + '/',
+      url: API.PalletFeedBackUrl + id + '/',
       method: 'DELETE',
     })
 }
@@ -99,5 +99,38 @@ export function globalCodes(method, data = {}) {
     }
     Object.assign(obj, data)
     return request(obj)
+}
+
+
+export function getRubberMateria(params) {
+    return request({
+      url: API.RubberMaterialUrl,
+      method: 'get',
+      params
+    })
+}
+
+export function getWorkSchedules(params) {
+    return request({
+      url: API.WorkSchedulesUrl,
+      method: 'get',
+      params
+    })
+}
+
+export function getPlanSchedules(params) {
+    return request({
+      url: API.PlanScheduleUrl ,
+      method: 'get',
+      params
+    })
+}
+
+export function postProductDayPlanManyCreate(data) {
+    return request({
+      url: API.ProductDayPlanManyCreateUrl ,
+      method: 'post',
+      data
+    })
 }
 
