@@ -24,21 +24,21 @@ export default {
   // 设备/机台接口
   EquipUrl: '/api/v1/basics/equips/?all=1',
   // 产地接口
-  SiteUrl: '/api/v1/basics/global-codes/?class_name=产地',
+  SiteUrl: '/api/v1/basics/global-codes/?all=1&class_name=产地',
   // 胶料编号接口
   RecipeNoUrl: '/api/v1/recipe/product-infos/?all=1',
   // 段次接口
-  StageUrl: '/api/v1/basics/global-codes/?class_name=胶料段次',
+  StageUrl: '/api/v1/basics/global-codes/?all=1&class_name=胶料段次',
   // 密炼机类型接口
-  DevTypeUrl:'/api/v1/basics/global-codes/?class_name=炼胶机类型',
+  DevTypeUrl: '/api/v1/basics/global-codes/?all=1&class_name=炼胶机类型',
   // SITE接口
-  GlobalSITEUrl:'/api/v1/basics/global-codes/?class_name=SITE',
+  GlobalSITEUrl: '/api/v1/basics/global-codes/?all=1&class_name=SITE',
   // 状态接口
-  ConditionUrl:'/api/v1/recipe/conditions/',
+  ConditionUrl: '/api/v1/recipe/conditions/',
   // 动作接口
-  ActionUrl:'/api/v1/recipe/actions/',
+  ActionUrl: '/api/v1/recipe/actions/',
   // 原材料类别接口
-  MaterialTypelUrl: '/api/v1/basics/global-codes/?class_name=原材料类别',
+  MaterialTypelUrl: '/api/v1/basics/global-codes/?all=1&class_name=原材料类别',
 
   // 报表-批次记录
   ClassesListUrl: '/api/v1/basics/classes/',
