@@ -10,7 +10,7 @@ export default {
   MaterialsUrl: '/api/v1/recipe/materials/', // 原材料
 
   // 胶料配料标准管理接口
-  RubberMaterialUrl: '/api/v1/recipe/product-batching/?all=1',
+  RubberMaterialUrl: '/api/v1/recipe/product-batching/',
   // 胶料配料步序接口
   RubberProcessStepUrl: '/api/v1/recipe/process-steps/',
   // 设备/机台接口
