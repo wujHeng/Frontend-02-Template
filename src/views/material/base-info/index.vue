@@ -84,7 +84,7 @@
             <el-button
               size="mini"
               type="danger"
-              @click="deleteeMaterial(scope.row)"
+              @click="deleteMaterial(scope.row)"
             >删除
             </el-button>
           </el-button-group>
@@ -142,7 +142,7 @@ export default {
     showUpdateMaterialDialog(material) {
       this.$refs.updateMaterialDialog.show(JSON.parse(JSON.stringify(material)))
     },
-    deleteeMaterial(material) {
+    deleteMaterial(material) {
       this.$confirm('此操作将永久删除' + material.material_name + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

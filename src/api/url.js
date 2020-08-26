@@ -67,7 +67,7 @@ export default {
   ProductDayPlanManyCreateUrl: '/api/v1/plan/product-day-plan-manycreate/', // 新增
   ProductbatchingUrl: '/api/v1/recipe/product-batching/', // 配方
   // 新增计划
-  PlanScheduleUrl: "/api/v1/basics/plan-schedule/",
-  WorkSchedulesUrl: "/api/v1/basics/work_schedules/",
+  PlanScheduleUrl: '/api/v1/basics/plan-schedule/',
+  WorkSchedulesUrl: '/api/v1/basics/work_schedules/'
 
 }
