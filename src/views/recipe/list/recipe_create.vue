@@ -872,7 +872,10 @@ export default {
                 app.dialogRawMaterialSync = true;
             },
         AddRecipeInfoStep: async function(){
-                if(this.equip && this.stage_product_batch_no ){
+                if(this.equip && this.stage_product_batch_no){
+                  if(this.mini_time && this.mini_temp && this.over_temp && this.batching_error && this.zz_temp 
+                    && this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time && this.reuse_flag && this.temp_use_flag
+                    && this.sp_num){
                         var step_details_list = [];
                         //循环整个表格
                         for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
@@ -900,36 +903,42 @@ export default {
                         }
 
                         await this.post_recipe_info_step_list(
-                        {data:{
-                                // 配方基础信息中第一行
-                                "mini_time":this.mini_time,
-                                "mini_temp":this.mini_temp,
-                                "over_temp":this.over_temp,
-                                "batching_error":this.batching_error,
-                                "zz_temp":this.zz_temp,
-                                "xlm_temp":this.xlm_temp,
-                                "cb_temp":this.cb_temp,
-                                // 配方基础信息中第二行
-                                "over_time":this.over_time,
-                                "max_temp":this.max_temp,
-                                "reuse_time":this.reuse_time,
-                                "reuse_flag":this.reuse_flag,
-                                "temp_use_flag":this.temp_use_flag,
-                                "sp_num":this.sp_num,
-                                "used_flag":this.used_flag,
-                                // 密炼步序list
-                                "process_details":step_details_list,
-                                // 设备id与配方id
-                                "equip":this.generateRecipeForm['SelectEquip'],
-                                "product_batching":this.product_batching
+                          {data:{
+                                  // 配方基础信息中第一行
+                                  "mini_time":this.mini_time,
+                                  "mini_temp":this.mini_temp,
+                                  "over_temp":this.over_temp,
+                                  "batching_error":this.batching_error,
+                                  "zz_temp":this.zz_temp,
+                                  "xlm_temp":this.xlm_temp,
+                                  "cb_temp":this.cb_temp,
+                                  // 配方基础信息中第二行
+                                  "over_time":this.over_time,
+                                  "max_temp":this.max_temp,
+                                  "reuse_time":this.reuse_time,
+                                  "reuse_flag":this.reuse_flag,
+                                  "temp_use_flag":this.temp_use_flag,
+                                  "sp_num":this.sp_num,
+                                  "used_flag":this.used_flag,
+                                  // 密炼步序list
+                                  "process_details":step_details_list,
+                                  // 设备id与配方id
+                                  "equip":this.generateRecipeForm['SelectEquip'],
+                                  "product_batching":this.product_batching
 
-                        }},
-                        this.$message({
-                                message: this.stage_product_batch_no + "配方步序添加成功",
-                                type: 'success'
-                        }),
-                        this.$router.push({name:'RecipeList'})
-                )
+                          }},
+                          this.$message({
+                                  message: this.stage_product_batch_no + "配方步序添加成功",
+                                  type: 'success'
+                          }),
+                          this.$router.push({name:'RecipeList'})
+                        )
+                    }else{
+                      this.$message({
+                                  message: "配方基本信息不能为空",
+                                  type: 'error'
+                          })
+                    }
                 }else{
                         this.$message({
                         message: "请先进行配料",
