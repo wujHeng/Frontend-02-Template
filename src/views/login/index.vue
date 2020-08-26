@@ -125,13 +125,13 @@ export default {
               this.loading = false;
             })
             .catch((error) => {
+              this.loading = false;
               if (Object.prototype.toString.call(error === "[object Object]")) {
                 this.$message({
                   message: error.non_field_errors[0],
                   type: "error",
                 });
               }
-              this.loading = false;
             });
         } else {
           console.log("error submit!!");

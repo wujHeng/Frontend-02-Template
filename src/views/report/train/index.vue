@@ -7,7 +7,7 @@
           v-model="search_date"
           type="daterange"
           range-separator="至"
-          :clearable="false"
+          :clearable="true"
           value-format="yyyy-MM-dd HH:mm:ss"
           :default-time="['00:00:00', '23:59:59']"
           start-placeholder="开始日期"
@@ -33,7 +33,7 @@
         <selectEquip :equip_no_props.sync="getParams.equip_no" @changeSearch="changeSearch"></selectEquip>
       </el-form-item>
       <el-form-item label="操作人">
-        <el-select v-model="getParams.员工代号" placeholder="请选择" @change="changeSearch">
+        <el-select clearable v-model="getParams.operation_user" placeholder="请选择" @change="changeSearch">
           <el-option
             v-for="item in operatorList"
             :key="item.id"
@@ -44,7 +44,7 @@
       </el-form-item>
       <el-form-item>
         <!-- <el-button @click="showRowTable = true">展示详情</el-button> -->
-        <el-button @click="showRowTable = false">关闭详情</el-button>
+        <el-button v-if="showRowTable" @click="showRowTable = false">关闭查看</el-button>
 
         <!-- <el-button @click="selectRubber">导出批记录</el-button>
         <el-button @click="selectRubber">单页导出</el-button>
@@ -312,6 +312,7 @@ export default {
     return {
       search_date: [],
       getParams: {},
+      // 配方
       formulaList: [],
       operatorList: [],
       tableData: [],
@@ -368,47 +369,29 @@ export default {
       try {
         this.loading = true;
         let data = await trainsFeedbacks("get", { params: this.getParams });
-        // this.tableData = data.results || [];
-        this.tableData = [
-          {
-            id: 1,
-            equip_no: 111,
-            product_no: 222,
-            plan_classes_uid: 20200620081020,
-            begin_time: "2020-06-20 8:30:30",
-            end_time: "2020-06-20 8:30:33",
-            plan_trains: 200,
-            actual_trains: 300,
-            production_details: {
-              控制方式: "远控",
-              作业方式: "自动",
-              总重量: "26.2",
-              排胶时间: "111",
-              排胶温度: "135",
-              排胶能量: "15",
-              员工代号: "张三",
-              存盘时间: "2020-06-20 10:20:30",
-              密炼时间: 126,
-              间隔时间: 16,
-            },
-          },
-        ];
+        this.tableData = data || [];
+
         this.total = data.count || 0;
+
+        this.tableData.forEach(D=>{
+          D.begin_time = setDate(D.begin_time,true)
+          D.end_time = setDate(D.end_time,true)
+        })
         this.loading = false;
       } catch (e) {
-        console.log(e, 8888);
         this.loading = false;
       }
     },
     async getFormulaList() {
       try {
-        let data = await rubberMaterial("get");
+        let data = await rubberMaterial("get",{params:{page_size:10000000}});
         this.formulaList = data.results || [];
       } catch (e) {}
     },
     async getOperatorList() {
       try {
-        let data = await operatorList("get", { params: { groups: 91 } });
+        // , { params: { groups: 91 } }
+        let data = await operatorList("get",{params:{page_size:100000000}});
         this.operatorList = data.results || [];
       } catch (e) {}
     },
@@ -517,11 +500,11 @@ export default {
 
         this.chartData.rows = this.curveInformationList;
         // console.log(this.chartData.row, 99999);
-        this.loaddingExal = false
+        this.loaddingExal = false;
         this.showRowTable = await true;
         console.log(arr, 88888);
       } catch (e) {
-        this.loaddingExal = false
+        this.loaddingExal = false;
       }
     },
   },
