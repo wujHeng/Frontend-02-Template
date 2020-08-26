@@ -22,7 +22,7 @@ router.beforeEach(async (to, from, next) => {
   const hasToken = getToken()
   const hasRoles = store.getters.roles && JSON.stringify(store.getters.roles) !== "{}"
 
-  if (hasToken && hasRoles) {
+  if (hasToken) {
     // 有登录
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -30,28 +30,43 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done()
     } else {
       // 有身份信息,存在了全局
-      // await store.dispatch('permission/generateRoutes')
-      // next()
-      try {
-        store.dispatch('permission/generateRoutes', store.getters.roles)
-        // get user info 拿到权限数组
-        // const { roles } = await store.dispatch('user/getInfo')
-        // localStorage.setItem("roles", "value");
-        // localStorage.setItem("roles", "value");
-
-        // generate accessible routes map based on roles
-        // const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-        // router.options.routes = accessRoutes;
-        // router.addRoutes(accessRoutes)
-        next()
-      } catch (error) {
-        // remove token and go to login page to re-login
+      // try {
+      if (!hasRoles) {
         await store.dispatch('user/logout')
         Message.error(error || 'Has Error')
         next(`/login?redirect=${to.path}`)
         NProgress.done()
+      } else {
+        let addRoutes = store.getters.addRoutes.length !== 0
+        if (addRoutes) {
+          next()
+        } else {
+          const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
+          router.options.routes = accessRoutes;
+          router.addRoutes(accessRoutes)
+          next({...to})
+        }
       }
+      // get user info 拿到权限数组
+      // const { roles } = await store.dispatch('user/getInfo')
+      // localStorage.setItem("roles", "value");
+      // localStorage.setItem("roles", "value");
+
+      // generate accessible routes map based on roles
+      // const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+
+      // router.options.routes = accessRoutes;
+      // router.addRoutes(accessRoutes)
+      // } catch (error) {
+      //   console.log(error, ';error')
+      //   // remove token and go to login page to re-login
+      //   await store.dispatch('user/logout')
+      //   Message.error(error || 'Has Error')
+      //   next(`/login?redirect=${to.path}`)
+      //   NProgress.done()
+      // }
+
+
     }
   } else {
     /* has no token*/

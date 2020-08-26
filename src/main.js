@@ -12,6 +12,8 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import 'default-passive-events'
+
 import '@/icons' // icon
 import '@/permission' // permission control
 
