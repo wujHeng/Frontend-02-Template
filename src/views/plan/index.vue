@@ -168,8 +168,6 @@ import {
   retransmissionpPlan,
   upRegulation,
   downRegulation,
-  updateTrains,
-  productDayPlanManycreate,
   globalCodes,
   productbatching
 } from '@/api/plan'
@@ -217,6 +215,7 @@ export default {
         const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
         this.total = Data.count
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
 
@@ -224,11 +223,12 @@ export default {
       try {
         const equipData = await equip('get')
         this.equipOptions = equipData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     equipChange() {
-      console.log(this.equip);
-      (this.params = {}), this.getPlanList()
+      this.params = {}
+      this.getPlanList()
     },
 
     async getClassList() {
@@ -237,12 +237,14 @@ export default {
           params: { all: 1, class_name: '班次' }
         })
         this.calssOptions = classData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     async getrecipeList() {
       try {
         const recipeData = await productbatching('get', { params: { all: 1 }})
         this.recipeOptions = recipeData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     clearFindForm() {
