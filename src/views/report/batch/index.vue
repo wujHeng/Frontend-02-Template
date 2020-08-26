@@ -1,5 +1,5 @@
 <template>
-  <div class="report-batch-style">
+  <div class="report-batch-style" v-loading="loading">
     <el-form :inline="true">
       <el-form-item label="日期">
         <el-date-picker
@@ -23,9 +23,9 @@
         >
           <el-option
             v-for="item in glueList"
-            :key="item.product_name"
-            :label="item.product_name"
-            :value="item.product_name"
+            :key="item.id"
+            :label="item.stage_product_batch_no"
+            :value="item.stage_product_batch_no"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -91,7 +91,7 @@
       </el-form>
       <el-table :data="palletFeedList" border style="width: 100%">
         <el-table-column prop="lot_no" label="LOT">
-          <template slot-scope="scope">{{ scope.row.LOT||'--' }}</template>
+          <template slot-scope="scope">{{ scope.row.lot_no||'--' }}</template>
         </el-table-column>
         <el-table-column prop="product_no" label="胶料编码"></el-table-column>
         <el-table-column prop="equip_no" label="机台"></el-table-column>
@@ -168,11 +168,11 @@ import {
   equip,
   classesList,
   palletFeedBacks,
-  trainsFeedbacks,
   echartsListUrl,
+  productionTrainsFeedbacks
 } from "@/api/reportBatch";
 export default {
-  components: { page,selectEquip },
+  components: { page, selectEquip },
   data() {
     this.chartSettings = {
       labelMap: {
@@ -186,6 +186,7 @@ export default {
     };
     return {
       // tableDataUrl: "InternalMixerUrl",
+      loading:true,
       tableData: [],
       search_date: [],
       getParams: {
@@ -223,7 +224,7 @@ export default {
         ],
         rows: [],
       },
-      total:0
+      total: 0,
     };
   },
   created() {
@@ -241,13 +242,16 @@ export default {
   methods: {
     getList() {
       var _this = this;
+      this.loading = true
       reportBatch("get", { params: _this.getParams })
         .then(function (response) {
           _this.tableData = response.results || [];
 
-         _this.total = response.count || 0
+          _this.total = response.count || 0;
+          _this.loading = false
         })
         .catch(function (error) {
+          _this.loading = false
           // this.$message.error("请求错误");
         });
     },
@@ -260,21 +264,13 @@ export default {
       })
         .then(function (response) {
           var glueList = response.results || [];
-          //去重
-          var obj = {};
-          var newArr = glueList.reduce(function (item, next) {
-            obj[next.product_name]
-              ? " "
-              : (obj[next.product_name] = true && item.push(next));
-            return item;
-          }, []);
-          _this.glueList = newArr;
+          _this.glueList = glueList;
         })
         .catch(function (error) {});
     },
     getClassesList() {
       var _this = this;
-      classesList("get")
+      classesList("get", { params: { schedule_name: "密炼" } })
         .then(function (response) {
           _this.classesList = response.results || [];
         })
@@ -319,7 +315,7 @@ export default {
     },
     getBATList() {
       var _this = this;
-      trainsFeedbacks("get", {
+      productionTrainsFeedbacks("get", {
         params: {
           plan_classes_uid: _this.BATObj.plan_classes_uid,
           equip_no: _this.BATObj.equip_no,
@@ -328,7 +324,7 @@ export default {
         },
       })
         .then(function (response) {
-          _this.BATList = response.results || [];
+          _this.BATList = response || [];
         })
         .catch(function (error) {});
     },
@@ -362,6 +358,7 @@ export default {
         this.getParams.et = this.search_date[1];
       }
 
+      console.log(111);
       this.getParams.page = 1;
       this.getList();
     },
@@ -384,6 +381,6 @@ export default {
 </script>
 
 <style scoped>
-.report-batch-style {
-}
+/* .report-batch-style {
+} */
 </style>
