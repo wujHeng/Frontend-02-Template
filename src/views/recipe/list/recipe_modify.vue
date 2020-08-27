@@ -146,6 +146,7 @@
                 <th style="text-align: center">动作</th>
                 <th style="text-align: center">压力</th>
                 <th style="text-align: center">转速</th>
+                <th style="text-align: center">操作</th>
               </tr>
             </thead>
             <tbody style="color: #606266;">
@@ -191,6 +192,9 @@
                 </td>
                 <td style="text-align: center">
                   <el-input v-model="step_ele.rpm" size="mini" controls-position="right" />
+                </td>
+                <td style="text-align: center">
+                  <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
                 </td>
               </tr>
 
@@ -594,9 +598,9 @@ export default {
         material: '',
         material_type: '',
         auto_flag: true,
-        material_name: '',
-        actual_weight: '',
-        standard_error: ''
+        material_name: ''
+        // actual_weight: '',
+        // standard_error: ''
 
       })
     },
@@ -676,7 +680,9 @@ export default {
         rpm: ''
       })
     },
-
+    del_recipe_step_row: function(step_ele, index) {
+      this.RecipeMaterialList.splice(index, 1)
+    },
     recipe_save_return: async function() {
       var step_details_list = []
       // 循环整个表格
