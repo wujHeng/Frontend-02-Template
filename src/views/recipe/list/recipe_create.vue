@@ -240,6 +240,7 @@
                 <th style="text-align: center">动作</th>
                 <th style="text-align: center">压力</th>
                 <th style="text-align: center">转速</th>
+                <th style="text-align: center">操作</th>
               </tr>
             </thead>
             <tbody style="color: #606266;">
@@ -287,6 +288,9 @@
                 <td style="text-align: center">
                   <el-input v-model="step_ele.rpm" size="mini" controls-position="right" />
                 </td>
+                <td style="text-align: center">
+                  <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
+                </td>
               </tr>
 
             </tbody>
@@ -328,6 +332,7 @@
             <th style="text-align: center">原材料</th>
             <td style="text-align: center">设定值(kg)</td>
             <td style="text-align: center">误差值(kg)</td>
+            <th style="text-align: center">操作</th>
           </tr>
         </thead>
         <tbody style="color: #606266;">
@@ -354,6 +359,9 @@
             </td>
             <td style="text-align: center">
               <el-input-number v-model.number="material_ele.standard_error" size="mini" controls-position="right" />
+            </td>
+            <td style="text-align: center">
+              <el-button size="mini" @click="del_material_row(material_ele, index)">删除</el-button>
             </td>
           </tr>
 
@@ -693,6 +701,11 @@ export default {
           }
           batching_details_list.push(now_stage_material)
         } else {
+          this.$message({
+            message: '必填字段不能为空',
+            type: 'error'
+          })
+          return
         }
       }
       var post_material_Data = await this.post_recipe_list(
@@ -826,11 +839,14 @@ export default {
         material: '',
         material_type: '',
         auto_flag: true,
-        material_name: '',
-        actual_weight: '',
-        standard_error: ''
+        material_name: ''
+        // actual_weight: '',
+        // standard_error: ''
 
       })
+    },
+    del_material_row: function(material_ele, index) {
+      this.ProductRecipe.splice(index, 1)
     },
     insert_recipe_step: function() {
       this.RecipeMaterialList.push({
@@ -844,6 +860,9 @@ export default {
         pressure: '',
         rpm: ''
       })
+    },
+    del_recipe_step_row: function(step_ele, index) {
+      this.RecipeMaterialList.splice(index, 1)
     },
     pop_up_raw_material: function(material_ele, index) {
       var app = this
