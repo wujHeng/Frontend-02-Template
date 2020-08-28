@@ -266,6 +266,9 @@ export default {
       this.endTime = ''
       this.calss = ''
       this.recipe = ''
+      this.params = {
+        page: 1
+      }
     },
     clearFindFormError() {
       this.formError = {}
