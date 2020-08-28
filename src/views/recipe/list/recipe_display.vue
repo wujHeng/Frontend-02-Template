@@ -235,7 +235,7 @@ export default {
           } else if (recipe_listData['batching_details'][j]['auto_flag'] == 2) {
             v_auto_falg = '手动'
           } else {
-            v_auto_falg = ''
+            v_auto_falg = '其他'
           }
           if (recipe_listData['batching_details'][j]['material_type'] == '炭黑') {
             this.carbon_tableData.push({

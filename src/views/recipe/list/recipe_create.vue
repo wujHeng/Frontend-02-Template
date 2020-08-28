@@ -348,6 +348,7 @@
               <template>
                 <el-radio v-model="material_ele.auto_flag" :label="1">自动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="2">手动</el-radio>
+                <el-radio v-model="material_ele.auto_flag" :label="0">其他</el-radio>
               </template>
             </td>
             <td style="text-align: center">
@@ -737,7 +738,7 @@ export default {
           } else if (post_material_Data['batching_details'][j]['auto_flag'] == 2) {
             v_auto_falg = '手动'
           } else {
-            v_auto_falg = ''
+            v_auto_falg = '其他'
           }
         if (post_material_Data['batching_details'][j]['material_type'] == '炭黑') {
           this.carbon_tableData.push({
