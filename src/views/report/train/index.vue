@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-spacing */
 <template>
   <div
     v-loading="loading"
@@ -18,19 +19,7 @@
         />
       </el-form-item>
       <el-form-item label="配方">
-        <el-select
-          v-model="getParams.product_no"
-          placeholder="请选择"
-          clearable
-          @change="changeSearch"
-        >
-          <el-option
-            v-for="item in formulaList"
-            :key="item.stage_product_batch_no"
-            :label="item.stage_product_batch_no"
-            :value="item.stage_product_batch_no"
-          />
-        </el-select>
+        <productNo-select @productBatchingChanged="productBatchingChanged" />
       </el-form-item>
       <el-form-item label="机台">
         <selectEquip
@@ -411,8 +400,9 @@ import {
 import { personnelsUrl } from '@/api/user'
 import page from '@/components/page'
 import selectEquip from '@/components/select_w/equip'
+import ProductNoSelect from '@/components/ProductNoSelect'
 export default {
-  components: { page, selectEquip },
+  components: { page, selectEquip, ProductNoSelect },
   data() {
     this.chartSettings = {
       // labelMap: {},
@@ -530,9 +520,15 @@ export default {
         // console.log(e,88877)
       }
     },
+    productBatchingChanged(val) {
+      this.getParams.product_no = val ? val.stage_product_batch_no : ''
+
+      this.getParams.page = 1
+      this.getList()
+    },
     changeSearch() {
-      this.getParams.begin_time = this.search_date[0]
-      this.getParams.end_time = this.search_date[1]
+      this.getParams.begin_time = this.search_date ? this.search_date[0] : ''
+      this.getParams.end_time = this.search_date ? this.search_date[1] : ''
 
       this.getParams.page = 1
       this.getList()
@@ -551,8 +547,8 @@ export default {
     },
     async getWeighInformation(id) {
       try {
-        // eslint-disable-next-line prefer-const
-        let data = await weighInformation('get', { params: { id: id }})
+        // eslint-disable-next-line object-curly-spacing
+        const data = await weighInformation('get', { params: { id: id } })
         // const test = [
         //   {
         //     id: 1,
