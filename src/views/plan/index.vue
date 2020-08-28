@@ -14,7 +14,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange">
+          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -123,7 +123,7 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select v-model="calss" clearable placeholder="请选择">
+            <el-select v-model="calss" clearable placeholder="请选择" @visible-change="calssVisibleChange">
               <el-option
                 v-for="item in calssOptions"
                 :key="item.global_name"
@@ -135,7 +135,7 @@
         </el-row>
         <el-row>
           <el-form-item label="配方: ">
-            <el-select v-model="recipe" clearable placeholder="请选择">
+            <el-select v-model="recipe" clearable placeholder="请选择" @visible-change="recipeVisibleChange">
               <el-option
                 v-for="item in recipeOptions"
                 :key="item.stage_product_batch_no"
@@ -205,7 +205,6 @@ export default {
   },
   created() {
     this.getPlanList()
-    this.getEquipList()
   },
   methods: {
     async getPlanList() {
@@ -226,6 +225,21 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
+    calssVisibleChange(bool) {
+      if (bool) {
+        this.getClassList()
+      }
+    },
+    recipeVisibleChange(bool) {
+      if (bool) {
+        this.getRecipeList()
+      }
+    },
+    equipVisibleChange(bool) {
+      if (bool) {
+        this.getEquipList()
+      }
+    },
     equipChange() {
       this.params = {}
       this.getPlanList()
@@ -240,7 +254,7 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
-    async getrecipeList() {
+    async getRecipeList() {
       try {
         const recipeData = await productbatching('get', { params: { all: 1 }})
         this.recipeOptions = recipeData.results
@@ -259,9 +273,6 @@ export default {
     showFindDialog() {
       this.clearFindForm()
       this.clearFindFormError()
-      this.getClassList()
-      this.getrecipeList()
-      console.log(this.calssOptions)
       this.findDialogVisible = true
     },
     findAlterTrainNumberSubmit() {
