@@ -94,6 +94,7 @@
             style="width: 100%"
           >
             <el-table-column width="60%" prop="sn" label="序号" />
+            <el-table-column prop="auto_flag" label="自动与否" />
             <el-table-column prop="material_name" label="胶料名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -107,6 +108,7 @@
           >
             <el-table-column width="60%" prop="sn" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column prop="auto_flag" label="自动与否" />
             <el-table-column prop="material_name" label="炭黑名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -120,6 +122,7 @@
           >
             <el-table-column width="60%" prop="stage_product_batch_no" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column prop="auto_flag" label="自动与否" />
             <el-table-column prop="product_name" label="油脂名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -146,6 +149,7 @@
                 <th style="text-align: center">动作</th>
                 <th style="text-align: center">压力</th>
                 <th style="text-align: center">转速</th>
+                <th style="text-align: center">操作</th>
               </tr>
             </thead>
             <tbody style="color: #606266;">
@@ -191,6 +195,9 @@
                 </td>
                 <td style="text-align: center">
                   <el-input v-model="step_ele.rpm" size="mini" controls-position="right" />
+                </td>
+                <td style="text-align: center">
+                  <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
                 </td>
               </tr>
 
@@ -242,8 +249,8 @@
             <td style="text-align: center">{{ material_ele.material_type }}</td>
             <td style="text-align: center">
               <template>
-                <el-radio v-model="material_ele.auto_flag" :label="true">自动</el-radio>
-                <el-radio v-model="material_ele.auto_flag" :label="false">手动</el-radio>
+                <el-radio v-model="material_ele.auto_flag" :label="1">自动</el-radio>
+                <el-radio v-model="material_ele.auto_flag" :label="2">手动</el-radio>
               </template>
             </td>
             <td style="text-align: center">
@@ -413,7 +420,8 @@ export default {
       currentPage: 1,
       pageSize: 10,
       tableDataTotal: 0,
-      recipe_step_id: null
+      recipe_step_id: null,
+      auto_flag: 0
     }
   },
   created() {
@@ -438,9 +446,18 @@ export default {
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
+          var v_auto_falg = ''
+          if (recipe_listData['batching_details'][j]['auto_flag'] == 1) {
+            v_auto_falg = '自动'
+          } else if (recipe_listData['batching_details'][j]['auto_flag'] == 2) {
+            v_auto_falg = '手动'
+          } else {
+            v_auto_falg = ''
+          }
           if (recipe_listData['batching_details'][j]['material_type'] == '炭黑') {
             this.carbon_tableData.push({
               sn: this.carbon_tableData.length + 1,
+              auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
               standard_error: recipe_listData['batching_details'][j]['standard_error']
@@ -449,6 +466,7 @@ export default {
             this.oil_tableData.push({
               sn: this.oil_tableData.length + 1,
               action_name: '投料',
+              auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
               standard_error: recipe_listData['batching_details'][j]['standard_error']
@@ -457,6 +475,7 @@ export default {
             this.rubber_tableData.push({
               sn: this.rubber_tableData.length + 1,
               action_name: '投料',
+              auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
               standard_error: recipe_listData['batching_details'][j]['standard_error']
@@ -593,10 +612,10 @@ export default {
       this.ProductRecipe.push({
         material: '',
         material_type: '',
-        auto_flag: true,
-        material_name: '',
-        actual_weight: '',
-        standard_error: ''
+        auto_flag: 0,
+        material_name: ''
+        // actual_weight: '',
+        // standard_error: ''
 
       })
     },
@@ -676,7 +695,9 @@ export default {
         rpm: ''
       })
     },
-
+    del_recipe_step_row: function(step_ele, index) {
+      this.RecipeMaterialList.splice(index, 1)
+    },
     recipe_save_return: async function() {
       var step_details_list = []
       // 循环整个表格

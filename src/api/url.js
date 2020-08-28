@@ -10,7 +10,7 @@ export default {
   MaterialsUrl: '/api/v1/recipe/materials/', // 原材料
 
   // 胶料配料标准管理接口
-  RubberMaterialUrl: '/api/v1/recipe/product-batching/?all=1',
+  RubberMaterialUrl: '/api/v1/recipe/product-batching/',
   // 胶料配料步序接口
   RubberProcessStepUrl: '/api/v1/recipe/process-steps/',
   // 设备/机台接口
@@ -26,9 +26,9 @@ export default {
   // SITE接口
   GlobalSITEUrl: '/api/v1/basics/global-codes/?all=1&class_name=SITE',
   // 状态接口
-  ConditionUrl: '/api/v1/recipe/conditions/',
+  ConditionUrl: '/api/v1/recipe/conditions/?all=1',
   // 动作接口
-  ActionUrl: '/api/v1/recipe/actions/',
+  ActionUrl: '/api/v1/recipe/actions/?all=1',
   // 原材料类别接口
   MaterialTypelUrl: '/api/v1/basics/global-codes/?all=1&class_name=原材料类别',
 
@@ -69,5 +69,8 @@ export default {
   // 新增计划
 
   PlanScheduleUrl: '/api/v1/basics/plan-schedule/',
-  WorkSchedulesUrl: '/api/v1/basics/work_schedules/'
+
+  WorkSchedulesUrl: '/api/v1/basics/work_schedules/',
+
+  ChildSystemsUrl: '/api/v1/system/child-systems/'
 }

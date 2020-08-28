@@ -8,12 +8,12 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="system"
+        prop="system_name"
         label="MES系统"
         width="110"
       />
       <el-table-column
-        prop="ip"
+        prop="link_address"
         label="IP地址"
         width="250"
       />
@@ -45,12 +45,12 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="auxiliary"
+        prop="system_name"
         label="上辅机工作站"
         width="110"
       />
       <el-table-column
-        prop="ip"
+        prop="link_address"
         label="IP地址"
         width="250"
       />
@@ -85,6 +85,7 @@
 <script>
 import MesToAuDialog from './MesToAuDialog'
 import AuToMesDialog from './AuToMesDialog'
+import { getChildSystems } from '@/api/run-mode'
 
 export default {
   components: {
@@ -94,32 +95,29 @@ export default {
   data() {
     return {
       mesSystemTableData: [
-        {
-          system: '服务器',
-          ip: '192.168.10.1',
-          status: '在线'
-        }
+
       ],
       auxiliaryTableData: [
-        {
-          auxiliary: '1号线',
-          ip: '192.168.10.1',
-          status: '在线'
-        },
-        {
-          auxiliary: '2号线',
-          ip: '192.168.10.1',
-          status: '在线'
-        },
-        {
-          auxiliary: '3号线',
-          ip: '192.168.10.1',
-          status: '在线'
-        }
+
       ]
     }
   },
+  created() {
+    this.getChildSystems()
+  },
   methods: {
+    getChildSystems() {
+      getChildSystems().then(response => {
+        console.log(response.results)
+        response.results.forEach(result => {
+          if (result.system_name === 'MES') {
+            this.mesSystemTableData.push(result)
+          } else {
+            this.auxiliaryTableData.push(result)
+          }
+        })
+      })
+    },
     handleMesConnect(index, row) {
       this.$refs.mesToAuDialog.show()
     },

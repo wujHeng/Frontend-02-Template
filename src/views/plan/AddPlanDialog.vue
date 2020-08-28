@@ -121,7 +121,6 @@
 
 <script>
 import {
-  updateTrains,
   equip,
   getRubberMateria,
   getWorkSchedules,
@@ -161,6 +160,7 @@ export default {
         this.equips.forEach(function(equip) {
           this.equipById[equip.id] = equip
         })
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     async getRubberMateria() {
@@ -170,15 +170,17 @@ export default {
           used_type: 4
         })
         this.productBatchings = rubberMateriaData.results
-        response.data.results.forEach(function(batching) {
+        rubberMateriaData.results.forEach(function(batching) {
           this.productBatchingById[batching.id] = batching
         })
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     async getWorkSchedules() {
       try {
         const workSchedulesData = await getWorkSchedules({ all: 1 })
-        this.workSchedules = rubberMateriaData.results
+        this.workSchedules = workSchedulesData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     async getPlanSchedules() {
@@ -189,6 +191,7 @@ export default {
         })
         this.planSchedules = planSchedulesData.results
         this.planScheduleId = null
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
 
@@ -237,6 +240,13 @@ export default {
       var workSchedule = this.workSchedules.find((workSchedule) => {
         return workSchedule.id === planSchedule.work_schedule
       })
+      if (!planSchedule.work_schedule_plan) {
+        this.$alert('无排班数据', '错误', {
+          confirmButtonText: '确定'
+        })
+        console.log(planSchedule)
+        return
+      }
       if (!planSchedule.work_schedule_plan.length) {
         this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
           confirmButtonText: '确定'
@@ -292,7 +302,7 @@ export default {
       }
       return -1
     },
-    productBatchingChanged() {
+    productBatchingChanged(planForAdd) {
       planForAdd['batching_weight'] = this.productBatchingById[
         planForAdd.product_batching
       ].batching_weight
@@ -303,7 +313,7 @@ export default {
         this.planTrainsChanged(planForAdd, i)
       }
     },
-    planTrainsChanged() {
+    planTrainsChanged(planForAdd, columnIndex) {
       if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) return
 
       planForAdd['pdp_product_classes_plan'][columnIndex]['time'] = (
@@ -364,6 +374,7 @@ export default {
         }
         batching_weight = batching_weight.toFixed(3)
         production_time_interval = production_time_interval.toFixed(2)
+        // eslint-disable-next-line no-unused-vars
         var equip = this.equipById[equipId]
         planSumByEquipId[equipId].batching_weight = batching_weight
         planSumByEquipId[

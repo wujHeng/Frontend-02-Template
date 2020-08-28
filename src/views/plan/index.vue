@@ -14,7 +14,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange">
+          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -123,7 +123,7 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select v-model="calss" clearable placeholder="请选择">
+            <el-select v-model="calss" clearable placeholder="请选择" @visible-change="calssVisibleChange">
               <el-option
                 v-for="item in calssOptions"
                 :key="item.global_name"
@@ -135,7 +135,7 @@
         </el-row>
         <el-row>
           <el-form-item label="配方: ">
-            <el-select v-model="recipe" clearable placeholder="请选择">
+            <el-select v-model="recipe" clearable placeholder="请选择" @visible-change="recipeVisibleChange">
               <el-option
                 v-for="item in recipeOptions"
                 :key="item.stage_product_batch_no"
@@ -168,8 +168,6 @@ import {
   retransmissionpPlan,
   upRegulation,
   downRegulation,
-  updateTrains,
-  productDayPlanManycreate,
   globalCodes,
   productbatching
 } from '@/api/plan'
@@ -207,7 +205,6 @@ export default {
   },
   created() {
     this.getPlanList()
-    this.getEquipList()
   },
   methods: {
     async getPlanList() {
@@ -217,6 +214,7 @@ export default {
         const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
         this.total = Data.count
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
 
@@ -224,11 +222,27 @@ export default {
       try {
         const equipData = await equip('get')
         this.equipOptions = equipData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
+    calssVisibleChange(bool) {
+      if (bool) {
+        this.getClassList()
+      }
+    },
+    recipeVisibleChange(bool) {
+      if (bool) {
+        this.getRecipeList()
+      }
+    },
+    equipVisibleChange(bool) {
+      if (bool) {
+        this.getEquipList()
+      }
+    },
     equipChange() {
-      console.log(this.equip);
-      (this.params = {}), this.getPlanList()
+      this.params = {}
+      this.getPlanList()
     },
 
     async getClassList() {
@@ -237,12 +251,14 @@ export default {
           params: { all: 1, class_name: '班次' }
         })
         this.calssOptions = classData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
-    async getrecipeList() {
+    async getRecipeList() {
       try {
         const recipeData = await productbatching('get', { params: { all: 1 }})
         this.recipeOptions = recipeData.results
+      // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     clearFindForm() {
@@ -257,9 +273,6 @@ export default {
     showFindDialog() {
       this.clearFindForm()
       this.clearFindFormError()
-      this.getClassList()
-      this.getrecipeList()
-      console.log(this.calssOptions)
       this.findDialogVisible = true
     },
     findAlterTrainNumberSubmit() {
