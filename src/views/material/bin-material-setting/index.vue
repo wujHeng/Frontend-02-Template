@@ -2,7 +2,7 @@
   <div style="margin-top: 25px; margin:25px auto auto auto">
     <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="机台">
-        <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange">
+        <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
           <el-option
             v-for="item in equipOptions"
             :key="item.equip_no"
@@ -106,7 +106,6 @@ export default {
   created() {
     this.getCbList()
     this.getOilList()
-    this.getEquipList()
     this.getMaterialsCbList()
     this.getMaterialsOilList()
   },
@@ -161,7 +160,7 @@ export default {
     async getMaterialsCbList() {
       try {
         const materialsData = await materials('get', {
-          params: { material_type_id: 10, all: 1 }
+          params: { material_type_name: '炭黑', all: 1 }
         })
         this.cbOptions = materialsData.results
       // eslint-disable-next-line no-empty
@@ -170,7 +169,7 @@ export default {
     async getMaterialsOilList() {
       try {
         const materialsData = await materials('get', {
-          params: { material_type_id: 57, all: 1 }
+          params: { material_type_name: '油料', all: 1 }
         })
         this.oilOptions = materialsData.results
       // eslint-disable-next-line no-empty
@@ -178,6 +177,11 @@ export default {
     },
     formatter: function(row, column) {
       return row.used_flag ? '使用' : '停用'
+    },
+    equipVisibleChange(bool) {
+      if (bool) {
+        this.getEquipList()
+      }
     },
     equipChange() {
       this.getCbList()
