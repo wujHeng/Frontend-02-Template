@@ -1,7 +1,7 @@
 <template>
   <el-dialog width="90%" :visible.sync="addPlanDialog" title="添加胶料日生产计划">
     <div style="margin-bottom: 15px">
-      <el-select v-model="equipIdForAdd" placeholder="请选择机台" style="margin-right: 10px">
+      <el-select v-model="equipIdForAdd" filterable placeholder="请选择机台" style="margin-right: 10px">
         <el-option
           v-for="equip in equips"
           :key="equip.id"
@@ -17,7 +17,7 @@
         placeholder="选择日期"
         @change="getPlanSchedules"
       />
-      <el-select v-model="planScheduleId" placeholder="倒班规则">
+      <el-select v-model="planScheduleId" filterable placeholder="倒班规则">
         <el-option
           v-for="planSchedule in planSchedules"
           :key="planSchedule.id"
@@ -30,7 +30,7 @@
       <el-button @click="addOnePlan">添加</el-button>
     </div>
     <el-table :data="plansForAdd" border>
-      <el-table-column prop="equip_.equip_no" label="机台" width="150" />
+      <el-table-column fixed prop="equip_.equip_no" label="机台" width="150" />
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
           <el-select
@@ -38,7 +38,7 @@
             @change="productBatchingChanged(scope.row)"
           >
             <el-option
-              v-for="productBatching in productBatchings"
+              v-for="productBatching in scope.row.productBatchings"
               :key="productBatching.id"
               :label="productBatching.stage_product_batch_no"
               :value="productBatching.id"
@@ -136,10 +136,11 @@ export default {
       equips: [],
       equipById: {},
       day_time: '',
+      selectDateArr: [],
       planScheduleId: null,
       planSchedules: [],
       plansForAdd: [],
-      productBatchings: [],
+      // productBatchings: [],
       productBatchingById: {},
       workSchedules: []
     }
@@ -147,9 +148,11 @@ export default {
   methods: {
     show() {
       this.addPlanDialog = true
+      this.selectDateArr = ['2020-8-5 11:20:00', '2020-8-7 11:20:00', '2020-8-15  11:20:00']
+      this.selectDateArr = this.setTimeStamp(this.selectDateArr)
       this.getEquipList()
-      this.getRubberMateria()
-      this.getPlanSchedules()
+      // this.getRubberMateria()
+      // this.getPlanSchedules()
       this.getWorkSchedules()
     },
 
@@ -230,7 +233,7 @@ export default {
           )
         })
     },
-    addOnePlan() {
+    async addOnePlan() {
       if (!this.equipIdForAdd) {
         return
       }
@@ -311,9 +314,11 @@ export default {
       ].production_time_interval
       for (var i = 0; i < 3; i++) {
         this.planTrainsChanged(planForAdd, i)
+        this.planTrainsChanged(planForAdd, i, false)
       }
+      this.statistic()
     },
-    planTrainsChanged(planForAdd, columnIndex) {
+    planTrainsChanged(planForAdd, columnIndex, sum = true) {
       if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) return
 
       planForAdd['pdp_product_classes_plan'][columnIndex]['time'] = (
@@ -325,9 +330,9 @@ export default {
         planForAdd['batching_weight'] *
         planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']
       ).toFixed(2)
-      this.statistic()
+      if (sum) { this.statistic() }
     },
-    statistic() {
+    async statistic() {
       var plansByEquip = {}
       var planSumByEquipId = {}
       this.plansForAdd.forEach(function(plan) {
@@ -352,7 +357,10 @@ export default {
             time: 0
           })
         }
-        plans.forEach(function(plan) {
+        var app = this
+        plans.forEach(async function(plan) {
+          const res = await axios.get(PlanScheduleUrl + plan.plan_schedule + '/')
+          const planSchedule = res.data
           batching_weight += Number(plan.batching_weight)
           production_time_interval += Number(plan.production_time_interval)
           for (var i = 0; i < 3; i++) {
@@ -362,16 +370,28 @@ export default {
             )
             pdp_product_classes_plan[i].weight += Number(class_plan.weight)
             pdp_product_classes_plan[i].time += Number(class_plan.time)
+            var workSchedulePlanTimeSpan =
+                            dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
+                              dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
+            if (pdp_product_classes_plan[i].time > workSchedulePlanTimeSpan) {
+              app.$alert('机台' + plan.equip_.equip_no +
+                                    planSchedule.work_schedule_plan[i].classes_name +
+                                    '计划时间大于排班时间' + '(计划时间' + pdp_product_classes_plan[i].time + '分钟' +
+                                ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
+                                ')', '警告', {
+                confirmButtonText: '确定'
+              })
+            }
           }
         })
-        for (i = 0; i < 3; i++) {
-          pdp_product_classes_plan[i].weight = pdp_product_classes_plan[
-            i
-          ].weight.toFixed(2)
-          pdp_product_classes_plan[i].time = pdp_product_classes_plan[
-            i
-          ].time.toFixed(2)
-        }
+        // for (i = 0; i < 3; i++) {
+        //   pdp_product_classes_plan[i].weight = pdp_product_classes_plan[
+        //     i
+        //   ].weight.toFixed(2)
+        //   pdp_product_classes_plan[i].time = pdp_product_classes_plan[
+        //     i
+        //   ].time.toFixed(2)
+        // }
         batching_weight = batching_weight.toFixed(3)
         production_time_interval = production_time_interval.toFixed(2)
         // eslint-disable-next-line no-unused-vars
