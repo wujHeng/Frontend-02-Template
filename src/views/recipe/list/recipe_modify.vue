@@ -239,6 +239,7 @@
             <th style="text-align: center">原材料</th>
             <td style="text-align: center">设定值(kg)</td>
             <td style="text-align: center">误差值(kg)</td>
+            <th style="text-align: center">操作</th>
           </tr>
         </thead>
         <tbody style="color: #606266;">
@@ -251,6 +252,7 @@
               <template>
                 <el-radio v-model="material_ele.auto_flag" :label="1">自动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="2">手动</el-radio>
+                <el-radio v-model="material_ele.auto_flag" :label="0">其他</el-radio>
               </template>
             </td>
             <td style="text-align: center">
@@ -265,6 +267,9 @@
             </td>
             <td style="text-align: center">
               <el-input-number v-model.number="material_ele.standard_error" size="mini" controls-position="right" />
+            </td>
+            <td style="text-align: center">
+              <el-button size="mini" @click="del_material_row(material_ele, index)">删除</el-button>
             </td>
           </tr>
 
@@ -452,7 +457,7 @@ export default {
           } else if (recipe_listData['batching_details'][j]['auto_flag'] == 2) {
             v_auto_falg = '手动'
           } else {
-            v_auto_falg = ''
+            v_auto_falg = '其他'
           }
           if (recipe_listData['batching_details'][j]['material_type'] == '炭黑') {
             this.carbon_tableData.push({
@@ -619,6 +624,9 @@ export default {
 
       })
     },
+    del_material_row: function(material_ele, index) {
+      this.ProductRecipe.splice(index, 1)
+    },
 
     materialTypeChange: function() {
       this.raw_material_list()
@@ -667,6 +675,11 @@ export default {
           }
           batching_details_list.push(now_stage_material)
         } else {
+          this.$message({
+            message: '必填字段不能为空',
+            type: 'error'
+          })
+          return
         }
       }
       await this.put_recipe_list(
