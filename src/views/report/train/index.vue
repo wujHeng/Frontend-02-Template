@@ -1,5 +1,8 @@
 <template>
-  <div v-loading="loading" class="report-train-style">
+  <div
+    v-loading="loading"
+    class="report-train-style"
+  >
     <el-form :inline="true">
       <el-form-item label="日期">
         <el-date-picker
@@ -30,7 +33,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="机台">
-        <selectEquip :equip_no_props.sync="getParams.equip_no" @changeSearch="changeSearch" />
+        <selectEquip
+          :equip_no_props.sync="getParams.equip_no"
+          @changeSearch="changeSearch"
+        />
       </el-form-item>
       <el-form-item label="操作人">
         <el-select
@@ -49,7 +55,10 @@
       </el-form-item>
       <el-form-item>
         <!-- <el-button @click="showRowTable = true">展示详情</el-button> -->
-        <el-button v-if="showRowTable" @click="showRowTable = false">关闭查看</el-button>
+        <el-button
+          v-if="showRowTable"
+          @click="showRowTable = false"
+        >关闭查看</el-button>
 
         <!-- <el-button @click="selectRubber">导出批记录</el-button>
         <el-button @click="selectRubber">单页导出</el-button>
@@ -64,38 +73,116 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="id" label="ID" />
-      <el-table-column prop="equip_no" label="机台" />
-      <el-table-column prop="product_no" label="配方编号" />
-      <el-table-column prop="plan_classes_uid" label="计划编号" />
-      <el-table-column prop="begin_time" width="100" label="开始时间" />
-      <el-table-column prop="end_time" label="结束时间" width="100" />
-      <el-table-column prop="plan_trains" label="设定车次" />
-      <el-table-column prop="actual_trains" label="实际车次" />
-      <el-table-column prop="production_details.控制方式" label="本/远控" />
-      <el-table-column prop="production_details.作业方式" label="手/自动" />
-      <el-table-column prop="production_details.总重量" label="总重量" />
-      <el-table-column prop="production_details.排胶时间" label="排胶时间" />
-      <el-table-column prop="production_details.排胶温度" label="排胶温度" />
-      <el-table-column prop="production_details.排胶能量" label="排胶能量" />
-      <el-table-column prop="production_details.员工代号" label="操作人" />
-      <el-table-column prop="production_details.存盘时间" label="存盘时间" width="100" />
-      <el-table-column prop="production_details.密炼时间" label="密炼时间" />
-      <el-table-column prop="production_details.间隔时间" label="间隔时间" />
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        prop="id"
+        label="ID"
+      />
+      <el-table-column
+        prop="equip_no"
+        label="机台"
+      />
+      <el-table-column
+        prop="product_no"
+        label="配方编号"
+      />
+      <el-table-column
+        prop="plan_classes_uid"
+        label="计划编号"
+      />
+      <el-table-column
+        prop="begin_time"
+        width="100"
+        label="开始时间"
+      />
+      <el-table-column
+        prop="end_time"
+        label="结束时间"
+        width="100"
+      />
+      <el-table-column
+        prop="plan_trains"
+        label="设定车次"
+      />
+      <el-table-column
+        prop="actual_trains"
+        label="实际车次"
+      />
+      <el-table-column
+        prop="production_details.控制方式"
+        label="本/远控"
+      />
+      <el-table-column
+        prop="production_details.作业方式"
+        label="手/自动"
+      />
+      <el-table-column
+        prop="production_details.总重量"
+        label="总重量"
+      />
+      <el-table-column
+        prop="production_details.排胶时间"
+        label="排胶时间"
+      />
+      <el-table-column
+        prop="production_details.排胶温度"
+        label="排胶温度"
+      />
+      <el-table-column
+        prop="production_details.排胶能量"
+        label="排胶能量"
+      />
+      <el-table-column
+        prop="production_details.员工代号"
+        label="操作人"
+      />
+      <el-table-column
+        prop="production_details.存盘时间"
+        label="存盘时间"
+        width="100"
+      />
+      <el-table-column
+        prop="production_details.密炼时间"
+        label="密炼时间"
+      />
+      <el-table-column
+        prop="production_details.间隔时间"
+        label="间隔时间"
+      />
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="clickView(scope.row,scope.row.id,scope.$index)">查看</el-button>
+          <el-button
+            size="mini"
+            @click="clickView(scope.row,scope.row.id,scope.$index)"
+          >查看</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <page :total="total" @currentChange="currentChange" />
+    <page
+      :total="total"
+      @currentChange="currentChange"
+    />
 
-    <div v-if="showRowTable" style="overflow-x:scroll;margin-top:20px">
-      <el-row v-loading="loaddingExal" style="min-width:1600px">
-        <el-col :span="11" class="trainContentLeft">
-          <div style="margin-right:10px" class="trainContentLeftBox">
+    <div
+      v-if="showRowTable"
+      style="overflow-x:scroll;margin-top:20px"
+    >
+      <el-row
+        v-loading="loaddingExal"
+        style="min-width:1600px"
+      >
+        <el-col
+          :span="11"
+          class="trainContentLeft"
+        >
+          <div
+            style="margin-right:10px"
+            class="trainContentLeftBox"
+          >
             <el-row class="row-border-bottom">
               <el-col :span="2">
                 <div class="grid-content bg-purple">页</div>
@@ -174,23 +261,24 @@
                 <td>种类</td>
                 <td>超差</td>
               </tr>
-              <div v-if="weighInformationList.length>0">
-                <tr
-                  v-for="(item,index) in weighInformationList"
-                  :key="index"
-                  class="train-one-tr-banburying"
-                >
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.物料名称 }}</td>
-                  <td>{{ item.设定重量 }}</td>
-                  <td>{{ item.实际重量 }}</td>
-                  <td>{{ item.秤状态 }}</td>
-                  <td>{{ item.物料类型 }}</td>
-                  <td>{{ Math.round((Number(item.设定重量) - Number(item.实际重量))*100)/100 }}</td>
-                </tr>
-              </div>
+              <tr
+                v-for="(item,index) in weighInformationList"
+                :key="index"
+                class="train-one-tr-banburying"
+              >
+                <td>{{ item.id }}</td>
+                <td>{{ item.物料名称 }}</td>
+                <td>{{ item.设定重量 }}</td>
+                <td>{{ item.实际重量 }}</td>
+                <td>{{ item.秤状态 }}</td>
+                <td>{{ item.物料类型 }}</td>
+                <td>{{ Math.round((Number(item.设定重量) - Number(item.实际重量))*100)/100 }}</td>
+              </tr>
             </table>
-            <div v-if="weighInformationList.length===0" class="noneData">暂无数据</div>
+            <div
+              v-if="weighInformationList.length===0"
+              class="noneData"
+            >暂无数据</div>
 
             <div class="train-title">密炼信息</div>
             <table
@@ -213,25 +301,26 @@
                 <td>速度</td>
                 <td>压力</td>
               </tr>
-              <div v-if="mixerInformationList.length>0">
-                <tr
-                  v-for="(item,index) in mixerInformationList"
-                  :key="index"
-                  class="train-one-tr-banburying"
-                >
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.条件 }}</td>
-                  <td>{{ item.时间 }}</td>
-                  <td>{{ item.温度 }}</td>
-                  <td>{{ item.功率 }}</td>
-                  <td>{{ item.能量 }}</td>
-                  <td>{{ item.动作 }}</td>
-                  <td>{{ item.转速 }}</td>
-                  <td>{{ item.压力 }}</td>
-                </tr>
-              </div>
+              <tr
+                v-for="(item,index) in mixerInformationList"
+                :key="index"
+                class="train-one-tr-banburying"
+              >
+                <td>{{ item.id }}</td>
+                <td>{{ item.条件 }}</td>
+                <td>{{ item.时间 }}</td>
+                <td>{{ item.温度 }}</td>
+                <td>{{ item.功率 }}</td>
+                <td>{{ item.能量 }}</td>
+                <td>{{ item.动作 }}</td>
+                <td>{{ item.转速 }}</td>
+                <td>{{ item.压力 }}</td>
+              </tr>
             </table>
-            <div v-if="mixerInformationList.length===0" class="noneData">暂无数据</div>
+            <div
+              v-if="mixerInformationList.length===0"
+              class="noneData"
+            >暂无数据</div>
 
             <div class="train-title">报警记录</div>
             <table
@@ -252,26 +341,30 @@
                 <td>种类</td>
                 <td>超差</td>
               </tr>
-              <div v-if="alarmRecordList.length!==0">
-                <tr
-                  v-for="(item,index) in alarmRecordList"
-                  :key="index"
-                  class="train-one-tr-banburying"
-                >
-                  <td>ID</td>
-                  <td>名称</td>
-                  <td>设定值</td>
-                  <td>实重</td>
-                  <td>状态</td>
-                  <td>种类</td>
-                  <td>超差</td>
-                </tr>
-              </div>
+              <tr
+                v-for="(item,index) in alarmRecordList"
+                :key="index"
+                class="train-one-tr-banburying"
+              >
+                <td>ID</td>
+                <td>名称</td>
+                <td>设定值</td>
+                <td>实重</td>
+                <td>状态</td>
+                <td>种类</td>
+                <td>超差</td>
+              </tr>
             </table>
-            <div v-if="alarmRecordList.length===0" class="noneData">暂无数据</div>
+            <div
+              v-if="alarmRecordList.length===0"
+              class="noneData"
+            >暂无数据</div>
           </div>
         </el-col>
-        <el-col :span="13" class="trainContentRight">
+        <el-col
+          :span="13"
+          class="trainContentRight"
+        >
           <div style="display:flex">
             <div class="police-record">
               <span>排胶能量: {{ rowInfo.production_details.排胶能量 ||'--' }}</span>
@@ -311,11 +404,11 @@ import { setDate } from '@/utils/index'
 import {
   trainsFeedbacks,
   rubberMaterial,
-  operatorList,
   weighInformation,
   mixerInformation,
   curveInformation
 } from '@/api/reportBatch'
+import { personnelsUrl } from '@/api/user'
 import page from '@/components/page'
 import selectEquip from '@/components/select_w/equip'
 export default {
@@ -326,7 +419,9 @@ export default {
     }
     return {
       search_date: [],
-      getParams: {},
+      getParams: {
+        page: 1
+      },
       // 配方
       formulaList: [],
       operatorList: [],
@@ -384,7 +479,7 @@ export default {
       try {
         this.loading = true
         const data = await trainsFeedbacks('get', { params: this.getParams })
-        this.tableData = data || []
+        this.tableData = data.results || []
 
         this.total = data.count || 0
 
@@ -405,7 +500,7 @@ export default {
         const formulaList = data.results || []
         // 去重
         var obj = {}
-        var newArr = formulaList.reduce(function(item, next) {
+        var newArr = formulaList.reduce((item, next) => {
           obj[next.stage_product_batch_no]
             ? ' '
             : (obj[next.stage_product_batch_no] = true && item.push(next))
@@ -413,18 +508,18 @@ export default {
         }, [])
         this.formulaList = newArr || []
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) { }
     },
     async getOperatorList() {
       try {
-        // , { params: { groups: 91 } }
-        const data = await operatorList('get', {
-          params: { page_size: 100000000 }
+        // groups: 91,
+        const data = await personnelsUrl('get', null, {
+          params: { page_size: 100000000, all: 1 }
         })
         const operators = data.results || []
         // 去重
         var obj = {}
-        var newArr = operators.reduce(function(item, next) {
+        var newArr = operators.reduce((item, next) => {
           obj[next.username]
             ? ' '
             : (obj[next.username] = true && item.push(next))
@@ -442,8 +537,8 @@ export default {
       this.getParams.page = 1
       this.getList()
     },
-    handleSelectionChange() {},
-    selectRubber() {},
+    handleSelectionChange() { },
+    selectRubber() { },
     clickChartData() {
       createImage(this)
     },
@@ -454,10 +549,10 @@ export default {
       this.getParams.page = page
       this.getList()
     },
-    getWeighInformation(id) {
+    async getWeighInformation(id) {
       try {
         // eslint-disable-next-line prefer-const
-        let data = weighInformation('get', { params: { id: id }})
+        let data = await weighInformation('get', { params: { id: id }})
         // const test = [
         //   {
         //     id: 1,
@@ -471,12 +566,12 @@ export default {
         // return test
         return data.weigh_info || []
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) { }
     },
-    getMixerInformation(id) {
+    async getMixerInformation(id) {
       try {
         // eslint-disable-next-line prefer-const
-        let data = mixerInformation('get', { params: { id: id }})
+        let data = await mixerInformation('get', { params: { id: id }})
         // const test = [
         //   {
         //     id: 1,
@@ -493,42 +588,42 @@ export default {
         // return test
         return data.mixer_info || []
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) { }
     },
-    getCurveInformation(id) {
+    async getCurveInformation(id) {
       try {
-        // eslint-disable-next-line no-unused-vars
-        const data = curveInformation('get', { params: { id: id }})
-        const test = [
-          {
-            id: 1,
-            时间: '20',
-            温度: 97,
-            功率: 38,
-            转速: 34,
-            压力: 10
-          },
-          {
-            id: 2,
-            时间: '30',
-            温度: 50,
-            功率: 40,
-            转速: 80,
-            压力: 68
-          },
-          {
-            id: 3,
-            时间: '40',
-            温度: 85,
-            功率: 42,
-            转速: 36,
-            压力: 88
-          }
-        ]
-        return test
-        // return data.curve || [];
+        // eslint-disable-next-line prefer-const
+        let data = await curveInformation('get', { params: { id: id }})
+        // const test = [
+        //   {
+        //     id: 1,
+        //     时间: '20',
+        //     温度: 97,
+        //     功率: 38,
+        //     转速: 34,
+        //     压力: 10
+        //   },
+        //   {
+        //     id: 2,
+        //     时间: '30',
+        //     温度: 50,
+        //     功率: 40,
+        //     转速: 80,
+        //     压力: 68
+        //   },
+        //   {
+        //     id: 3,
+        //     时间: '40',
+        //     温度: 85,
+        //     功率: 42,
+        //     转速: 36,
+        //     压力: 88
+        //   }
+        // ]
+        // return test
+        return data.curve_info || []
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) { }
     },
     async clickView(row, id, index) {
       this.currentIndex = index
@@ -548,7 +643,7 @@ export default {
         // console.log(this.chartData.row, 99999);
         this.loaddingExal = false
         this.showRowTable = await true
-        console.log(arr, 88888)
+        // console.log(arr, 88888)
       } catch (e) {
         this.loaddingExal = false
       }
@@ -655,7 +750,7 @@ $border-weight: 0.5px;
     .train-one-tr-banburying {
       td {
         // line-height: 20px;
-        padding :10px;
+        padding: 10px;
       }
     }
   }
@@ -663,10 +758,10 @@ $border-weight: 0.5px;
     text-align: center;
     line-height: 50px;
     width: 100%;
-    border-bottom:.5px solid $border-color;
+    border-bottom: 0.5px solid $border-color;
   }
-  .begin_time_width{
-    width:60px;
+  .begin_time_width {
+    width: 60px;
   }
 }
 </style>

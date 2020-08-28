@@ -32,6 +32,8 @@ export default {
   // 原材料类别接口
   MaterialTypelUrl: '/api/v1/basics/global-codes/?all=1&class_name=原材料类别',
 
+  // 用户列表?all=1
+  PersonnelsUrl: '/api/v1/system/personnels/',
   // 报表-批次记录
   ClassesListUrl: '/api/v1/basics/classes/',
   ReportBatchUrl: '/api/v1/production/production-record/',
@@ -40,8 +42,6 @@ export default {
   ProductionPalletFeedBacksUrl: '/api/v1/production/pallet-feedbacks/',
   // 批次-Bat查询
   ProductionTrainsFeedbacksUrl: '/api/v1/production/trains-feedbacks/',
-  // 报表-车次记录-操作人列表?all=1
-  PersonnelsUrl: '/api/v1/system/personnels/',
   // 报表-车次记录-称量信息{id}
   WeighInformationUrl: '/api/v1/production/weigh-information-list/',
   // 报表-车次记录-密炼信息{id}
@@ -67,5 +67,7 @@ export default {
   ProductDayPlanManyCreateUrl: '/api/v1/plan/product-day-plan-manycreate/', // 新增
   ProductbatchingUrl: '/api/v1/recipe/product-batching/', // 配方
   // 新增计划
-  PlanScheduleUrl: "/api/v1/basics/plan-schedule/",
+
+  PlanScheduleUrl: '/api/v1/basics/plan-schedule/',
+  WorkSchedulesUrl: '/api/v1/basics/work_schedules/'
 }

@@ -50,7 +50,7 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
+  }
 ]
 
 // 存在权限的路由
@@ -80,31 +80,30 @@ export const asyncRoutes = [
         path: 'list',
         component: () => import('@/views/recipe/list/index'),
         name: 'RecipeList',
-        meta: { title: '配方列表'},
-  
+        meta: { title: '配方列表' }
       },
       {
         path: 'recipe_display',
         component: () => import('@/views/recipe/list/recipe_display'),
         name: 'RecipeDisplay',
-        meta: { title: '配方详情', navHidden:true},
-  
+        meta: { title: '配方详情', navHidden: true }
       },
       {
         path: 'create',
         component: () => import('@/views/recipe/list/recipe_create'),
         name: 'RecipeCreate',
-        meta: { title: '新增配方', navHidden:true}
+        meta: { title: '新增配方', navHidden: true }
       },
       {
         path: 'modify',
         component: () => import('@/views/recipe/list/recipe_modify'),
         name: 'RecipeModify',
-        meta: { title: '修改配方', navHidden:true}
+        meta: { title: '修改配方', navHidden: true }
       }
     ]
   },
-  {path: '/material',
+  {
+    path: '/material',
     component: Layout,
     alwaysShow: true,
     redirect: '/material/base-info',
@@ -163,12 +162,25 @@ export const asyncRoutes = [
         component: () => import('@/views/report/batch/index'),
         name: 'batchStatisticsReport',
         meta: { title: '批次记录报表' }
-      },  
+      },
       {
         path: 'train-statistics',
         component: () => import('@/views/report/train/index'),
         name: 'trainStatisticsReport',
         meta: { title: '车次报表' }
+      }
+    ]
+  },
+  {
+    path: '/user-info',
+    component: Layout,
+    redirect: '/user-info/index',
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/views/userInfo/index'),
+        meta: { title: '用户管理' }
       }
     ]
   },

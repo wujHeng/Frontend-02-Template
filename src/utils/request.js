@@ -1,7 +1,11 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {
+  getToken
+} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -52,13 +56,19 @@ service.interceptors.response.use(
           })
         }
       }
-      // console.log(str, 'strstr')
       Message({
         message: str,
         type: 'error',
         duration: 3 * 1000
       })
       return Promise.reject(error.response.data)
+    } else if (Object.prototype.toString.call(error.response.data) === '[object Array]') {
+      const str = error.response.data.join(',')
+      Message({
+        message: str,
+        type: 'error',
+        duration: 3 * 1000
+      })
     } else {
       Message({
         message: error.message,
