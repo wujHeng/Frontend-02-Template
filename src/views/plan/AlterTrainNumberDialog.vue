@@ -52,6 +52,7 @@ export default {
     },
     show(currentRow) {
       this.currentRow = currentRow
+      this.trains = ''
       this.clearForm()
       this.clearFormError()
       this.dialogVisible = true
