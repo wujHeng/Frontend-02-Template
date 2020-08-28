@@ -1,7 +1,10 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable handle-callback-err */
 <template>
-  <div v-loading="loading" class="report-batch-style">
+  <div
+    v-loading="loading"
+    class="report-batch-style"
+  >
     <el-form :inline="true">
       <el-form-item label="日期">
         <el-date-picker
@@ -17,7 +20,8 @@
         />
       </el-form-item>
       <el-form-item label="胶料">
-        <el-select
+        <productNo-select @productBatchingChanged="productBatchingChanged" />
+        <!-- <el-select
           v-model="getParams.product_no"
           placeholder="请选择"
           clearable
@@ -29,13 +33,21 @@
             :label="item.stage_product_batch_no"
             :value="item.stage_product_batch_no"
           />
-        </el-select>
+        </el-select> -->
       </el-form-item>
       <el-form-item label="机台">
-        <selectEquip :equip_no_props.sync="getParams.equip_no" @changeSearch="changeSearch" />
+        <selectEquip
+          :equip_no_props.sync="getParams.equip_no"
+          @changeSearch="changeSearch"
+        />
       </el-form-item>
       <el-form-item label="班次">
-        <el-select v-model="getParams.classes" placeholder="请选择" clearable @change="changeSearch">
+        <el-select
+          v-model="getParams.classes"
+          placeholder="请选择"
+          clearable
+          @change="changeSearch"
+        >
           <el-option
             v-for="item in classesList"
             :key="item.id"
@@ -45,19 +57,38 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <el-table border :data="tableData" style="width: 100%">
-      <el-table-column prop="equip_no" label="机台" />
-      <el-table-column prop="equip_no" label="作业时间">
+    <el-table
+      border
+      :data="tableData"
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="equip_no"
+        label="机台"
+      />
+      <el-table-column
+        prop="equip_no"
+        label="作业时间"
+      >
         <template slot-scope="scope">{{ scope.row.end_time.split(' ')[0] }}</template>
       </el-table-column>
-      <el-table-column prop="classes" label="班次" />
-      <el-table-column prop="class_group" label="班组">
+      <el-table-column
+        prop="classes"
+        label="班次"
+      />
+      <el-table-column
+        prop="class_group"
+        label="班组"
+      >
         <template slot-scope="scope">{{ scope.row.class_group?scope.row.class_group:'--' }}</template>
       </el-table-column>
       <el-table-column label="生产时间">
         <template slot-scope="scope">{{ scope.row.end_time.split(' ')[1] }}</template>
       </el-table-column>
-      <el-table-column prop="product_no" label="胶料编码">
+      <el-table-column
+        prop="product_no"
+        label="胶料编码"
+      >
         <template slot-scope="scope">
           <div
             style="color:#1989fa;cursor:pointer"
@@ -65,38 +96,69 @@
           >{{ scope.row.product_no }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="equip_no" label="BATNO">
+      <el-table-column
+        prop="equip_no"
+        label="BATNO"
+      >
         <template slot-scope="scope">{{ scope.row.begin_trains }}--{{ scope.row.end_trains }}</template>
       </el-table-column>
-      <el-table-column prop="actual_weight" label="生产重量" />
-      <el-table-column prop="equip_no" width="150" label="有效时间">
-        <template
-          slot-scope="scope"
-        >{{ scope.row.end_time }} -- {{ setEndTime(scope.row.end_time) }}</template>
+      <el-table-column
+        prop="actual_weight"
+        label="生产重量"
+      />
+      <el-table-column
+        prop="equip_no"
+        width="150"
+        label="有效时间"
+      >
+        <template slot-scope="scope">{{ scope.row.end_time }} -- {{ setEndTime(scope.row.end_time) }}</template>
       </el-table-column>
-      <el-table-column prop="lot_no" label="LOT NO">
+      <el-table-column
+        prop="lot_no"
+        label="LOT NO"
+      >
         <template slot-scope="scope">{{ scope.row.lot_no?scope.row.lot_no:'--' }}</template>
       </el-table-column>
-      <el-table-column prop="operation_user" label="作业者" />
+      <el-table-column
+        prop="operation_user"
+        label="作业者"
+      />
     </el-table>
 
-    <page :total="total" @currentChange="currentChange" />
+    <page
+      :total="total"
+      @currentChange="currentChange"
+    />
 
-    <el-dialog title="胶料产出反馈" :visible.sync="dialogVisibleRubber">
+    <el-dialog
+      title="胶料产出反馈"
+      :visible.sync="dialogVisibleRubber"
+    >
       <el-form :inline="true">
-        <el-form-item
-          label="胶料区分: "
-        >{{ palletFeedObj.hasOwnProperty("stage")?palletFeedObj.stage:'--' }}</el-form-item>
+        <el-form-item label="胶料区分: ">{{ palletFeedObj.hasOwnProperty("stage")?palletFeedObj.stage:'--' }}</el-form-item>
         <el-form-item label="胶料编码: ">{{ palletFeedObj.product_no }}</el-form-item>
         <el-form-item label="班次: ">{{ palletFeedObj.classes }}</el-form-item>
         <el-form-item label="机台: ">{{ palletFeedObj.equip_no }}</el-form-item>
       </el-form>
-      <el-table :data="palletFeedList" border style="width: 100%">
-        <el-table-column prop="lot_no" label="LOT">
+      <el-table
+        :data="palletFeedList"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="lot_no"
+          label="LOT"
+        >
           <template slot-scope="scope">{{ scope.row.lot_no||'--' }}</template>
         </el-table-column>
-        <el-table-column prop="product_no" label="胶料编码" />
-        <el-table-column prop="equip_no" label="机台" />
+        <el-table-column
+          prop="product_no"
+          label="胶料编码"
+        />
+        <el-table-column
+          prop="equip_no"
+          label="机台"
+        />
 
         <el-table-column label="BAT">
           <template slot-scope="scope">
@@ -106,41 +168,92 @@
             >{{ scope.row.begin_trains }}--{{ scope.row.end_trains }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="actual_weight" label="生产重量" />
+        <el-table-column
+          prop="actual_weight"
+          label="生产重量"
+        />
         <el-table-column label="生产时间">
           <template slot-scope="scope">{{ scope.row.end_time.split(' ')[1] }}</template>
         </el-table-column>
-        <el-table-column prop="classes" label="班次" />
-        <el-table-column prop="operation_user" label="作业者" />
+        <el-table-column
+          prop="classes"
+          label="班次"
+        />
+        <el-table-column
+          prop="operation_user"
+          label="作业者"
+        />
       </el-table>
     </el-dialog>
 
-    <el-dialog title="BAT查询" :visible.sync="dialogVisibleBAT">
+    <el-dialog
+      title="BAT查询"
+      :visible.sync="dialogVisibleBAT"
+    >
       <div style="position: relative">
-        <el-form :inline="true" style="margin-right: 100px;">
+        <el-form
+          :inline="true"
+          style="margin-right: 100px;"
+        >
           <el-form-item label="胶料区分: ">{{ BATObj.stage }}</el-form-item>
           <el-form-item label="胶料编码: ">{{ BATObj.product_no }}</el-form-item>
           <el-form-item label="班次: ">{{ BATObj.classes }}</el-form-item>
           <el-form-item label="机台: ">{{ BATObj.equip_no }}</el-form-item>
           <el-form-item label="车次: ">{{ BATObj.begin_trains }} -- {{ BATObj.end_trains }}</el-form-item>
         </el-form>
-        <el-button style="position: absolute;right:10px;top:0" @click="viewGraph">图形</el-button>
+        <el-button
+          style="position: absolute;right:10px;top:0"
+          @click="viewGraph"
+        >图形</el-button>
       </div>
-      <el-table :data="BATList" style="width: 100%">
-        <el-table-column prop="equip_no" label="机台" />
-        <el-table-column prop="name" label="日期">
+      <el-table
+        :data="BATList"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="equip_no"
+          label="机台"
+        />
+        <el-table-column
+          prop="name"
+          label="日期"
+        >
           <template slot-scope="scope">{{ scope.row.end_time.split(' ')[0] }}</template>
         </el-table-column>
-        <el-table-column prop="classes" label="班次" />
-        <el-table-column prop="product_no" label="胶料编码" />
-        <el-table-column prop="actual_trains" label="车次" />
-        <el-table-column prop="actual_weight" label="胶" />
-        <el-table-column prop="end_time-begin-time" label="时间">
+        <el-table-column
+          prop="classes"
+          label="班次"
+        />
+        <el-table-column
+          prop="product_no"
+          label="胶料编码"
+        />
+        <el-table-column
+          prop="actual_trains"
+          label="车次"
+        />
+        <el-table-column
+          prop="actual_weight"
+          label="胶"
+        />
+        <el-table-column
+          prop="end_time-begin-time"
+          label="时间"
+        >
           <template slot-scope="scope">{{ scope.row.begin_time }} -- {{ scope.row.end_time }}</template>
         </el-table-column>
-        <el-table-column prop="equip_status.temperature" label="温度" />
-        <el-table-column prop="equip_status.energy" label="电量" />
-        <el-table-column prop="equip_status.rpm" label="RPM" />
+        <el-table-column
+          prop="equip_status.temperature"
+          label="温度"
+        />
+        <el-table-column
+          prop="equip_status.energy"
+          label="电量"
+        />
+        <el-table-column
+          prop="equip_status.rpm"
+          label="RPM"
+        />
       </el-table>
     </el-dialog>
 
@@ -152,10 +265,11 @@
       width="600px"
       :visible.sync="dialogVisibleGraph"
     >
-      <div
-        style="margin: 0 0 20px 5px;"
-      >{{ chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:'' }}</div>
-      <ve-line :data="chartData" :settings="chartSettings" />
+      <div style="margin: 0 0 20px 5px;">{{ chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:'' }}</div>
+      <ve-line
+        :data="chartData"
+        :settings="chartSettings"
+      />
     </el-dialog>
   </div>
 </template>
@@ -164,6 +278,7 @@
 import { setDate } from '@/utils/index'
 import page from '@/components/page'
 import selectEquip from '@/components/select_w/equip'
+import ProductNoSelect from '@/components/ProductNoSelect'
 import {
   reportBatch,
   rubberMaterial,
@@ -173,7 +288,7 @@ import {
   productionTrainsFeedbacks
 } from '@/api/reportBatch'
 export default {
-  components: { page, selectEquip },
+  components: { page, selectEquip, ProductNoSelect },
   data() {
     this.chartSettings = {
       labelMap: {
@@ -245,12 +360,13 @@ export default {
       var _this = this
       this.loading = true
       reportBatch('get', { params: _this.getParams })
+        // eslint-disable-next-line space-before-function-paren
         .then(function(response) {
           _this.tableData = response.results || []
 
           _this.total = response.count || 0
           _this.loading = false
-        // eslint-disable-next-line handle-callback-err
+          // eslint-disable-next-line handle-callback-err
         }).catch((error) => {
           this.loading = false
           // this.$message.error("请求错误");
@@ -268,16 +384,17 @@ export default {
           _this.glueList = glueList
         })
         // eslint-disable-next-line handle-callback-err
-        .catch(function(error) {})
+        .catch(function(error) { })
     },
     getClassesList() {
       var _this = this
-      classesList('get', { params: { schedule_name: '密炼' }})
+      // eslint-disable-next-line object-curly-spacing
+      classesList('get', { params: { schedule_name: '密炼' } })
         .then(function(response) {
           _this.classesList = response.results || []
         })
         // eslint-disable-next-line handle-callback-err
-        .catch(function(error) {})
+        .catch(function(error) { })
     },
     clickPrint() {
       //          <el-form-item>
@@ -291,7 +408,7 @@ export default {
       //     </el-button>
       // </el-form-item>
     },
-    clickExcel() {},
+    clickExcel() { },
     clickProductNo(row) {
       this.dialogVisibleRubber = true
       this.palletFeedObj = row
@@ -310,7 +427,7 @@ export default {
           _this.palletFeedList = response.results || []
         })
         // eslint-disable-next-line handle-callback-err
-        .catch(function(error) {})
+        .catch(function(error) { })
     },
     clickBAT(row) {
       this.dialogVisibleBAT = true
@@ -331,7 +448,7 @@ export default {
           _this.BATList = response.results || []
         })
         // eslint-disable-next-line handle-callback-err
-        .catch(function(error) {})
+        .catch(function(error) { })
     },
     viewGraph() {
       this.dialogVisibleGraph = true
@@ -356,7 +473,13 @@ export default {
           _this.chartData.rows = results
         })
         // eslint-disable-next-line handle-callback-err
-        .catch(function(error) {})
+        .catch(() => { })
+    },
+    productBatchingChanged(val) {
+      this.getParams.product_no = val ? val.stage_product_batch_no : ''
+
+      this.getParams.page = 1
+      this.getList()
     },
     changeSearch() {
       if (this.search_date) {
@@ -364,7 +487,6 @@ export default {
         this.getParams.et = this.search_date[1]
       }
 
-      console.log(111)
       this.getParams.page = 1
       this.getList()
     },
