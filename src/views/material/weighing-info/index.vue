@@ -2,7 +2,7 @@
   <div style="margin-top: 25px">
     <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="机台">
-        <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange">
+        <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
           <el-option
             v-for="item in equipOptions"
             :key="item.equip_no"
@@ -29,34 +29,34 @@
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.low_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.low_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.advance_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.advance_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
       </el-table-column>
       <el-table-column label="（单位0.1S）">
         <el-table-column prop="adjust_value" label="调整值">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.adjust_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.adjust_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.dot_time" type="number" min="0" />
+            <el-input-number v-model="scope.row.dot_time" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
         <el-table-column prop="fast_speed" label="快称速度">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.fast_speed" type="number" min="0" />
+            <el-input-number v-model="scope.row.fast_speed" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="fast_speed_change(scope.row, scope.row.fast_speed)" />
           </template>
         </el-table-column>
         <el-table-column prop="low_speed" label="慢称速度">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.low_speed" type="number" min="0" />
+            <el-input-number v-model="scope.row.low_speed" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="low_speed_change(scope.row, scope.row.low_speed)" />
           </template>
         </el-table-column>
       </el-table-column>
@@ -69,22 +69,22 @@
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.low_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.low_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.advance_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.advance_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="adjust_value" label="调整值">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.adjust_value" type="number" min="0" />
+            <el-input-number v-model="scope.row.adjust_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
           <template v-if="scope.row.used_flag" slot-scope="scope">
-            <el-input v-model="scope.row.dot_time" type="number" min="0" />
+            <el-input-number v-model="scope.row.dot_time" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
       </el-table-column>
@@ -110,7 +110,6 @@ export default {
   created() {
     this.getCbList()
     this.getOilList()
-    this.getEquipList()
   },
   methods: {
     async getCbList() {
@@ -162,6 +161,11 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
+    equipVisibleChange(bool) {
+      if (bool) {
+        this.getEquipList()
+      }
+    },
     equipChange() {
       this.getCbList()
       this.getOilList()
@@ -169,6 +173,36 @@ export default {
     save() {
       this.putCbList()
       this.putOilList()
+    },
+    low_valuehange(row, value) {
+      if (!value) {
+        row.low_value = 0
+      }
+    },
+    advance_value_change(row, value) {
+      if (!value) {
+        row.advance_value = 0
+      }
+    },
+    adjust_value_change(row, value) {
+      if (!value) {
+        row.adjust_value = 0
+      }
+    },
+    dot_time_change(row, value) {
+      if (!value) {
+        row.dot_time = 0
+      }
+    },
+    fast_speed_change(row, value) {
+      if (!value) {
+        row.fast_speed = 0
+      }
+    },
+    low_speed_change(row, value) {
+      if (!value) {
+        row.low_speed = 0
+      }
     }
   }
 }
