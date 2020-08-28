@@ -1,7 +1,11 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {
+  getToken
+} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -15,10 +19,10 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     // if (config.method === 'get') {
-      // let urlTest = config.url
-      // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
-      // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
-      // let result = params_.substring(1, params_.length - 1)
+    // let urlTest = config.url
+    // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
+    // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
+    // let result = params_.substring(1, params_.length - 1)
     // }
     if (store.getters.token) {
       config.headers['Authorization'] = 'JWT ' + getToken()
@@ -41,24 +45,30 @@ service.interceptors.response.use(
   error => {
     console.log(error.response.data)
     if (Object.prototype.toString.call(error.response.data) === '[object Object]') {
-      let obj = error.response.data
+      const obj = error.response.data
       let str = ''
-      for (let key in obj) {
+      for (const key in obj) {
         if (!(obj[key] instanceof Array)) {
           str += obj[key]
         } else {
           obj[key].forEach(element => {
             str += element + ';'
-          });
+          })
         }
       }
-      // console.log(str, 'strstr')
       Message({
         message: str,
         type: 'error',
         duration: 3 * 1000
       })
       return Promise.reject(error.response.data)
+    } else if (Object.prototype.toString.call(error.response.data) === '[object Array]') {
+      const str = error.response.data.join(',')
+      Message({
+        message: str,
+        type: 'error',
+        duration: 3 * 1000
+      })
     } else {
       Message({
         message: error.message,

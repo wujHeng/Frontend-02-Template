@@ -17,6 +17,15 @@ export function login(data) {
 //   })
 // }
 
+export function personnelsUrl(method, id, data = {}) {
+  const obj = {
+    url: id ? API.PersonnelsUrl + id + '/' : API.PersonnelsUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',

@@ -123,7 +123,7 @@ export function param2Obj(url) {
  * @returns {string}
  */
 export function setDate(_data, bool) {
-  let date = _data ? new Date(_data) : new Date()
+  const date = _data ? new Date(_data) : new Date()
   const formatObj = {
     y: date.getFullYear(),
     m: date.getMonth() + 1,

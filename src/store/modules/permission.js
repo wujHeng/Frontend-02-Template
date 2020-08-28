@@ -1,5 +1,5 @@
 import { asyncRoutes, constantRoutes } from '@/router'
-import router from '@/router'
+// import router from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -50,14 +50,12 @@ const mutations = {
 const actions = {
   generateRoutes({ commit, state }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      let rolesObj = JSON.parse(roles)
-
-      accessedRoutes = filterAsyncRoutesMy(asyncRoutes, rolesObj)
-      //添加的路由
+      const rolesObj = JSON.parse(roles)
+      const accessedRoutes = filterAsyncRoutesMy(asyncRoutes, rolesObj)
+      // 添加的路由
       commit('SET_ROUTES', accessedRoutes)
       // 使用router.addRoutes传accessedRoutes过去相当于push
-      //使用options.routes传allRoutes过去相当于替换
+      // 使用options.routes传allRoutes过去相当于替换
       const allRoutes = constantRoutes.concat(accessedRoutes)
 
       // router.options.routes = allRoutes;
