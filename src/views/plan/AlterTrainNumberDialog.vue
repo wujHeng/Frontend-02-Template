@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="查询计划" :visible.sync="dialogVisible" width="30%">
+  <el-dialog title="修改车次" :visible.sync="dialogVisible" width="30%">
     <el-form :inline="true">
       <el-row>
         <el-form-item label="计划编号: ">
