@@ -2,16 +2,13 @@
   <div>
     <br>
     <el-form :inline="true">
-      <!-- <el-form-item v-show="!!equip_name" label="机台">
-        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item> -->
-      <el-form-item label="机台">
+      <el-form-item label="机台" prop="SelectEquip">
         <el-select
           v-model="equip_name"
           size="mini"
           style="width: 100%"
           clearable
-          :disabled="equip_display_bool"
+          :disabled="true"
         >
           <el-option
             v-for="item in SelectEquipOptions"
@@ -21,6 +18,9 @@
           />
         </el-select>
       </el-form-item>
+      <!-- <el-form-item label="机台">
+        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
+      </el-form-item> -->
       <el-form-item label="配方编号">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
@@ -40,37 +40,37 @@
     <el-form :inline="true">
       <br>
       <el-form-item label="超温最短时间">
-        <el-input-number v-model="mini_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="mini_time" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input-number v-model="mini_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="mini_temp" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input-number v-model="over_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="over_temp" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input-number v-model="batching_error" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="batching_error" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input-number v-model="zz_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="zz_temp" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input-number v-model="xlm_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="xlm_temp" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input-number v-model="cb_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="cb_temp" size="mini" style="width: 70px" />
       </el-form-item>
 
       <br>
 
       <el-form-item label="炼胶超时时间">
-        <el-input-number v-model="over_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="over_time" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input-number v-model="max_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="max_temp" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input-number v-model="reuse_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input v-model="reuse_time" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
@@ -183,16 +183,16 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.time" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.time" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.temperature" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.temperature" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.energy" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.energy" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.power" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.power" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
 
@@ -207,10 +207,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.pressure" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.pressure" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.rpm" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input v-model="step_ele.rpm" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -380,7 +380,7 @@
 </template>
 
 <script>
-import { recipe_list, equip_url, rubber_process_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
+import { equip_url, recipe_list, rubber_process_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 
@@ -389,32 +389,24 @@ export default {
     return {
       // 机台、配方编号、配方名称
       equip_name: null,
-      equip_display_bool: null,
       stage_product_batch_no: null,
       product_name: null,
       // 超温最短时间、进胶最低温度...
-      mini_time: undefined,
-      mini_temp: undefined,
-      over_temp: undefined,
-      batching_error: undefined,
-      zz_temp: undefined,
-      xlm_temp: undefined,
-      cb_temp: undefined,
+      mini_time: null,
+      mini_temp: null,
+      over_temp: null,
+      batching_error: null,
+      zz_temp: null,
+      xlm_temp: null,
+      cb_temp: null,
       // 炼胶超时时间、进胶最高温度...
-      over_time: undefined,
-      max_temp: undefined,
-      reuse_time: undefined,
+      over_time: null,
+      max_temp: null,
+      reuse_time: null,
       reuse_flag: true,
       temp_use_flag: true,
-      sp_num: undefined,
+      sp_num: null,
       used_flag: true,
-      // 密炼步序字段
-      time: undefined,
-      temperature: undefined,
-      energy: undefined,
-      power: undefined,
-      pressure: undefined,
-      rpm: undefined,
       SelectEquipOptions: [],
       rubber_tableData: [],
       carbon_tableData: [],
@@ -481,15 +473,7 @@ export default {
           params: { }
         })
         // 机台、配方编号、配方名称
-        console.log('===============xxxx=========')
-        console.log(this.$route.params)
-        console.log('==============xxxx===========')
-        this.equip_name = this.$route.params['equip']
-        if (this.equip_name == null) {
-          this.equip_display_bool = false
-        } else {
-          this.equip_display_bool = true
-        }
+        this.equip_name = this.$route.params['copy_equip_id']
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
@@ -580,8 +564,6 @@ export default {
           params: { product_batching: id, equip: equip }
         })
         //
-        console.log('----------------------get--------------------')
-        console.log(process_step_listData)
         this.recipe_step_id = process_step_listData.results[0]['id']
         // 超温最短时间、进胶最低温度...
         this.mini_time = process_step_listData.results[0]['mini_time']
@@ -637,16 +619,12 @@ export default {
         const recipe_info_step_list = await rubber_process_url('put', id, obj)
       } catch (e) {}
     },
-    async post_recipe_info_step_list(obj) {
-      try {
-        const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        console.log(recipe_info_step_list)
-      } catch (e) {}
-    },
 
     modify_material_button: async function() {
       this.dialogRubberMaterialStandard = true
       var popup_materialData = await this.popup_material_list(this.$route.params['id'])
+      console.log('-------------------------------------------------------')
+      console.log(popup_materialData)
       this.ProductRecipe = []
       for (var i = 0; i < popup_materialData['batching_details'].length; ++i) {
         this.ProductRecipe.push({
@@ -747,26 +725,19 @@ export default {
       this.RecipeMaterialList.push({
         sn: '',
         //     condition:"",
-        time: undefined,
-        temperature: undefined,
-        energy: undefined,
-        power: undefined,
+        time: '',
+        temperature: '',
+        energy: '',
+        power: '',
         //     action:"",
-        pressure: undefined,
-        rpm: undefined
+        pressure: '',
+        rpm: ''
       })
     },
     del_recipe_step_row: function(step_ele, index) {
       this.RecipeMaterialList.splice(index, 1)
     },
     recipe_save_return: async function() {
-      if (this.equip_name == null) {
-        this.$message({
-          message: '机台不能不能为空',
-          type: 'error'
-        })
-        return
-      }
       var step_details_list = []
       // 循环整个表格
       for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
@@ -791,81 +762,39 @@ export default {
           })
         }
       }
-      if (this.mini_time && this.mini_temp && this.over_temp && this.batching_error && this.zz_temp &&
-          this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time && this.reuse_flag && this.temp_use_flag &&
-          this.sp_num) {
-        if (this.recipe_step_id != null) {
-          await this.put_recipe_info_step_list(
-            this.recipe_step_id,
-            { data: {
-            // 配方基础信息中第一行
-              'mini_time': this.mini_time,
-              'mini_temp': this.mini_temp,
-              'over_temp': this.over_temp,
-              'batching_error': this.batching_error,
-              'zz_temp': this.zz_temp,
-              'xlm_temp': this.xlm_temp,
-              'cb_temp': this.cb_temp,
-              // 配方基础信息中第二行
-              'over_time': this.over_time,
-              'max_temp': this.max_temp,
-              'reuse_time': this.reuse_time,
-              'reuse_flag': this.reuse_flag,
-              'temp_use_flag': this.temp_use_flag,
-              'sp_num': this.sp_num,
-              'used_flag': this.used_flag,
-              // 密炼步序list
-              'process_details': step_details_list,
-              // 设备id与配方id
-              'equip': this.$route.params['equip'],
-              'product_batching': this.$route.params['id']
 
-            }},
-            this.$message({
-              message: this.stage_product_batch_no + '配方步序修改成功',
-              type: 'success'
-            }),
-            this.$router.push({ name: 'RecipeList' })
-          )
-        } else {
-          await this.post_recipe_info_step_list(
-            { data: {
-              // 配方基础信息中第一行
-              'mini_time': this.mini_time,
-              'mini_temp': this.mini_temp,
-              'over_temp': this.over_temp,
-              'batching_error': this.batching_error,
-              'zz_temp': this.zz_temp,
-              'xlm_temp': this.xlm_temp,
-              'cb_temp': this.cb_temp,
-              // 配方基础信息中第二行
-              'over_time': this.over_time,
-              'max_temp': this.max_temp,
-              'reuse_time': this.reuse_time,
-              'reuse_flag': this.reuse_flag,
-              'temp_use_flag': this.temp_use_flag,
-              'sp_num': this.sp_num,
-              'used_flag': this.used_flag,
-              // 密炼步序list
-              'process_details': step_details_list,
-              // 设备id与配方id
-              'equip': this.equip_name,
-              'product_batching': this.$route.params['id']
+      await this.put_recipe_info_step_list(
+        this.recipe_step_id,
+        { data: {
+          // 配方基础信息中第一行
+          'mini_time': this.mini_time,
+          'mini_temp': this.mini_temp,
+          'over_temp': this.over_temp,
+          'batching_error': this.batching_error,
+          'zz_temp': this.zz_temp,
+          'xlm_temp': this.xlm_temp,
+          'cb_temp': this.cb_temp,
+          // 配方基础信息中第二行
+          'over_time': this.over_time,
+          'max_temp': this.max_temp,
+          'reuse_time': this.reuse_time,
+          'reuse_flag': this.reuse_flag,
+          'temp_use_flag': this.temp_use_flag,
+          'sp_num': this.sp_num,
+          'used_flag': this.used_flag,
+          // 密炼步序list
+          'process_details': step_details_list,
+          // 设备id与配方id
+          'equip': this.$route.params['equip'],
+          'product_batching': this.$route.params['id']
 
-            }},
-            this.$message({
-              message: this.stage_product_batch_no + '配方步序修改成功',
-              type: 'success'
-            }),
-            this.$router.push({ name: 'RecipeList' })
-          )
-        }
-      } else {
+        }},
         this.$message({
-          message: '配方基本信息不能为空',
-          type: 'error'
-        })
-      }
+          message: this.stage_product_batch_no + '配方步序修改成功',
+          type: 'success'
+        }),
+        this.$router.push({ name: 'RecipeList' })
+      )
     }
 
   }
@@ -878,14 +807,5 @@ export default {
     color: #606266;
     line-height: 40px;
     font-weight: 700;
-}
-.el-input-number.is-controls-right .el-input__inner {
-    padding-left: 0px;
-    padding-right: 0px;
-    width: 13px;
-}
-.el-input-number--mini .el-input-number__decrease, .el-input-number--mini .el-input-number__increase {
-    width: 13px;
-    font-size: 12px;
 }
 </style>
