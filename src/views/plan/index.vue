@@ -244,7 +244,6 @@ export default {
       this.params = {}
       this.getPlanList()
     },
-
     async getClassList() {
       try {
         const classData = await globalCodes('get', {
@@ -394,6 +393,7 @@ export default {
       this.getPlanList()
     }
   }
+
 }
 </script>
 

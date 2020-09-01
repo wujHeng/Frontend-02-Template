@@ -138,7 +138,7 @@ import {
   postProductDayPlanManyCreate
 } from '@/api/plan'
 
-import dayjs from 'dayjs'
+// import dayjs from 'dayjs'
 
 export default {
   data() {
@@ -408,5 +408,6 @@ export default {
       }
       this.statistic()
     }
-  }}
+  }
+}
 </script>
