@@ -16,6 +16,20 @@ export function recipe_list(method, id = null, data = {}) {
   return request(obj)
 }
 
+export function recipe_copy_list(method, id = null, data = {}) {
+  if (id) {
+    var v_url = API.RubberMaterialCopyUrl + id + '/'
+  } else {
+    var v_url = API.RubberMaterialCopyUrl
+  }
+  const obj = {
+    url: v_url,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
 export function rubber_process_url(method, id = null, data = {}) {
   if (id) {
     var v_url = API.RubberProcessStepUrl + id + '/'

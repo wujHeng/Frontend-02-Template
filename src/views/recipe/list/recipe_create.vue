@@ -119,37 +119,37 @@
     <el-form :inline="true">
       <br>
       <el-form-item label="超温最短时间">
-        <el-input v-model="mini_time" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_time" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input v-model="mini_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input v-model="over_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input v-model="batching_error" size="mini" style="width: 70px" />
+        <el-input-number v-model="batching_error" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input v-model="zz_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="zz_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input v-model="xlm_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="xlm_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input v-model="cb_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="cb_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
 
       <br>
 
       <el-form-item label="炼胶超时时间">
-        <el-input v-model="over_time" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_time" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input v-model="max_temp" size="mini" style="width: 70px" />
+        <el-input-number v-model="max_temp" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input v-model="reuse_time" size="mini" style="width: 70px" />
+        <el-input-number v-model="reuse_time" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
@@ -262,16 +262,16 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.time" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.time" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.temperature" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.temperature" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.energy" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.energy" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.power" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.power" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
 
@@ -286,10 +286,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.pressure" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.pressure" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input v-model="step_ele.rpm" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.rpm" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -541,21 +541,28 @@ export default {
       stage_product_batch_no: null,
       product_batching: null,
       // 超温最短时间、进胶最低温度...
-      mini_time: null,
-      mini_temp: null,
-      over_temp: null,
-      batching_error: null,
-      zz_temp: null,
-      xlm_temp: null,
-      cb_temp: null,
+      mini_time: undefined,
+      mini_temp: undefined,
+      over_temp: undefined,
+      batching_error: undefined,
+      zz_temp: undefined,
+      xlm_temp: undefined,
+      cb_temp: undefined,
       // 炼胶超时时间、进胶最高温度...
-      over_time: null,
-      max_temp: null,
-      reuse_time: null,
+      over_time: undefined,
+      max_temp: undefined,
+      reuse_time: undefined,
       reuse_flag: true,
       temp_use_flag: true,
-      sp_num: null,
-      used_flag: true
+      sp_num: undefined,
+      used_flag: true,
+      // 密炼步序字段
+      time: undefined,
+      temperature: undefined,
+      energy: undefined,
+      power: undefined,
+      pressure: undefined,
+      rpm: undefined
     }
   },
   created() {
@@ -733,13 +740,13 @@ export default {
       this.product_batching = post_material_Data['id']
       for (var j = 0; j < post_material_Data['batching_details'].length; ++j) {
         var v_auto_falg = ''
-          if (post_material_Data['batching_details'][j]['auto_flag'] == 1) {
-            v_auto_falg = '自动'
-          } else if (post_material_Data['batching_details'][j]['auto_flag'] == 2) {
-            v_auto_falg = '手动'
-          } else {
-            v_auto_falg = '其他'
-          }
+        if (post_material_Data['batching_details'][j]['auto_flag'] == 1) {
+          v_auto_falg = '自动'
+        } else if (post_material_Data['batching_details'][j]['auto_flag'] == 2) {
+          v_auto_falg = '手动'
+        } else {
+          v_auto_falg = '其他'
+        }
         if (post_material_Data['batching_details'][j]['material_type'] == '炭黑') {
           this.carbon_tableData.push({
             sn: this.carbon_tableData.length + 1,
@@ -868,13 +875,13 @@ export default {
       this.RecipeMaterialList.push({
         sn: '',
         //     condition:"",
-        time: '',
-        temperature: '',
-        energy: '',
-        power: '',
+        time: undefined,
+        temperature: undefined,
+        energy: undefined,
+        power: undefined,
         //     action:"",
-        pressure: '',
-        rpm: ''
+        pressure: undefined,
+        rpm: undefined
       })
     },
     del_recipe_step_row: function(step_ele, index) {
@@ -971,4 +978,19 @@ export default {
     line-height: 40px;
     font-weight: 700;
 }
+.el-input-number.is-controls-right .el-input__inner {
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 13px;
+}
+.el-input-number--mini .el-input-number__decrease, .el-input-number--mini .el-input-number__increase {
+    width: 13px;
+    font-size: 12px;
+}
+
+// .limit_input {
+//     padding-left: 0px;
+//     padding-right: 0px;
+//     width: 13px;
+// }
 </style>
