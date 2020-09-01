@@ -175,12 +175,19 @@ export const asyncRoutes = [
     path: '/user-info',
     component: Layout,
     redirect: '/user-info/index',
+    meta: { title: '用户信息' },
     children: [
       {
         path: 'index',
         name: 'userInfo',
         component: () => import('@/views/userInfo/index'),
         meta: { title: '用户管理' }
+      },
+      {
+        path: 'roles-manage',
+        name: 'rolesManage',
+        component: () => import('@/views/roles-manage/index'),
+        meta: { title: '角色管理' }
       }
     ]
   },
