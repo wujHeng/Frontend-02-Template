@@ -408,5 +408,5 @@ export default {
       }
       this.statistic()
     }
-}
+  }}
 </script>
