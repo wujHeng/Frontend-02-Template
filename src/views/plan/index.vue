@@ -2,6 +2,16 @@
   <div style="margin-top: 25px">
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
+        <el-form-item label="机台">
+          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
+            <el-option
+              v-for="item in equipOptions"
+              :key="item.equip_no"
+              :label="item.equip_no"
+              :value="item.equip_no"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item style="float: right">
           <el-button type="info" @click="showFindDialog">查询</el-button>
           <el-button type="info" @click="showAddPlanDialog">新增</el-button>
@@ -13,16 +23,6 @@
     </el-row>
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
-        <el-form-item label="机台">
-          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
-            <el-option
-              v-for="item in equipOptions"
-              :key="item.equip_no"
-              :label="item.equip_no"
-              :value="item.equip_no"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item style="float: right">
           <el-button type="info" :disabled="disabled" @click="upPlan">上调</el-button>
           <el-button type="info" :disabled="disabled" @click="downPlan">下调</el-button>
@@ -36,7 +36,7 @@
         </el-form-item>
       </el-form>
     </el-row>
-    <div style="border-radius: 2px">
+    <div style="border-radius: 2px; border:.5px solid #000; padding:10px">
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="机台">
@@ -244,6 +244,7 @@ export default {
       this.params = {}
       this.getPlanList()
     },
+
     async getClassList() {
       try {
         const classData = await globalCodes('get', {
@@ -337,6 +338,7 @@ export default {
         this.$message.error(error)
       }
     },
+
     stopPlan() {
       stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(
         (response) => {
@@ -348,6 +350,7 @@ export default {
         }
       )
     },
+
     retransmissionpPlan() {
       retransmissionpPlan({
         id: this.currentRow.id,
@@ -391,7 +394,6 @@ export default {
       this.getPlanList()
     }
   }
-
 }
 </script>
 
