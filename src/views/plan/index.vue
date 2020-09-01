@@ -87,8 +87,8 @@
       <el-table-column prop="plan_classes_uid" label="计划编号" />
       <el-table-column prop="sn" label="序号" />
       <el-table-column prop="stage_product_batch_no" label="配方名称" />
-      <el-table-column prop="begin_time" label="开始时间" />
-      <el-table-column prop="end_time" label="结束时间" />
+      <el-table-column prop="begin_time" label="开始时间" width="160px" />
+      <el-table-column prop="end_time" label="结束时间" width="160px" />
       <el-table-column prop="equip_name" label="机台" />
       <el-table-column prop="classes" label="班次" />
       <el-table-column prop="plan_trains" label="设定" />
