@@ -227,19 +227,13 @@ export default {
       if (!plansForAdd_.length) return
 
       postProductDayPlanManyCreate(plansForAdd_)
-        .then(function(response) {
-          app.addPlanDialog = false
+        .then(response => {
+          app.addPlanVisible = false
           app.$message('创建成功')
           app.$emit('handleSuccessed')
         })
-        .catch(function(error) {
-          app.$alert(
-            JSON.stringify(error.response.data.join(',').trim()),
-            '错误',
-            {
-              confirmButtonText: '确定'
-            }
-          )
+        // eslint-disable-next-line handle-callback-err
+        .catch(error => {
         })
     },
     async addOnePlan() {
@@ -362,7 +356,6 @@ export default {
         for (var k = 0; k < plans.length; k++) {
           var plan = plans[k]
           const res = await getPlanSchedule(plan.plan_schedule)
-          // const res = await axios.get(PlanScheduleUrl + plan.plan_schedule + '/')
           const planSchedule = res.data
           batching_weight += Number(plan.batching_weight)
           production_time_interval += Number(plan.production_time_interval)
@@ -371,18 +364,18 @@ export default {
             pdp_product_classes_plan[i].plan_trains += Number(class_plan.plan_trains)
             pdp_product_classes_plan[i].weight += Number(class_plan.weight)
             pdp_product_classes_plan[i].time += Number(class_plan.time)
-            var workSchedulePlanTimeSpan =
-                                dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
-                                  dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
-            if (pdp_product_classes_plan[i].time > workSchedulePlanTimeSpan) {
-              this.$alert('机台' + plan.equip_.equip_no +
-                                    planSchedule.work_schedule_plan[i].classes_name +
-                                    '计划时间大于排班时间' + '(计划时间' + pdp_product_classes_plan[i].time + '分钟' +
-                                    ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
-                                    ')', '警告', {
-                confirmButtonText: '确定'
-              })
-            }
+            // var workSchedulePlanTimeSpan =
+            //                     dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
+            //                       dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
+            // if (pdp_product_classes_plan[i].time > workSchedulePlanTimeSpan) {
+            //   this.$alert('机台' + plan.equip_.equip_no +
+            //                         planSchedule.work_schedule_plan[i].classes_name +
+            //                         '计划时间大于排班时间' + '(计划时间' + pdp_product_classes_plan[i].time + '分钟' +
+            //                         ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
+            //                         ')', '警告', {
+            //     confirmButtonText: '确定'
+            //   })
+            // }
           }
         }
         // for (i = 0; i < 3; i++) {
