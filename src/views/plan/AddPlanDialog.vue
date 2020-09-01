@@ -1,5 +1,9 @@
 <template>
-  <el-dialog width="90%" :visible.sync="addPlanDialog" title="添加胶料日生产计划">
+  <el-dialog
+    width="90%"
+    :visible.sync="addPlanVisible"
+    title="添加胶料日生产计划"
+  >
     <div style="margin-bottom: 15px">
       <el-select v-model="equipIdForAdd" filterable placeholder="请选择机台" style="margin-right: 10px">
         <el-option
@@ -21,7 +25,7 @@
         <el-option
           v-for="planSchedule in planSchedules"
           :key="planSchedule.id"
-          :label="planSchedule.work_schedule_name"
+          :label="planSchedule.work_schedule__schedule_name"
           :value="planSchedule.id"
         />
       </el-select>
@@ -29,14 +33,14 @@
       <el-button style="float: right" @click="batchSave">保存</el-button>
       <el-button @click="addOnePlan">添加</el-button>
     </div>
-    <el-table :data="plansForAdd" border>
+    <el-table
+      :data="plansForAdd"
+      border
+    >
       <el-table-column fixed prop="equip_.equip_no" label="机台" width="150" />
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
-          <el-select
-            v-model="scope.row.product_batching"
-            @change="productBatchingChanged(scope.row)"
-          >
+          <el-select v-model="scope.row.product_batching" @change="productBatchingChanged(scope.row)">
             <el-option
               v-for="productBatching in scope.row.productBatchings"
               :key="productBatching.id"
@@ -51,11 +55,11 @@
       <el-table-column label="当前库存（吨）" />
       <el-table-column label="早班计划">
         <el-table-column label="顺序" width="210">
-          <template
-            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable"
-            slot-scope="scope"
-          >
-            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[0].sn" :min="0" />
+          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
+            <el-input-number
+              v-model.number="scope.row.pdp_product_classes_plan[0].sn"
+              :min="0"
+            />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -73,11 +77,11 @@
       </el-table-column>
       <el-table-column label="中班计划">
         <el-table-column label="顺序" width="210">
-          <template
-            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable"
-            slot-scope="scope"
-          >
-            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[1].sn" :min="0" />
+          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
+            <el-input-number
+              v-model.number="scope.row.pdp_product_classes_plan[1].sn"
+              :min="0"
+            />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -95,11 +99,11 @@
       </el-table-column>
       <el-table-column label="晚班计划">
         <el-table-column label="顺序" width="210">
-          <template
-            v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable"
-            slot-scope="scope"
-          >
-            <el-input-number v-model.number="scope.row.pdp_product_classes_plan[2].sn" :min="0" />
+          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
+            <el-input-number
+              v-model.number="scope.row.pdp_product_classes_plan[2].sn"
+              :min="0"
+            />
           </template>
         </el-table-column>
         <el-table-column label="车次" width="210">
@@ -115,6 +119,11 @@
         <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" />
         <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" />
       </el-table-column>
+      <el-table-column label="操作">
+        <template v-if="!scope.row.sum" slot-scope="scope">
+          <el-button type="danger" @click="deleteOnePlan(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </el-dialog>
 </template>
@@ -125,42 +134,42 @@ import {
   getRubberMateria,
   getWorkSchedules,
   getPlanSchedules,
+  getPlanSchedule,
   postProductDayPlanManyCreate
 } from '@/api/plan'
+
+import dayjs from 'dayjs'
 
 export default {
   data() {
     return {
-      addPlanDialog: false,
+      addPlanVisible: false,
       equipIdForAdd: null,
       equips: [],
       equipById: {},
       day_time: '',
-      selectDateArr: [],
       planScheduleId: null,
       planSchedules: [],
+      workSchedules: [],
       plansForAdd: [],
-      // productBatchings: [],
-      productBatchingById: {},
-      workSchedules: []
+      productBatchingById: {}
     }
+  },
+  created() {
+    this.getEquipList()
+    this.getRubberMateria()
+    this.getWorkSchedules()
   },
   methods: {
     show() {
-      this.addPlanDialog = true
-      this.selectDateArr = ['2020-8-5 11:20:00', '2020-8-7 11:20:00', '2020-8-15  11:20:00']
-      this.selectDateArr = this.setTimeStamp(this.selectDateArr)
-      this.getEquipList()
-      // this.getRubberMateria()
-      // this.getPlanSchedules()
-      this.getWorkSchedules()
+      this.addPlanVisible = true
     },
 
     async getEquipList() {
       try {
         const equipData = await equip('get')
         this.equips = equipData.results
-        this.equips.forEach(function(equip) {
+        this.equips.forEach(equip => {
           this.equipById[equip.id] = equip
         })
       // eslint-disable-next-line no-empty
@@ -234,22 +243,13 @@ export default {
         })
     },
     async addOnePlan() {
-      if (!this.equipIdForAdd) {
+      if (!this.equipIdForAdd || !this.planScheduleId) {
         return
       }
-      var planSchedule = this.planSchedules.find((planSchedule) => {
-        return planSchedule.id === this.planScheduleId
-      })
-      var workSchedule = this.workSchedules.find((workSchedule) => {
+      const planSchedule = await getPlanSchedule(this.planScheduleId)
+      var workSchedule = this.workSchedules.find(workSchedule => {
         return workSchedule.id === planSchedule.work_schedule
       })
-      if (!planSchedule.work_schedule_plan) {
-        this.$alert('无排班数据', '错误', {
-          confirmButtonText: '确定'
-        })
-        console.log(planSchedule)
-        return
-      }
       if (!planSchedule.work_schedule_plan.length) {
         this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
           confirmButtonText: '确定'
@@ -276,6 +276,15 @@ export default {
         plan_schedule: this.planScheduleId,
         pdp_product_classes_plan
       }
+      const rubberMateriaData = await getRubberMateria({
+        all: 1,
+        used_type: 4,
+        dev_type: this.equipById[this.equipIdForAdd].category
+      })
+      this.$set(plan, 'productBatchings', rubberMateriaData.results)
+      rubberMateriaData.results.forEach(batching => {
+        this.productBatchingById[batching.id] = batching
+      })
       if (this.equipFirstIndexInPlansForAdd() === -1) {
         this.plansForAdd.push(plan)
         var planForSum = JSON.parse(JSON.stringify(plan))
@@ -287,55 +296,48 @@ export default {
         this.plansForAdd.splice(lastIndex, 0, plan)
       }
     },
-    equipFirstIndexInPlansForAdd() {
-      for (var i = 0; i < this.plansForAdd.length; i++) {
-        if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) return i
-      }
-      return -1
-    },
     equipLastIndexInPlansForAdd() {
       for (var i = 0; i < this.plansForAdd.length; i++) {
         if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) {
           var last = true
           for (var j = i + 1; j < this.plansForAdd.length; j++) {
-            if (this.plansForAdd[j] === this.equipIdForAdd) last = false
+            if (this.plansForAdd[j] === this.equipIdForAdd) { last = false }
           }
-          if (last) return i
+          if (last) { return i }
         }
       }
       return -1
     },
+    equipFirstIndexInPlansForAdd() {
+      for (var i = 0; i < this.plansForAdd.length; i++) {
+        if (this.plansForAdd[i].equip_.id === this.equipIdForAdd) { return i }
+      }
+      return -1
+    },
     productBatchingChanged(planForAdd) {
-      planForAdd['batching_weight'] = this.productBatchingById[
-        planForAdd.product_batching
-      ].batching_weight
-      planForAdd['production_time_interval'] = this.productBatchingById[
-        planForAdd.product_batching
-      ].production_time_interval
+      planForAdd['batching_weight'] = this.productBatchingById[planForAdd.product_batching].batching_weight
+      planForAdd['production_time_interval'] = this.productBatchingById[planForAdd.product_batching].production_time_interval
       for (var i = 0; i < 3; i++) {
-        this.planTrainsChanged(planForAdd, i)
         this.planTrainsChanged(planForAdd, i, false)
       }
       this.statistic()
     },
     planTrainsChanged(planForAdd, columnIndex, sum = true) {
-      if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) return
+      if (!planForAdd['pdp_product_classes_plan'][columnIndex].enable) { return }
 
-      planForAdd['pdp_product_classes_plan'][columnIndex]['time'] = (
-        planForAdd['production_time_interval'] *
-        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']
-      ).toFixed(2)
+      planForAdd['pdp_product_classes_plan'][columnIndex]['time'] =
+                    (planForAdd['production_time_interval'] *
+                        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']).toFixed(2)
 
-      planForAdd['pdp_product_classes_plan'][columnIndex]['weight'] = (
-        planForAdd['batching_weight'] *
-        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']
-      ).toFixed(2)
+      planForAdd['pdp_product_classes_plan'][columnIndex]['weight'] =
+                    (planForAdd['batching_weight'] *
+                        planForAdd['pdp_product_classes_plan'][columnIndex]['plan_trains']).toFixed(2)
       if (sum) { this.statistic() }
     },
     async statistic() {
       var plansByEquip = {}
       var planSumByEquipId = {}
-      this.plansForAdd.forEach(function(plan) {
+      this.plansForAdd.forEach(plan => {
         if (!plan.sum) {
           if (!plansByEquip[plan.equip]) {
             plansByEquip[plan.equip] = []
@@ -350,61 +352,61 @@ export default {
         var batching_weight = 0
         var production_time_interval = 0
         var pdp_product_classes_plan = []
-        for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
           pdp_product_classes_plan.push({
             plan_trains: 0,
             weight: 0,
             time: 0
           })
         }
-        var app = this
-        plans.forEach(async function(plan) {
-          const res = await axios.get(PlanScheduleUrl + plan.plan_schedule + '/')
+        for (var k = 0; k < plans.length; k++) {
+          var plan = plans[k]
+          const res = await getPlanSchedule(plan.plan_schedule)
+          // const res = await axios.get(PlanScheduleUrl + plan.plan_schedule + '/')
           const planSchedule = res.data
           batching_weight += Number(plan.batching_weight)
           production_time_interval += Number(plan.production_time_interval)
           for (var i = 0; i < 3; i++) {
             var class_plan = plan.pdp_product_classes_plan[i]
-            pdp_product_classes_plan[i].plan_trains += Number(
-              class_plan.plan_trains
-            )
+            pdp_product_classes_plan[i].plan_trains += Number(class_plan.plan_trains)
             pdp_product_classes_plan[i].weight += Number(class_plan.weight)
             pdp_product_classes_plan[i].time += Number(class_plan.time)
             var workSchedulePlanTimeSpan =
-                            dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
-                              dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
+                                dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
+                                  dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
             if (pdp_product_classes_plan[i].time > workSchedulePlanTimeSpan) {
-              app.$alert('机台' + plan.equip_.equip_no +
+              this.$alert('机台' + plan.equip_.equip_no +
                                     planSchedule.work_schedule_plan[i].classes_name +
                                     '计划时间大于排班时间' + '(计划时间' + pdp_product_classes_plan[i].time + '分钟' +
-                                ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
-                                ')', '警告', {
+                                    ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
+                                    ')', '警告', {
                 confirmButtonText: '确定'
               })
             }
           }
-        })
+        }
         // for (i = 0; i < 3; i++) {
-        //   pdp_product_classes_plan[i].weight = pdp_product_classes_plan[
-        //     i
-        //   ].weight.toFixed(2)
-        //   pdp_product_classes_plan[i].time = pdp_product_classes_plan[
-        //     i
-        //   ].time.toFixed(2)
+        //
+        //     pdp_product_classes_plan[i].weight = pdp_product_classes_plan[i].weight.toFixed(2);
+        //     pdp_product_classes_plan[i].time = pdp_product_classes_plan[i].time.toFixed(2);
         // }
+
         batching_weight = batching_weight.toFixed(3)
         production_time_interval = production_time_interval.toFixed(2)
-        // eslint-disable-next-line no-unused-vars
-        var equip = this.equipById[equipId]
         planSumByEquipId[equipId].batching_weight = batching_weight
-        planSumByEquipId[
-          equipId
-        ].production_time_interval = production_time_interval
-        planSumByEquipId[
-          equipId
-        ].pdp_product_classes_plan = pdp_product_classes_plan
+        planSumByEquipId[equipId].production_time_interval = production_time_interval
+        planSumByEquipId[equipId].pdp_product_classes_plan = pdp_product_classes_plan
       }
+    },
+    deleteOnePlan(plan) {
+      this.plansForAdd.splice(this.plansForAdd.indexOf(plan), 1)
+      var plans = this.plansForAdd.filter(plan_ => {
+        return plan_.equip === plan.equip
+      })
+      if (plans.length === 1 && plans[0].sum) {
+        this.plansForAdd.splice(this.plansForAdd.indexOf(plans[0]), 1)
+      }
+      this.statistic()
     }
-  }
 }
 </script>

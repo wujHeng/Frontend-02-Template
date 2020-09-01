@@ -125,6 +125,13 @@ export function getPlanSchedules(params) {
   })
 }
 
+export function getPlanSchedule(id) {
+  return request({
+    url: API.PlanScheduleUrl + id + '/',
+    method: 'get'
+  })
+}
+
 export function postProductDayPlanManyCreate(data) {
   return request({
     url: API.ProductDayPlanManyCreateUrl,
