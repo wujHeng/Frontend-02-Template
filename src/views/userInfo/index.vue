@@ -87,7 +87,7 @@
     />
 
     <el-dialog
-      title="添加用户"
+      title="编辑用户"
       :visible.sync="dialogCreateUserVisible"
       :before-close="handleClose"
     >
@@ -131,6 +131,22 @@
         >
           <el-input v-model.number="userForm.num" />
         </el-form-item>
+        <el-form-item label="角色" size="medium">
+          <el-transfer
+            v-model="userForm.groups"
+            :titles="['可用 角色', '选中的 角色']"
+            :props="{key: 'id', label: 'name'}"
+            :data="groups"
+          />
+        </el-form-item>
+        <el-form-item label="权限" size="medium">
+          <el-transfer
+            v-model="userForm.user_permissions"
+            :titles="['可用 用户权限', '选中的 用户权限']"
+            :props="{key: 'id', label: 'name'}"
+            :data="permissions"
+          />
+        </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -149,6 +165,8 @@
 
 <script>
 import { personnelsUrl } from '@/api/user'
+import { permissions } from '@/api/permission'
+import { roles } from '@/api/roles-manage'
 import page from '@/components/page'
 // import { setDate } from '@/utils/index'
 export default {
@@ -183,7 +201,14 @@ export default {
       },
       currentPage: 1,
       dialogCreateUserVisible: false,
-      userForm: {},
+      userForm: {
+        username: '',
+        password: '',
+        checkPass: '',
+        num: null,
+        user_permissions: [],
+        groups: []
+      },
       tableData: [],
       count: 0,
       rules: {
@@ -199,10 +224,24 @@ export default {
         num: [
           { required: true, message: '请填写工号', trigger: 'blur' }
         ]
-      }
+      },
+      permissions: [],
+      groups: []
     }
   },
   created() {
+    roles('get', null, {
+      params: { all: 1 }
+    }).then(response => {
+      this.groups = response.results
+    // eslint-disable-next-line handle-callback-err
+    }).catch(error => {
+    })
+    permissions('get', null).then(response => {
+      this.permissions = response.results
+    // eslint-disable-next-line handle-callback-err
+    }).catch(error => {
+    })
     this.currentChange()
   },
   methods: {
@@ -237,13 +276,14 @@ export default {
       }
     },
     showEditUserDialog(row) {
-      this.userForm = {
-        username: '',
-        num: null
-      }
-      this.userForm.id = row.id
-      this.userForm.username = row.username
-      this.userForm.num = row.num
+      // this.userForm = {
+      //   username: '',
+      //   num: null
+      // }
+      // this.userForm.id = row.id
+      // this.userForm.username = row.username
+      // this.userForm.num = row.num
+      this.userForm = JSON.parse(JSON.stringify(row))
       this.dialogCreateUserVisible = true
     },
     handleUserDelete(row) {

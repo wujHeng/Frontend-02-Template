@@ -72,5 +72,9 @@ export default {
 
   WorkSchedulesUrl: '/api/v1/basics/work_schedules/',
 
-  ChildSystemsUrl: '/api/v1/system/child-systems/'
+  ChildSystemsUrl: '/api/v1/system/child-systems/',
+
+  GroupUrl: '/api/v1/system/group_extension/',
+
+  PermissionUrl: '/api/v1/system/permission/'
 }
