@@ -337,7 +337,6 @@ export default {
         this.$message.error(error)
       }
     },
-
     stopPlan() {
       stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(
         (response) => {
@@ -349,7 +348,6 @@ export default {
         }
       )
     },
-
     retransmissionpPlan() {
       retransmissionpPlan({
         id: this.currentRow.id,

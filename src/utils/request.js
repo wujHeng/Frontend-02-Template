@@ -63,12 +63,34 @@ service.interceptors.response.use(
       })
       return Promise.reject(error.response.data)
     } else if (Object.prototype.toString.call(error.response.data) === '[object Array]') {
-      const str = error.response.data.join(',')
+      //       0: {}
+      // 1:
+      // non_field_errors: ["当天该机台已有相同的胶料计划数据，请修改后重试!"]
+      // __proto__: Object
+      // 2:
+      // non_field_errors: ["当天该机台已有相同的胶料计划数据，请修改后重试!"]
+      // __proto__: Object
+      // length: 3
+      // __proto__: Array(0)
+
+      // let str = error.response.data.join(',')
+      // if (error.response.data[0] && error.response.data[0].non_field_errors) {
+      //   str = error.response.data[0].non_field_errors.join(',')
+      // }
+
+      let str = ''
+      let row = 0
+      error.response.data.forEach(errorData => {
+        if (errorData && errorData.non_field_errors) {
+          str += (`${row++} : ${errorData.non_field_errors.join(',')}\n`)
+        }
+      })
       Message({
         message: str,
         type: 'error',
         duration: 3 * 1000
       })
+      return Promise.reject(error.response.data)
     } else {
       Message({
         message: error.message,
