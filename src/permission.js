@@ -20,7 +20,9 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  const hasRoles = store.getters.roles && JSON.stringify(store.getters.roles) !== '{}'
+  const hasPermission = store.getters.permission && JSON.stringify(store.getters.permission) !== '{}'
+
+  console.log(store.getters.permission, 'store.getters.permission')
 
   if (hasToken) {
     // 有登录
@@ -31,7 +33,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // 有身份信息,存在了全局
       // try {
-      if (!hasRoles) {
+      if (!hasPermission) {
         await store.dispatch('user/logout')
         // eslint-disable-next-line no-undef
         Message.error('Has Error')
@@ -43,7 +45,7 @@ router.beforeEach(async(to, from, next) => {
         if (addRoutes) {
           next()
         } else {
-          const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.permission)
           router.options.routes = accessRoutes
           router.addRoutes(accessRoutes)
           next({ ...to })
