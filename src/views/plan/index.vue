@@ -93,7 +93,7 @@
       <el-table-column prop="classes" label="班次" />
       <el-table-column prop="plan_trains" label="设定" />
       <el-table-column prop="actual_trains" label="完成" />
-      <el-table-column prop="operation_user" label="操作员" />
+      <el-table-column prop="created_username" label="操作员" />
       <el-table-column prop="status" label="状态" />
     </el-table>
     <page :total="total" @currentChange="currentChange" />
