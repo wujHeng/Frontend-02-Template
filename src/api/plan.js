@@ -42,11 +42,11 @@ export function stopPlan(params) {
   })
 }
 
-export function retransmissionpPlan(params) {
+export function retransmissionpPlan(data) {
   return request({
-    url: API.RetransmissionpPlanUrl,
-    method: 'get',
-    params
+    url: API.IssuedPlanUrl,
+    method: 'put',
+    data
   })
 }
 
