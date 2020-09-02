@@ -8,6 +8,7 @@
           style="width: 100px"
           clearable
           placeholder="请选择"
+          :disabled="select_recipe_component"
         >
           <el-option
             v-for="item in SelectEquipOptions"
@@ -24,6 +25,7 @@
           style="width: 100px"
           clearable
           placeholder="请选择"
+          :disabled="select_recipe_component"
         >
           <el-option
             v-for="item in SelectSiteOptions"
@@ -40,6 +42,7 @@
           style="width: 100px"
           clearable
           placeholder="请选择"
+          :disabled="select_recipe_component"
         >
           <el-option
             v-for="item in SelectSITEOptions"
@@ -57,6 +60,7 @@
           style="width: 100px"
           clearable
           placeholder="请选择"
+          :disabled="select_recipe_component"
         >
           <el-option
             v-for="item in SelectRecipeNoOptions"
@@ -74,6 +78,7 @@
           style="width: 100px"
           clearable
           placeholder="请选择"
+          :disabled="select_recipe_component"
         >
           <el-option
             v-for="item in SelectStageOptions"
@@ -85,17 +90,17 @@
       </el-form-item>
 
       <el-form-item label="版本" prop="version">
-        <el-input v-model="generateRecipeForm.version" style="width: 90px" size="mini" placeholder="版本" />
+        <el-input v-model="generateRecipeForm.version" :disabled="select_recipe_component" style="width: 90px" size="mini" placeholder="版本" />
       </el-form-item>
       <el-form-item label="方案">
-        <el-input v-model="generateRecipeForm.scheme" style="width: 90px" size="mini" placeholder="方案" />
+        <el-input v-model="generateRecipeForm.scheme" :disabled="select_recipe_component" style="width: 90px" size="mini" placeholder="方案" />
       </el-form-item>
 
       <!-- <el-form-item style="float: right">
         <el-button type="primary" @click="generateRecipeButton('generateRecipeForm')">生成</el-button>
       </el-form-item> -->
       <el-form-item>
-        <el-button size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
+        <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
       </el-form-item>
     </el-form>
 
@@ -122,22 +127,22 @@
         <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input-number v-model="over_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input-number v-model="batching_error" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
 
       <br>
@@ -146,10 +151,10 @@
         <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input-number v-model="max_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="max_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-show="reuse_flag" v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
@@ -265,13 +270,13 @@
                   <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="1" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.1" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.1" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
 
@@ -286,10 +291,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.1" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="1" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -478,6 +483,7 @@ export default {
       materialType: null,
       search_material_no: null,
       search_material_name: null,
+      select_recipe_component: false,
       sp_num_options: [{
         value: '1',
         label: '1车/托'
@@ -675,7 +681,9 @@ export default {
       try {
         const recipe_listData = await recipe_list('post', null, obj)
         return recipe_listData
-      } catch (e) {}
+      } catch (e) {
+        return e
+      }
     },
     async post_recipe_info_step_list(obj) {
       try {
@@ -734,9 +742,17 @@ export default {
           'equip': this.generateRecipeForm['SelectEquip']
         }}
       )
+      // console.log('=====================xxx')
+      // console.log(post_material_Data)
+      // console.log('=====================xxx')
+      if (post_material_Data.non_field_errors !== undefined) {
+        this.select_recipe_component = false
+        this.dialogRubberMaterialStandard = false
+        this.ProductRecipe = []
+        return
+      }
+      this.select_recipe_component = true
       this.dialogRubberMaterialStandard = false
-      console.log('=====================xxx')
-      console.log(post_material_Data)
       // 新建的配方的id，用于密炼步序的保存
       this.product_batching = post_material_Data['id']
       for (var j = 0; j < post_material_Data['batching_details'].length; ++j) {
@@ -895,14 +911,12 @@ export default {
     },
     AddRecipeInfoStep: async function() {
       if (this.equip && this.stage_product_batch_no) {
-        if (this.mini_time && this.mini_temp && this.over_temp && this.batching_error && this.zz_temp &&
-                    this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time &&
-                    this.sp_num) {
+        if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
           var step_details_list = []
           // 循环整个表格
           for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
             // 只有步序的所有字段都填时，才能往step_details_list中push
-            if (this.RecipeMaterialList[i].condition && this.RecipeMaterialList[i].time && this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+            if (this.RecipeMaterialList[i].condition && this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
               var now_recipe_step = {
                 sn: i + 1,
                 condition: this.RecipeMaterialList[i].condition,

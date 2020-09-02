@@ -43,22 +43,22 @@
         <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input-number v-model="over_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input-number v-model="batching_error" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
 
       <br>
@@ -67,10 +67,10 @@
         <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input-number v-model="max_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="max_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-show="reuse_flag" v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
@@ -186,13 +186,13 @@
                   <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="1" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
 
@@ -207,10 +207,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="1" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -772,7 +772,7 @@ export default {
       // 循环整个表格
       for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
         // 只有步序的所有字段都填时，才能往step_details_list中push
-        if (this.RecipeMaterialList[i].condition && this.RecipeMaterialList[i].time && this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+        if (this.RecipeMaterialList[i].condition && this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
           var now_recipe_step = {
             sn: i + 1,
             condition: this.RecipeMaterialList[i].condition,
@@ -792,9 +792,7 @@ export default {
           })
         }
       }
-      if (this.mini_time && this.mini_temp && this.over_temp && this.batching_error && this.zz_temp &&
-          this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time &&
-          this.sp_num) {
+      if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
         if (this.recipe_step_id != null) {
           await this.put_recipe_info_step_list(
             this.recipe_step_id,
