@@ -93,7 +93,7 @@
       <el-table-column prop="classes" label="班次" />
       <el-table-column prop="plan_trains" label="设定" />
       <el-table-column prop="actual_trains" label="完成" />
-      <el-table-column prop="operation_user" label="操作员" />
+      <el-table-column prop="created_username" label="操作员" />
       <el-table-column prop="status" label="状态" />
     </el-table>
     <page :total="total" @currentChange="currentChange" />
@@ -217,7 +217,6 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
-
     async getEquipList() {
       try {
         const equipData = await equip('get')
@@ -262,8 +261,20 @@ export default {
       } catch (e) {}
     },
     clearFindForm() {
-      this.beginTime = ''
-      this.endTime = ''
+      const myDate = new Date()
+      const Y = myDate.getFullYear()
+      const m = myDate.getMonth() + 1
+      const M = m < 10 ? '0' + m : m
+      const d = myDate.getDate()
+      const D = d < 10 ? ('0' + d) : d
+      const h = myDate.getHours()
+      const H = h < 10 ? ('0' + h) : h
+      const minute = myDate.getMinutes()
+      const Minute = minute < 10 ? ('0' + minute) : minute
+      const second = myDate.getSeconds()
+      const Second = second < 10 ? ('0' + second) : second
+      this.beginTime = Y + '-' + M + '-' + D + ' 00:00:00'
+      this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
       this.calss = ''
       this.recipe = ''
       this.params = {
@@ -352,11 +363,7 @@ export default {
     },
 
     retransmissionpPlan() {
-      retransmissionpPlan({
-        id: this.currentRow.id,
-        equip_no: this.equip,
-        plan_trains: this.currentRow.plan_trains
-      }).then((response) => {
+      retransmissionpPlan(this.currentRow).then((response) => {
         this.$message({
           type: 'success',
           message: '重传成功!'
@@ -382,6 +389,7 @@ export default {
       this.$refs.addPlanDialog.show()
     },
     handleCurrentChange(val) {
+      console.log(val)
       this.currentRow = val
       if (val) {
         this.disabled = false
