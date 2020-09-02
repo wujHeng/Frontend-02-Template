@@ -51,7 +51,7 @@
         <el-input v-model="max_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input v-model="reuse_time" size="mini" :disabled="true" style="width: 70px" />
+        <el-input v-show="reuse_flag" v-model="reuse_time" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
