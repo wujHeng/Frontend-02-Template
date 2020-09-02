@@ -11,6 +11,9 @@
       <el-form-item label="配方名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
+      <el-form-item label="预计炼胶时间">
+        <el-input v-model="production_time_interval" :disabled="true" size="mini" style="width: 100%" />
+      </el-form-item>
 
       <el-form-item style="float: right">
         <el-button @click="recipe_return_list">返回</el-button>
@@ -183,6 +186,7 @@ export default {
       equip_name: null,
       stage_product_batch_no: null,
       product_name: null,
+      production_time_interval: null,
       // 超温最短时间、进胶最低温度...
       mini_time: undefined,
       mini_temp: undefined,
@@ -221,13 +225,14 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        console.log('====================111111111')
-        console.log(recipe_listData)
-        console.log('====================111111111')
+        // console.log('====================111111111')
+        // console.log(recipe_listData)
+        // console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
+        this.production_time_interval = this.$route.params['production_time_interval']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           var v_auto_falg = ''
           if (recipe_listData['batching_details'][j]['auto_flag'] == 1) {

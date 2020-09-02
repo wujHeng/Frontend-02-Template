@@ -27,7 +27,9 @@
       <el-form-item label="配方名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
-
+      <el-form-item style="float: right">
+        <el-button @click="recipe_return_list">返回</el-button>
+      </el-form-item>
       <el-form-item style="float: right">
         <el-button @click="recipe_save_return">保存退出</el-button>
       </el-form-item>
@@ -186,13 +188,13 @@
                   <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="1" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
 
@@ -207,10 +209,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.1" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="1" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -237,6 +239,9 @@
     >
 
       <el-form :inline="true">
+        <el-form-item label="预计炼胶时间">
+          <el-input-number v-model="production_time_interval" :precision="2" :step="0.1" :min="0.01" controls-position="right" size="mini" style="width: 100%" />
+        </el-form-item>
         <el-form-item style="float: right">
           <el-button @click="saveMaterialClicked">保存</el-button>
         </el-form-item>
@@ -408,13 +413,15 @@ export default {
       temp_use_flag: true,
       sp_num: undefined,
       use_flag: true,
+      production_time_interval: undefined,
       // 密炼步序字段
-      time: undefined,
-      temperature: undefined,
-      energy: undefined,
-      power: undefined,
-      pressure: undefined,
-      rpm: undefined,
+      time: null,
+      temperature: null,
+      energy: null,
+      power: null,
+      pressure: null,
+      rpm: null,
+      condition: null,
       SelectEquipOptions: [],
       rubber_tableData: [],
       carbon_tableData: [],
@@ -647,6 +654,10 @@ export default {
     modify_material_button: async function() {
       this.dialogRubberMaterialStandard = true
       var popup_materialData = await this.popup_material_list(this.$route.params['id'])
+      // console.log('------------xx--------')
+      // console.log(popup_materialData)
+      // console.log('------------xx--------')
+      this.production_time_interval = popup_materialData['production_time_interval']
       this.ProductRecipe = []
       for (var i = 0; i < popup_materialData['batching_details'].length; ++i) {
         this.ProductRecipe.push({
@@ -734,6 +745,7 @@ export default {
       await this.put_recipe_list(
         this.$route.params['id'],
         { data: {
+          'production_time_interval': this.production_time_interval,
           'batching_details': batching_details_list
         }}
       )
@@ -748,13 +760,13 @@ export default {
       this.RecipeMaterialList.push({
         sn: '',
         //     condition:"",
-        time: undefined,
-        temperature: undefined,
-        energy: undefined,
-        power: undefined,
+        time: null,
+        temperature: null,
+        energy: null,
+        power: null,
         //     action:"",
-        pressure: undefined,
-        rpm: undefined
+        pressure: null,
+        rpm: null
       })
     },
     del_recipe_step_row: function(step_ele, index) {
@@ -772,7 +784,8 @@ export default {
       // 循环整个表格
       for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
         // 只有步序的所有字段都填时，才能往step_details_list中push
-        if (this.RecipeMaterialList[i].condition && this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+        // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+        if (this.RecipeMaterialList[i].action) {
           var now_recipe_step = {
             sn: i + 1,
             condition: this.RecipeMaterialList[i].condition,
@@ -787,9 +800,10 @@ export default {
           step_details_list.push(now_recipe_step)
         } else {
           this.$message({
-            message: '密炼步序字段不能为空',
+            message: '密炼步序动作字段不能为空',
             type: 'error'
           })
+          return
         }
       }
       if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
@@ -865,6 +879,9 @@ export default {
           type: 'error'
         })
       }
+    },
+    recipe_return_list: function() {
+      this.$router.push({ name: 'RecipeList' })
     }
 
   }
