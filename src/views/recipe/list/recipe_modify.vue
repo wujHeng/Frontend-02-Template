@@ -657,7 +657,11 @@ export default {
       // console.log('------------xx--------')
       // console.log(popup_materialData)
       // console.log('------------xx--------')
-      this.production_time_interval = popup_materialData['production_time_interval']
+      if (popup_materialData['production_time_interval']) {
+        this.production_time_interval = popup_materialData['production_time_interval']
+      } else {
+        this.production_time_interval = undefined
+      }
       this.ProductRecipe = []
       for (var i = 0; i < popup_materialData['batching_details'].length; ++i) {
         this.ProductRecipe.push({
@@ -742,10 +746,14 @@ export default {
           return
         }
       }
+      var v_production_time_interval = null
+      if (this.production_time_interval) {
+        v_production_time_interval = this.production_time_interval
+      }
       await this.put_recipe_list(
         this.$route.params['id'],
         { data: {
-          'production_time_interval': this.production_time_interval,
+          'production_time_interval': v_production_time_interval,
           'batching_details': batching_details_list
         }}
       )

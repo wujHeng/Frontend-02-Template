@@ -88,7 +88,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 3 * 1000
       })
-      return Promise.reject()
+      return Promise.reject(error.response.data)
     } else {
       Message({
         message: error.message,

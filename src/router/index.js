@@ -64,7 +64,12 @@ export const asyncRoutes = [{
 }, {
   path: '/plan',
   component: Layout,
+  alwaysShow: true,
+  redirect: '/plan/manage',
+  name: 'Plan',
   meta: {
+    title: '计划管理',
+    icon: 'productionPlanManagement',
     permissionName: 'plan'
   },
   children: [{
@@ -72,8 +77,7 @@ export const asyncRoutes = [{
     name: 'PlanManage',
     component: () => import('@/views/plan/index'),
     meta: {
-      title: '计划管理',
-      icon: 'productionPlanManagement',
+      title: '计划列表',
       permissionName: 'productclassesplan'
     }
   }]
@@ -154,7 +158,7 @@ export const asyncRoutes = [{
     component: () => import('@/views/material/weighing-info/index'),
     name: 'MaterialWeighingInfo',
     meta: {
-      title: '原材料称量信息',
+      title: '称量参数',
       permissionName: 'materialtankstatus'
     }
   },
@@ -163,7 +167,7 @@ export const asyncRoutes = [{
     component: () => import('@/views/material/bin-material-setting/index'),
     name: 'BinMaterialSetting',
     meta: {
-      title: '日料罐物料设置',
+      title: '日料罐物料设定',
       permissionName: 'materialtankstatus'
     }
   }
