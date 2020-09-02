@@ -265,6 +265,9 @@ export default {
         })
         this.tableData = recipe_listData.results
         this.tableDataTotal = recipe_listData.count
+        this.currentRow = {
+          product_name: null
+        }
       } catch (e) {}
     },
     async status_recipe_fun(id, obj) {
