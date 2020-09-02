@@ -178,7 +178,7 @@
       </el-form-item>
 
       <el-form-item label="配方停用">
-        <el-checkbox v-model="used_flag" />
+        <el-checkbox v-model="use_flag" />
       </el-form-item>
     </el-form>
 
@@ -561,7 +561,7 @@ export default {
       reuse_flag: true,
       temp_use_flag: true,
       sp_num: undefined,
-      used_flag: true,
+      use_flag: true,
       // 密炼步序字段
       time: undefined,
       temperature: undefined,
@@ -954,7 +954,7 @@ export default {
               'reuse_flag': this.reuse_flag,
               'temp_use_flag': this.temp_use_flag,
               'sp_num': this.sp_num,
-              'used_flag': this.used_flag,
+              'use_flag': this.use_flag,
               // 密炼步序list
               'process_details': step_details_list,
               // 设备id与配方id
