@@ -1,4 +1,6 @@
 import axios from 'axios'
+import router from '../router'
+
 import {
   Message
 } from 'element-ui'
@@ -43,7 +45,16 @@ service.interceptors.response.use(
     return Promise.resolve(res)
   },
   error => {
-    console.log(error.response.data)
+    if (error.response.status && error.response.status === 403) {
+      Message({
+        message: '身份信息已过期',
+        type: 'error',
+        duration: 3 * 1000
+      })
+      store.dispatch('user/logout')
+      router.push('/login')
+      return Promise.reject()
+    }
     if (Object.prototype.toString.call(error.response.data) === '[object Object]') {
       const obj = error.response.data
       let str = ''
@@ -77,7 +88,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 3 * 1000
       })
-      return Promise.reject(error.response.data)
+      return Promise.reject()
     } else {
       Message({
         message: error.message,

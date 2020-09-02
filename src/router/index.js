@@ -30,173 +30,246 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
-    }]
-  }
+export const constantRoutes = [{
+  path: '/login',
+  component: () => import('@/views/login/index'),
+  hidden: true
+},
+{
+  path: '/404',
+  component: () => import('@/views/404'),
+  hidden: true
+}
 ]
 
 // 存在权限的路由
 // meta.roles  权限
-export const asyncRoutes = [
-
-  {
-    path: '/plan',
-    component: Layout,
-    children: [
-      {
-        path: 'manage',
-        name: 'PlanManage',
-        component: () => import('@/views/plan/index'),
-        meta: { title: '计划管理' }
-      }
-    ]
+export const asyncRoutes = [{
+  path: '/',
+  component: Layout,
+  redirect: '/dashboard',
+  meta: {
+    icon: 'dashboard'
+    // permissionName: 'basics'
+  },
+  children: [{
+    path: 'dashboard',
+    component: () => import('@/views/dashboard/index'),
+    meta: {
+      title: '首页',
+      icon: 'dashboard'
+      // permissionName: 'equip'
+    }
+  }]
+}, {
+  path: '/plan',
+  component: Layout,
+  meta: {
+    permissionName: 'plan'
+  },
+  children: [{
+    path: 'manage',
+    name: 'PlanManage',
+    component: () => import('@/views/plan/index'),
+    meta: {
+      title: '计划管理',
+      icon: 'productionPlanManagement',
+      permissionName: 'productclassesplan'
+    }
+  }]
+},
+{
+  path: '/recipe',
+  component: Layout,
+  redirect: '/recipe/list',
+  name: 'Recipe',
+  meta: {
+    title: '配方管理',
+    icon: 'formula',
+    permissionName: 'recipe'
+  },
+  children: [{
+    path: 'list',
+    component: () => import('@/views/recipe/list/index'),
+    name: 'RecipeList',
+    meta: {
+      title: '配方列表',
+      permissionName: 'productbatching'
+    }
   },
   {
-    path: '/recipe',
-    component: Layout,
-    redirect: '/recipe/list',
-    name: 'Recipe',
-    meta: { title: '配方管理' },
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/recipe/list/index'),
-        name: 'RecipeList',
-        meta: { title: '配方列表' }
-      },
-      {
-        path: 'recipe_display',
-        component: () => import('@/views/recipe/list/recipe_display'),
-        name: 'RecipeDisplay',
-        meta: { title: '配方详情', navHidden: true }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/recipe/list/recipe_create'),
-        name: 'RecipeCreate',
-        meta: { title: '新增配方', navHidden: true }
-      },
-      {
-        path: 'modify',
-        component: () => import('@/views/recipe/list/recipe_modify'),
-        name: 'RecipeModify',
-        meta: { title: '修改配方', navHidden: true }
-      }
-    ]
+    path: 'recipe_display',
+    component: () => import('@/views/recipe/list/recipe_display'),
+    name: 'RecipeDisplay',
+    meta: {
+      title: '配方详情',
+      navHidden: true,
+      permissionName: 'productbatching'
+    }
   },
   {
-    path: '/material',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/material/base-info',
-    name: 'Material',
-    meta: { title: '原材料及称量参数' },
-    children: [
-      {
-        path: 'base-info',
-        component: () => import('@/views/material/base-info/index'),
-        name: 'MaterialBaseInfo',
-        meta: { title: '原材料基本信息' }
-      },
-      {
-        path: 'weighing-info',
-        component: () => import('@/views/material/weighing-info/index'),
-        name: 'MaterialWeighingInfo',
-        meta: { title: '原材料称量信息' }
-      },
-      {
-        path: 'bin-material-setting',
-        component: () => import('@/views/material/bin-material-setting/index'),
-        name: 'BinMaterialSetting',
-        meta: { title: '日料罐物料设置' }
-      }
-    ]
+    path: 'create',
+    component: () => import('@/views/recipe/list/recipe_create'),
+    name: 'RecipeCreate',
+    meta: {
+      title: '新增配方',
+      navHidden: true,
+      permissionName: 'productbatching'
+    }
   },
   {
-    path: '/run-mode',
-    component: Layout,
-    redirect: '/run-mode/index',
-    children: [
-      {
-        path: 'index',
-        name: 'RunMode',
-        component: () => import('@/views/run-mode/index'),
-        meta: { title: '运行模式切换' }
-      }
-    ]
+    path: 'modify',
+    component: () => import('@/views/recipe/list/recipe_modify'),
+    name: 'RecipeModify',
+    meta: {
+      title: '修改配方',
+      navHidden: true,
+      permissionName: 'productbatching'
+    }
+  }
+  ]
+},
+{
+  path: '/material',
+  component: Layout,
+  alwaysShow: true,
+  redirect: '/material/base-info',
+  name: 'Material',
+  meta: {
+    title: '原材料及称量参数',
+    icon: 'rawMaterials',
+    permissionName: 'production'
+  },
+  children: [{
+    path: 'base-info',
+    component: () => import('@/views/material/base-info/index'),
+    name: 'MaterialBaseInfo',
+    meta: {
+      title: '原材料基本信息',
+      permissionName: 'material'
+    }
   },
   {
-    path: '/report',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/report/material-statistics',
-    name: 'Report',
-    meta: { title: '报表' },
-    children: [
-      {
-        path: 'material-statistics',
-        component: () => import('@/views/report/material-statistics/index'),
-        name: 'MaterialStatisticsReport',
-        meta: { title: '物料统计报表' }
-      },
-      {
-        path: 'batch-statistics',
-        component: () => import('@/views/report/batch/index'),
-        name: 'batchStatisticsReport',
-        meta: { title: '批次记录报表' }
-      },
-      {
-        path: 'train-statistics',
-        component: () => import('@/views/report/train/index'),
-        name: 'trainStatisticsReport',
-        meta: { title: '车次报表' }
-      }
-    ]
+    path: 'weighing-info',
+    component: () => import('@/views/material/weighing-info/index'),
+    name: 'MaterialWeighingInfo',
+    meta: {
+      title: '原材料称量信息',
+      permissionName: 'materialtankstatus'
+    }
   },
   {
-    path: '/user-info',
-    component: Layout,
-    redirect: '/user-info/index',
-    meta: { title: '用户信息' },
-    children: [
-      {
-        path: 'index',
-        name: 'userInfo',
-        component: () => import('@/views/userInfo/index'),
-        meta: { title: '用户管理' }
-      },
-      {
-        path: 'roles-manage',
-        name: 'rolesManage',
-        component: () => import('@/views/roles-manage/index'),
-        meta: { title: '角色管理' }
-      }
-    ]
+    path: 'bin-material-setting',
+    component: () => import('@/views/material/bin-material-setting/index'),
+    name: 'BinMaterialSetting',
+    meta: {
+      title: '日料罐物料设置',
+      permissionName: 'materialtankstatus'
+    }
+  }
+  ]
+},
+{
+  path: '/run-mode',
+  component: Layout,
+  redirect: '/run-mode/index',
+  meta: {
+    title: '运行模式切换',
+    icon: 'operationMode',
+    permissionName: 'system'
   },
-  { path: '*', redirect: '/404', hidden: true }
+  children: [{
+    path: 'index',
+    name: 'RunMode',
+    component: () => import('@/views/run-mode/index'),
+    meta: {
+      title: '运行模式切换',
+      icon: 'operationMode',
+      permissionName: 'childsysteminfo'
+    }
+  }]
+},
+{
+  path: '/report',
+  component: Layout,
+  alwaysShow: true,
+  redirect: '/report/material-statistics',
+  name: 'Report',
+  meta: {
+    title: '报表',
+    icon: 'report',
+    permissionName: 'production'
+  },
+  children: [{
+    path: 'material-statistics',
+    component: () => import('@/views/report/material-statistics/index'),
+    name: 'MaterialStatisticsReport',
+    meta: {
+      title: '物料统计报表',
+      permissionName: 'expendmaterial'
+    }
+  },
+  {
+    path: 'batch-statistics',
+    component: () => import('@/views/report/batch/index'),
+    name: 'batchStatisticsReport',
+    meta: {
+      title: '批次记录报表',
+      permissionName: 'palletfeedbacks'
+    }
+  },
+  {
+    path: 'train-statistics',
+    component: () => import('@/views/report/train/index'),
+    name: 'trainStatisticsReport',
+    meta: {
+      title: '车次报表',
+      permissionName: 'trainsfeedbacks'
+    }
+  }
+  ]
+},
+{
+  path: '/user-info',
+  component: Layout,
+  redirect: '/user-info/index',
+  meta: {
+    title: '用户信息',
+    icon: 'userManagement',
+    permissionName: 'system'
+  },
+  children: [{
+    path: 'index',
+    name: 'userInfo',
+    component: () => import('@/views/userInfo/index'),
+    meta: {
+      title: '用户管理',
+      permissionName: 'user'
+    }
+  },
+  {
+    path: 'roles-manage',
+    name: 'rolesManage',
+    component: () => import('@/views/roles-manage/index'),
+    meta: {
+      title: '角色管理',
+      permissionName: 'groupextension'
+    }
+  }
+  ]
+},
+{
+  path: '*',
+  redirect: '/404',
+  hidden: true
+}
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 

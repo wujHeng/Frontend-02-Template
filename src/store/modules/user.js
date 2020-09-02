@@ -8,7 +8,7 @@ const getDefaultState = () => {
     token: '',
     name: '',
     avatar: '',
-    roles: ''
+    permission: ''
   }
 }
 
@@ -17,7 +17,7 @@ const state = () => {
     token: getToken(),
     name: Cookies.get('name'),
     avatar: '',
-    roles: localStorage.getItem('roles')
+    permission: localStorage.getItem('permission')
   }
 }
 
@@ -35,9 +35,9 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
-    localStorage.setItem('roles', roles)
+  SET_ROLES: (state, permission) => {
+    state.permission = permission
+    localStorage.setItem('permission', permission)
   }
 }
 

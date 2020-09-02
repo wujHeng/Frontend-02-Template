@@ -1,14 +1,17 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import {
+  asyncRoutes,
+  constantRoutes
+} from '@/router'
 // import router from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
- * @param roles
+ * @param permission
  * @param route
  */
-// function hasPermission(roles, route) {
-//   if (route.meta && route.meta.roles) {
-//     return roles.some(role => route.meta.roles.includes(role))
+// function hasPermission(permission, route) {
+//   if (route.meta && route.meta.permission) {
+//     return permission.some(role => route.meta.permission.includes(role))
 //   } else {
 //     return true
 //   }
@@ -17,16 +20,16 @@ import { asyncRoutes, constantRoutes } from '@/router'
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param roles
+ * @param permission
  */
-// export function filterAsyncRoutes(routes, roles) {
+// export function filterAsyncRoutes(routes, permission) {
 //   const res = []
 
 //   routes.forEach(route => {
 //     const tmp = { ...route }
-//     if (hasPermission(roles, tmp)) {
+//     if (hasPermission(permission, tmp)) {
 //       if (tmp.children) {
-//         tmp.children = filterAsyncRoutes(tmp.children, roles)
+//         tmp.children = filterAsyncRoutes(tmp.children, permission)
 //       }
 //       res.push(tmp)
 //     }
@@ -48,10 +51,13 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit, state }, roles) {
+  generateRoutes({
+    commit,
+    state
+  }, permission) {
     return new Promise(resolve => {
-      const rolesObj = JSON.parse(roles)
-      const accessedRoutes = filterAsyncRoutesMy(asyncRoutes, rolesObj)
+      const permissionObj = JSON.parse(permission)
+      const accessedRoutes = filterAsyncRoutesMy(asyncRoutes, permissionObj)
       // 添加的路由
       commit('SET_ROUTES', accessedRoutes)
       // 使用router.addRoutes传accessedRoutes过去相当于push
@@ -65,17 +71,27 @@ const actions = {
   }
 }
 
-export function filterAsyncRoutesMy(routes, roles) {
+export function filterAsyncRoutesMy(routes, permission) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = {
+      ...route
+    }
 
-    if (hasPermissionMy(roles, tmp)) {
+    if (hasPermissionMy(permission, tmp)) {
       if (tmp.children) {
-        if (tmp.meta) {
-          tmp.children = filterAsyncRoutesMy(tmp.children, roles[tmp.meta.rolesName])
+        if (tmp.meta && tmp.meta.permissionName) {
+          const permissionVal = permission[tmp.meta.permissionName]
+
+          tmp.children = filterAsyncRoutesMy(tmp.children, permissionVal)
+        } else {
+          tmp.children = filterAsyncRoutesMy(tmp.children, permission)
         }
+      }
+      // eslint-disable-next-line no-prototype-builtins
+      if (tmp.hasOwnProperty('children') && tmp.children.length === 0) {
+        return
       }
       res.push(tmp)
     }
@@ -83,9 +99,20 @@ export function filterAsyncRoutesMy(routes, roles) {
 
   return res
 }
-function hasPermissionMy(roles, route) {
-  if (route.meta && route.meta.rolesName) {
-    return roles[route.meta.rolesName]
+
+function hasPermissionMy(permission, route) {
+  if (route.meta && route.meta.permissionName) {
+    const val = permission[route.meta.permissionName]
+    let boolIndex = null
+
+    if (Object.prototype.toString.call(val) === '[object Object]') {
+      // 是第一层
+      boolIndex = val
+    } else {
+      // 是第二层
+      boolIndex = val && val.indexOf('view') > -1
+    }
+    return boolIndex && JSON.stringify(val) !== '{}' && JSON.stringify(val) !== '[]'
   } else {
     return true
   }
