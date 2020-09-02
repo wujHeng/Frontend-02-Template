@@ -273,7 +273,8 @@ export default {
       const rubberMateriaData = await getRubberMateria({
         all: 1,
         used_type: 4,
-        dev_type: this.equipById[this.equipIdForAdd].category
+        // dev_type: this.equipById[this.equipIdForAdd].category
+        equip_id: this.equipIdForAdd
       })
       this.$set(plan, 'productBatchings', rubberMateriaData.results)
       rubberMateriaData.results.forEach(batching => {

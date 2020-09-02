@@ -111,9 +111,9 @@
       </el-table-column>
       <!-- <el-table-column align="center" prop="stage_product_batch_no" label="胶料编码" /> -->
       <el-table-column align="center" prop="product_name" label="胶料名称" />
+      <el-table-column align="center" width="200%" prop="equip_name" label="机台名称" />
       <el-table-column align="center" width="100%" prop="equip_no" label="机台编号" />
       <el-table-column v-if="false" align="center" width="100%" prop="equip" label="机台id" />
-      <el-table-column v-if="false" align="center" width="100%" prop="equip_name" label="机台名称" />
       <el-table-column align="center" width="100%" prop="dev_type_name" label="炼胶机类型" />
       <el-table-column align="center" prop="used_type" label="状态" :formatter="usedTypeFormatter" />
       <el-table-column align="center" label="审核">
@@ -143,7 +143,7 @@
       <el-table-column align="center" prop="stage_name" label="段次" />
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
-      <el-table-column align="center" width="160%" prop="created_date" label="创建时间" />
+      <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
@@ -223,7 +223,7 @@ export default {
       SelectSiteOptions: [],
       SelectStageOptions: [],
       SelectEquip: null,
-      CopySelectEquip: null,
+      CopySelectEquip: '',
       SelectRecipeStatus: null,
       SelectSite: null,
       SelectStage: null,
@@ -283,7 +283,9 @@ export default {
       try {
         const copy_recipe_listData = await recipe_copy_list('post', null, obj)
         return copy_recipe_listData
-      } catch (e) {}
+      } catch (e) {
+        return { 'error': e }
+      }
     },
     async equip_list() {
       try {
@@ -324,6 +326,9 @@ export default {
     pagehandleCurrentChange: function(val) {
       this.currentRow = val
       this.get_recipe_list(val)
+      this.currentRow = {
+        product_name: null
+      }
     },
 
     usedTypeFormatter: function(row, column) {
@@ -407,7 +412,7 @@ export default {
       await this.equip_copy_list(this.currentRow['dev_type'])
     },
     CopyRecipeConfirm: async function() {
-      if (this.CopySelectEquip == null) {
+      if (this.CopySelectEquip === '') {
         this.$message({
           message: '机台不能为空',
           type: 'error'
@@ -421,13 +426,20 @@ export default {
         })
         return
       }
-      await this.copy_recipe_list(
+      var copy_recipe_return = await this.copy_recipe_list(
         { data: {
           'product_batching': this.currentRow['id'],
           'equip': this.CopySelectEquip
         }}
       )
+      if (copy_recipe_return.error !== undefined) {
+        return
+      }
+
       this.dialogCopyRecipeSync = false
+      this.currentRow = {
+        product_name: null
+      }
       this.get_recipe_list()
       // console.log('----------------------------------------')
       // console.log(this.currentRow)
