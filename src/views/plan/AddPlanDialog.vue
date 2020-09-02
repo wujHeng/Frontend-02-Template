@@ -197,12 +197,15 @@ export default {
     },
     async getPlanSchedules() {
       try {
-        const planSchedulesData = await getPlanSchedules({
-          all: 1,
-          day_time: this.day_time
-        })
-        this.planSchedules = planSchedulesData.results
+        this.planSchedules = []
         this.planScheduleId = null
+        if (this.day_time) {
+          const planSchedulesData = await getPlanSchedules({
+            all: 1,
+            day_time: this.day_time
+          })
+          this.planSchedules = planSchedulesData.results
+        }
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -210,9 +213,15 @@ export default {
     batchSave() {
       var app = this
       var plansForAdd_ = []
-      this.plansForAdd.forEach(function(plan) {
+      this.plansForAdd.forEach(plan => {
         if (!plan.sum) {
           var plan_ = JSON.parse(JSON.stringify(plan))
+          if (!plan_.product_batching) {
+            this.$alert('请选择所有胶料配方编码', '错误', {
+              confirmButtonText: '确定'
+            })
+            return
+          }
           plan_.pdp_product_classes_plan = []
           for (var i = 0; i < plan.pdp_product_classes_plan.length; i++) {
             if (plan.pdp_product_classes_plan[i].enable) {
@@ -238,6 +247,9 @@ export default {
     },
     async addOnePlan() {
       if (!this.equipIdForAdd || !this.planScheduleId) {
+        this.$alert('请选择机台和排班规则', '错误', {
+          confirmButtonText: '确定'
+        })
         return
       }
       const planSchedule = await getPlanSchedule(this.planScheduleId)
