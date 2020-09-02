@@ -54,7 +54,7 @@
       />
       <el-table-column
         :formatter="formatter"
-        prop="used_flag"
+        prop="use_flag"
         label="使用与否"
       />
       <el-table-column
@@ -179,7 +179,7 @@ export default {
       this.getMaterialList()
     },
     formatter: function(row, column) {
-      return row.used_flag ? 'Y' : 'N'
+      return row.use_flag ? 'Y' : 'N'
     },
     currentChange(page) {
       this.params.page = page

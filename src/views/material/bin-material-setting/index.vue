@@ -27,7 +27,7 @@
         <el-table-column prop="material_name" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-if="scope.row.used_flag"
+              v-if="scope.row.use_flag"
               v-model="scope.row.material_name"
               @change="masterialChange"
             >
@@ -40,10 +40,10 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column :formatter="formatter" prop="used_flag" label="使用状态">
+        <el-table-column :formatter="formatter" prop="use_flag" label="使用状态">
           <template slot-scope="scope">
             <el-switch
-              v-model="scope.row.used_flag"
+              v-model="scope.row.use_flag"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="启用"
@@ -59,7 +59,7 @@
         <el-table-column prop="material_name" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-if="scope.row.used_flag"
+              v-if="scope.row.use_flag"
               v-model="scope.row.material_name"
               @change="masterialChange"
             >
@@ -67,10 +67,10 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column :formatter="formatter" prop="used_flag" label="使用状态">
+        <el-table-column :formatter="formatter" prop="use_flag" label="使用状态">
           <template slot-scope="scope">
             <el-switch
-              v-model="scope.row.used_flag"
+              v-model="scope.row.use_flag"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="启用"
@@ -176,7 +176,7 @@ export default {
       } catch (e) {}
     },
     formatter: function(row, column) {
-      return row.used_flag ? '使用' : '停用'
+      return row.use_flag ? '使用' : '停用'
     },
     equipVisibleChange(bool) {
       if (bool) {

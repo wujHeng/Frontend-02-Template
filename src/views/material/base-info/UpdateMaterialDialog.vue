@@ -10,8 +10,8 @@
       <el-form-item :error="formError.for_short" label="原材料简称">
         <el-input v-model="form.for_short" />
       </el-form-item>
-      <el-form-item :error="formError.used_flag" label="是否启用">
-        <el-switch v-model="form.used_flag" />
+      <el-form-item :error="formError.use_flag" label="是否启用">
+        <el-switch v-model="form.use_flag" />
       </el-form-item>
       <el-form-item :error="formError.material_type" label="原材料类别">
         <el-select
@@ -70,7 +70,7 @@ export default {
         material_no: '',
         material_name: '',
         for_short: '',
-        used_flag: false,
+        use_flag: false,
         material_type: null,
         package_unit: null
       },
@@ -79,7 +79,7 @@ export default {
         material_no: '',
         material_name: '',
         for_short: '',
-        used_flag: '',
+        use_flag: '',
         material_type: '',
         package_unit: ''
       }
@@ -92,7 +92,7 @@ export default {
         material_no: '',
         material_name: '',
         for_short: '',
-        used_flag: '',
+        use_flag: '',
         material_type: '',
         package_unit: ''
       }
