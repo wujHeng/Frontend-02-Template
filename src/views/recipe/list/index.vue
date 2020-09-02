@@ -432,7 +432,11 @@ export default {
           'equip': this.CopySelectEquip
         }}
       )
+      console.log('-------aa---------')
+      console.log(copy_recipe_return)
+      console.log('-------aa---------')
       if (copy_recipe_return.error !== undefined) {
+        console.log('-------==============')
         return
       }
 

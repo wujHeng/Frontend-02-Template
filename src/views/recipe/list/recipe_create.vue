@@ -714,13 +714,13 @@ export default {
 
     saveMaterialClicked: async function() {
       var app = this
-      if (app.production_time_interval == null) {
-        this.$message({
-          message: '预计炼胶时间不能为空',
-          type: 'error'
-        })
-        return
-      }
+      // if (app.production_time_interval == null) {
+      //   this.$message({
+      //     message: '预计炼胶时间不能为空',
+      //     type: 'error'
+      //   })
+      //   return
+      // }
       var batching_details_list = []
       // 循环整个表格
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
