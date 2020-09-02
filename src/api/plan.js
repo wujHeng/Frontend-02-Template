@@ -26,11 +26,11 @@ export function delPalletFeedBacks(id) {
   })
 }
 
-export function issuedPlan(params) {
+export function issuedPlan(data) {
   return request({
     url: API.IssuedPlanUrl,
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 
