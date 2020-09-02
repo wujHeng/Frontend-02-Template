@@ -925,7 +925,7 @@ export default {
       app.dialogRawMaterialSync = true
     },
     AddRecipeInfoStep: async function() {
-      if (this.equip && this.stage_product_batch_no) {
+      if (this.equip && this.stage_product_batch_no && this.product_batching) {
         if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
           var step_details_list = []
           // 循环整个表格
@@ -990,12 +990,14 @@ export default {
             message: '配方基本信息不能为空',
             type: 'error'
           })
+          return
         }
       } else {
         this.$message({
-          message: '请先进行配料',
+          message: '请先进行配料并保存',
           type: 'error'
         })
+        return
       }
     },
     recipe_return_list: function() {
