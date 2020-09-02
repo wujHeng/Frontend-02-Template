@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="recipe_create">
     <el-form ref="generateRecipeForm" :inline="true" :model="generateRecipeForm" :rules="rules">
       <el-form-item label="机台" prop="SelectEquip">
         <el-select
@@ -119,37 +119,37 @@
     <el-form :inline="true">
       <br>
       <el-form-item label="超温最短时间">
-        <el-input-number v-model="mini_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input-number v-model="mini_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input-number v-model="over_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input-number v-model="batching_error" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="batching_error" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input-number v-model="zz_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input-number v-model="xlm_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input-number v-model="cb_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
 
       <br>
 
       <el-form-item label="炼胶超时时间">
-        <el-input-number v-model="over_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input-number v-model="max_temp" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="max_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input-number v-model="reuse_time" controls-position="right" size="mini" style="width: 70px" />
+        <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
@@ -189,7 +189,7 @@
             style="width: 100%"
           >
             <el-table-column width="60%" prop="sn" label="序号" />
-            <el-table-column prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="material_name" label="胶料名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -203,7 +203,7 @@
           >
             <el-table-column width="60%" prop="sn" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
-            <el-table-column prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="material_name" label="炭黑名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -217,7 +217,7 @@
           >
             <el-table-column width="60%" prop="stage_product_batch_no" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
-            <el-table-column prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="product_name" label="油脂名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -262,16 +262,16 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.time" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.temperature" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.energy" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.power" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
 
@@ -286,10 +286,10 @@
 
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.pressure" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
-                  <el-input-number v-model="step_ele.rpm" controls-position="right" style="width: 60px" size="mini" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
                 <td style="text-align: center">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -331,7 +331,7 @@
           <tr>
             <th style="text-align: center">No</th>
             <th style="text-align: center">类别</th>
-            <th style="text-align: center">自动与否</th>
+            <!-- <th style="text-align: center">自动与否</th> -->
             <th style="text-align: center">原材料</th>
             <td style="text-align: center">设定值(kg)</td>
             <td style="text-align: center">误差值(kg)</td>
@@ -344,13 +344,13 @@
             <td v-show="false">{{ material_ele.material }}</td>
             <td style="text-align: center">{{ index + 1 }}</td>
             <td style="text-align: center">{{ material_ele.material_type }}</td>
-            <td style="text-align: center">
+            <!-- <td style="text-align: center">
               <template>
                 <el-radio v-model="material_ele.auto_flag" :label="1">自动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="2">手动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="0">其他</el-radio>
               </template>
-            </td>
+            </td> -->
             <td style="text-align: center">
               <div style="margin-top: 12px;">
                 <el-input v-model="material_ele.material_name" size="mini" style="width: 70%" class="input-with-select" :disabled="true">
@@ -359,10 +359,10 @@
               </div>
             </td>
             <td style="text-align: center">
-              <el-input-number v-model.number="material_ele.actual_weight" size="mini" controls-position="right" />
+              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
             </td>
             <td style="text-align: center">
-              <el-input-number v-model.number="material_ele.standard_error" size="mini" controls-position="right" />
+              <el-input-number v-model.number="material_ele.standard_error" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
             </td>
             <td style="text-align: center">
               <el-button size="mini" @click="del_material_row(material_ele, index)">删除</el-button>
@@ -582,7 +582,7 @@ export default {
     async equip_list() {
       try {
         const equip_list = await equip_url('get', {
-          params: { }
+          params: { category_name: '密炼设备' }
         })
         this.SelectEquipOptions = equip_list.results
       } catch (e) {}
@@ -706,7 +706,8 @@ export default {
         if (app.ProductRecipe[i].material_name && app.ProductRecipe[i].actual_weight && app.ProductRecipe[i].standard_error) {
           var now_stage_material = {
             sn: i + 1,
-            auto_flag: app.ProductRecipe[i].auto_flag,
+            // auto_flag: app.ProductRecipe[i].auto_flag,
+            auto_flag: 0,
             material: app.ProductRecipe[i].material,
             actual_weight: app.ProductRecipe[i].actual_weight,
             standard_error: app.ProductRecipe[i].standard_error
@@ -895,7 +896,7 @@ export default {
     AddRecipeInfoStep: async function() {
       if (this.equip && this.stage_product_batch_no) {
         if (this.mini_time && this.mini_temp && this.over_temp && this.batching_error && this.zz_temp &&
-                    this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time && this.reuse_flag && this.temp_use_flag &&
+                    this.xlm_temp && this.cb_temp && this.over_time && this.max_temp && this.reuse_time &&
                     this.sp_num) {
           var step_details_list = []
           // 循环整个表格
@@ -971,7 +972,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.recipe_create{
 .font_custom{
     font-size: 14px;
     color: #606266;
@@ -981,16 +983,10 @@ export default {
 .el-input-number.is-controls-right .el-input__inner {
     padding-left: 0px;
     padding-right: 0px;
-    width: 13px;
 }
 .el-input-number--mini .el-input-number__decrease, .el-input-number--mini .el-input-number__increase {
     width: 13px;
     font-size: 12px;
 }
-
-// .limit_input {
-//     padding-left: 0px;
-//     padding-right: 0px;
-//     width: 13px;
-// }
+}
 </style>

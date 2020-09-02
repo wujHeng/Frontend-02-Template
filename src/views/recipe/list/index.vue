@@ -109,7 +109,7 @@
         </template>
 
       </el-table-column>
-      <el-table-column align="center" prop="stage_product_batch_no" label="胶料编码" />
+      <!-- <el-table-column align="center" prop="stage_product_batch_no" label="胶料编码" /> -->
       <el-table-column align="center" prop="product_name" label="胶料名称" />
       <el-table-column align="center" width="100%" prop="equip_no" label="机台编号" />
       <el-table-column v-if="false" align="center" width="100%" prop="equip" label="机台id" />
@@ -141,9 +141,9 @@
       <el-table-column align="center" prop="production_time_interval" label="炼胶时间" />
       <el-table-column align="center" prop="site_name" label="site" />
       <el-table-column align="center" prop="stage_name" label="段次" />
-      <el-table-column align="center" prop="sp_num" label="收皮(车/托)" />
-      <el-table-column align="center" prop="created_username" label="创建者" />
-      <el-table-column align="center" prop="created_date" label="创建时间" />
+      <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
+      <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
+      <el-table-column align="center" width="160%" prop="created_date" label="创建时间" />
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
@@ -288,7 +288,7 @@ export default {
     async equip_list() {
       try {
         const equip_list = await equip_url('get', {
-          params: { }
+          params: { category_name: '密炼设备' }
         })
         this.SelectEquipOptions = equip_list.results
       } catch (e) {}
@@ -296,7 +296,7 @@ export default {
     async equip_copy_list(dev_type_param) {
       try {
         const equip_list = await equip_url('get', {
-          params: { dev_type: dev_type_param }
+          params: { category_name: '密炼设备', dev_type: dev_type_param }
         })
         this.SelectCopyEquipOptions = equip_list.results
       } catch (e) {}

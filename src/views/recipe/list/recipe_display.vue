@@ -21,53 +21,53 @@
     <el-form :inline="true">
       <br>
       <el-form-item label="超温最短时间">
-        <el-input v-model="mini_time" size="mini" style="width: 70px" />
+        <el-input v-model="mini_time" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最低温度">
-        <el-input v-model="mini_temp" size="mini" style="width: 70px" />
+        <el-input v-model="mini_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="超温温度">
-        <el-input v-model="over_temp" size="mini" style="width: 70px" />
+        <el-input v-model="over_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="胶料总误差">
-        <el-input v-model="batching_error" size="mini" style="width: 70px" />
+        <el-input v-model="batching_error" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="转子水温">
-        <el-input v-model="zz_temp" size="mini" style="width: 70px" />
+        <el-input v-model="zz_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="卸料门水温">
-        <el-input v-model="xlm_temp" size="mini" style="width: 70px" />
+        <el-input v-model="xlm_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="侧壁水温">
-        <el-input v-model="cb_temp" size="mini" style="width: 70px" />
+        <el-input v-model="cb_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
 
       <br>
 
       <el-form-item label="炼胶超时时间">
-        <el-input v-model="over_time" size="mini" style="width: 70px" />
+        <el-input v-model="over_time" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="进胶最高温度">
-        <el-input v-model="max_temp" size="mini" style="width: 70px" />
+        <el-input v-model="max_temp" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="回收时间">
-        <el-input v-model="reuse_time" size="mini" style="width: 70px" />
+        <el-input v-model="reuse_time" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="是否回收">
         <template>
-          <el-radio v-model="reuse_flag" :label="true">是</el-radio>
-          <el-radio v-model="reuse_flag" :label="false">否</el-radio>
+          <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
+          <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
         </template>
       </el-form-item>
       <el-form-item>
-        <el-radio v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
-        <el-radio v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
+        <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
+        <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
       </el-form-item>
       <el-form-item label="收皮">
-        <el-input v-model="sp_num" size="mini" style="width: 70px" />
+        <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
       </el-form-item>
       <el-form-item label="配方停用">
-        <el-checkbox v-model="used_flag" />
+        <el-checkbox v-model="used_flag" :disabled="true" />
       </el-form-item>
     </el-form>
 
@@ -83,7 +83,7 @@
             style="width: 100%"
           >
             <el-table-column width="60%" prop="sn" label="序号" />
-            <el-table-column width="80%" prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column width="80%" prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="material_name" label="胶料名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -97,7 +97,7 @@
           >
             <el-table-column width="60%" prop="sn" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
-            <el-table-column prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="material_name" label="炭黑名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -111,7 +111,7 @@
           >
             <el-table-column width="60%" prop="stage_product_batch_no" label="序号" />
             <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
-            <el-table-column prop="auto_flag" label="自动与否" />
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column prop="product_name" label="油脂名称" />
             <el-table-column prop="actual_weight" label="设定值(kg)" />
             <el-table-column prop="standard_error" label="误差值(kg)" />
@@ -184,20 +184,20 @@ export default {
       stage_product_batch_no: null,
       product_name: null,
       // 超温最短时间、进胶最低温度...
-      mini_time: null,
-      mini_temp: null,
-      over_temp: null,
-      batching_error: null,
-      zz_temp: null,
-      xlm_temp: null,
-      cb_temp: null,
+      mini_time: undefined,
+      mini_temp: undefined,
+      over_temp: undefined,
+      batching_error: undefined,
+      zz_temp: undefined,
+      xlm_temp: undefined,
+      cb_temp: undefined,
       // 炼胶超时时间、进胶最高温度...
-      over_time: null,
-      max_temp: null,
-      reuse_time: null,
+      over_time: undefined,
+      max_temp: undefined,
+      reuse_time: undefined,
       reuse_flag: true,
       temp_use_flag: true,
-      sp_num: null,
+      sp_num: undefined,
       used_flag: true,
       rubber_tableData: [],
       carbon_tableData: [],
