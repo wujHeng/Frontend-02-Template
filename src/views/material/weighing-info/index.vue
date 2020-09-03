@@ -110,8 +110,13 @@ export default {
   created() {
     this.getCbList()
     this.getOilList()
+    this.getEquip()
   },
   methods: {
+    async getEquip() {
+      const equipData = await equip('get')
+      this.equip = equipData.results[0].equip_no
+    },
     async getCbList() {
       try {
         const cbData = await weighCb('get', {
