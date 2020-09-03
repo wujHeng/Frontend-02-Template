@@ -454,19 +454,19 @@ export default {
       SelectActionOptions: [],
       materialTypeOptions: [],
       sp_num_options: [{
-        value: '1',
+        value: 1,
         label: '1车/托'
       }, {
-        value: '2',
+        value: 2,
         label: '2车/托'
       }, {
-        value: '3',
+        value: 3,
         label: '3车/托'
       }, {
-        value: '4',
+        value: 4,
         label: '4车/托'
       }, {
-        value: '5',
+        value: 5,
         label: '5车/托'
       }],
       materialType: null,
@@ -627,7 +627,7 @@ export default {
         this.reuse_time = process_step_listData.results[0]['reuse_time']
         this.reuse_flag = process_step_listData.results[0]['reuse_flag']
         this.temp_use_flag = process_step_listData.results[0]['temp_use_flag']
-        this.sp_num = process_step_listData.results[0]['sp_num'] + '车/托'
+        this.sp_num = process_step_listData.results[0]['sp_num']
         this.use_flag = process_step_listData.results[0]['use_flag']
         console.log('====================2222')
         console.log(process_step_listData.results)
@@ -811,6 +811,13 @@ export default {
         })
         return
       }
+      if (this.RecipeMaterialList.length === 0) {
+        this.$message({
+          message: '密炼步序不能为空',
+          type: 'error'
+        })
+        return
+      }
       var step_details_list = []
       // 循环整个表格
       for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
@@ -913,6 +920,23 @@ export default {
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })
+    },
+    sp_numFormatter: function() {
+      return this.sp_numChoice(this.sp_num)
+    },
+    sp_numChoice: function(sp_num_ele) {
+      switch (sp_num_ele) {
+        case 1:
+          return '1车/托'
+        case 2:
+          return '2车/托'
+        case 3:
+          return '3车/托'
+        case 4:
+          return '4车/托'
+        case 5:
+          return '5车/托'
+      }
     }
 
   }
