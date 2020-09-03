@@ -104,16 +104,16 @@ export default {
     }
   },
   created() {
-    this.getCbList()
-    this.getOilList()
+    this.getEquip()
     this.getMaterialsCbList()
     this.getMaterialsOilList()
-    this.getEquip()
   },
   methods: {
     async getEquip() {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
+      this.getCbList()
+      this.getOilList()
     },
     async getCbList() {
       try {
