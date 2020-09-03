@@ -17,8 +17,8 @@
         </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item label="修改后车次: ">
-          <el-input v-model="trains" type="text" />
+        <el-form-item label="修改后车次: " :error="formError[0]">
+          <el-input-number v-model.number="trains" :precision="1" :min="0" />
         </el-form-item>
       </el-row>
     </el-form>
@@ -37,28 +37,25 @@ export default {
   data() {
     return {
       currentRow: {},
-      trains: '',
+      trains: null,
       dialogVisible: false,
-      form: {},
-      formError: {}
+      formError: []
     }
   },
   methods: {
-    clearForm() {
-      this.form = {}
-    },
-    clearFormError() {
-      this.formError = {}
-    },
     show(currentRow) {
       this.currentRow = currentRow
-      this.trains = ''
-      this.clearForm()
-      this.clearFormError()
+      this.trains = null
       this.dialogVisible = true
     },
     alterTrainNumberSubmit() {
-      this.putUpdateTrains()
+      if (this.trains >= 0) {
+        this.putUpdateTrains()
+      } else {
+        this.formError = []
+        this.formError.push('*不能为空')
+      }
+      // this.putUpdateTrains()
     },
 
     async putUpdateTrains() {
