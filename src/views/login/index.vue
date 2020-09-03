@@ -52,7 +52,7 @@
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
-      >Login</el-button>
+      >登 录</el-button>
     </el-form>
   </div>
 </template>

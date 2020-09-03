@@ -150,7 +150,7 @@ export const asyncRoutes = [{
     name: 'MaterialBaseInfo',
     meta: {
       title: '原材料基本信息',
-      permissionName: 'material'
+      permissionName: 'masterial'
     }
   },
   {
