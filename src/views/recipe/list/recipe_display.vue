@@ -23,55 +23,72 @@
 
     <el-form :inline="true">
       <br>
-      <el-form-item label="超温最短时间">
-        <el-input v-model="mini_time" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="进胶最低温度">
-        <el-input v-model="mini_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="超温温度">
-        <el-input v-model="over_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="胶料总误差">
-        <el-input v-model="batching_error" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="转子水温">
-        <el-input v-model="zz_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="卸料门水温">
-        <el-input v-model="xlm_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="侧壁水温">
-        <el-input v-model="cb_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <div class="grid-content bg-purple">
+            <el-form-item label="超温最短时间">
+              <el-input v-model="mini_time" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="进胶最低温度">
+              <el-input v-model="mini_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="超温温度">
+              <el-input v-model="over_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="胶料总误差">
+              <el-input v-model="batching_error" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+          </div>
+        </el-col>
+        <el-col :span="10">
+          <div class="grid-content bg-purple">
+            <el-form-item label="转子水温">
+              <el-input v-model="zz_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="卸料门水温">
+              <el-input v-model="xlm_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="侧壁水温">
+              <el-input v-model="cb_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <div class="grid-content bg-purple">
 
-      <br>
-
-      <el-form-item label="炼胶超时时间">
-        <el-input v-model="over_time" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="进胶最高温度">
-        <el-input v-model="max_temp" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="回收时间">
-        <el-input v-show="reuse_flag" v-model="reuse_time" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="是否回收">
-        <template>
-          <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
-          <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
-        </template>
-      </el-form-item>
-      <el-form-item>
-        <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
-        <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
-      </el-form-item>
-      <el-form-item label="收皮">
-        <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="配方停用">
-        <el-checkbox v-model="use_flag" :disabled="true" />
-      </el-form-item>
+            <el-form-item label="炼胶超时时间">
+              <el-input v-model="over_time" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="进胶最高温度">
+              <el-input v-model="max_temp" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item v-show="reuse_flag" label="回收时间">
+              <el-input v-model="reuse_time" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="是否回收">
+              <template>
+                <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
+                <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
+              </template>
+            </el-form-item></div>
+        </el-col>
+        <el-col :span="10">
+          <div class="grid-content bg-purple">
+            <el-form-item label=" ">
+              <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
+              <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
+            </el-form-item>
+            <el-form-item label="收皮">
+              <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
+            </el-form-item>
+            <el-form-item v-show="false" label="配方停用">
+              <el-checkbox v-model="use_flag" :disabled="true" />
+            </el-form-item>
+          </div>
+        </el-col>
+      </el-row>
     </el-form>
 
     <br>

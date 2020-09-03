@@ -125,63 +125,81 @@
 
     <el-form :inline="true">
       <br>
-      <el-form-item label="超温最短时间">
-        <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="进胶最低温度">
-        <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="超温温度">
-        <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="胶料总误差">
-        <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="转子水温">
-        <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="卸料门水温">
-        <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="侧壁水温">
-        <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <div class="grid-content bg-purple">
+            <el-form-item label="超温最短时间">
+              <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="进胶最低温度">
+              <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="超温温度">
+              <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="胶料总误差">
+              <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+          </div>
+        </el-col>
+        <el-col :span="10">
+          <div class="grid-content bg-purple">
+            <el-form-item label="转子水温">
+              <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="卸料门水温">
+              <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="侧壁水温">
+              <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <div class="grid-content bg-purple">
+            <el-form-item label="炼胶超时时间">
+              <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="进胶最高温度">
+              <el-input-number v-model="max_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item v-show="reuse_flag" label="回收时间">
+              <el-input-number v-model="reuse_time" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+            </el-form-item>
+            <el-form-item label="是否回收">
+              <template>
+                <el-radio v-model="reuse_flag" :label="true">是</el-radio>
+                <el-radio v-model="reuse_flag" :label="false">否</el-radio>
+              </template>
+            </el-form-item>
+          </div>
+        </el-col>
+        <el-col :span="10">
+          <div class="grid-content bg-purple">
+            <el-form-item label=" ">
+              <el-radio v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
+              <el-radio v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
+            </el-form-item>
+            <el-form-item label="收皮" prop="SelectEquip">
+              <el-select v-model="sp_num" size="mini" style="width: 85px" placeholder="请选择">
+                <el-option
+                  v-for="item in sp_num_options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
 
-      <br>
+            <el-form-item v-show="false" label="配方停用">
+              <el-checkbox v-model="use_flag" />
+            </el-form-item>
+          </div>
+        </el-col>
+      </el-row>
 
-      <el-form-item label="炼胶超时时间">
-        <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="进胶最高温度">
-        <el-input-number v-model="max_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item v-show="reuse_flag" label="回收时间">
-        <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
-      </el-form-item>
-      <el-form-item label="是否回收">
-        <template>
-          <el-radio v-model="reuse_flag" :label="true">是</el-radio>
-          <el-radio v-model="reuse_flag" :label="false">否</el-radio>
-        </template>
-      </el-form-item>
-      <el-form-item>
-        <el-radio v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
-        <el-radio v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
-      </el-form-item>
-      <el-form-item label="收皮" prop="SelectEquip">
-        <el-select v-model="sp_num" size="mini" style="width: 85px" placeholder="请选择">
-          <el-option
-            v-for="item in sp_num_options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="配方停用">
-        <el-checkbox v-model="use_flag" />
-      </el-form-item>
     </el-form>
 
     <br>
@@ -369,7 +387,7 @@
               </div>
             </td>
             <td style="text-align: center">
-              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
+              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.01" size="mini" controls-position="right" />
             </td>
             <td style="text-align: center">
               <el-input-number v-model.number="material_ele.standard_error" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
@@ -575,7 +593,8 @@ export default {
       power: null,
       pressure: null,
       rpm: null,
-      condition: null
+      condition: null,
+      standard_error: null
     }
   },
   created() {
@@ -669,7 +688,8 @@ export default {
             page: val,
             material_type_id: v_materialType,
             material_no: v_search_material_no,
-            material_name: v_search_material_name
+            material_name: v_search_material_name,
+            use_flag: true
           }
         })
         this.tableData = raw_material_list.results
@@ -725,7 +745,7 @@ export default {
       // 循环整个表格
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
         // 只有原材料和实际重量两个必选项都填写时，才能往batching_details_list中push
-        if (app.ProductRecipe[i].material_name && app.ProductRecipe[i].actual_weight && app.ProductRecipe[i].standard_error) {
+        if (app.ProductRecipe[i].material_name && app.ProductRecipe[i].actual_weight) {
           var now_stage_material = {
             sn: i + 1,
             // auto_flag: app.ProductRecipe[i].auto_flag,
@@ -894,9 +914,9 @@ export default {
         material: '',
         material_type: '',
         auto_flag: 0,
-        material_name: ''
+        material_name: '',
         // actual_weight: '',
-        // standard_error: ''
+        standard_error: null
 
       })
     },
