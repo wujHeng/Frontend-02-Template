@@ -26,12 +26,12 @@
       <el-table-column
         prop="material_no"
         label="原材料代码"
-        width="100"
+        width="150"
       />
       <el-table-column
         prop="material_name"
         label="原材料名称"
-        width="100"
+        width="150"
       />
       <el-table-column
         prop="for_short"
@@ -56,12 +56,14 @@
         :formatter="formatter"
         prop="use_flag"
         label="使用与否"
+        width="50"
       />
       <el-table-column
         prop="created_username"
         label="创建人员"
       />
       <el-table-column
+        width="160"
         prop="created_date"
         label="创建时间"
       />
@@ -71,6 +73,7 @@
       />
       <el-table-column
         prop="last_updated_date"
+        width="160"
         label="更新时间"
       />
       <el-table-column label="操作">
