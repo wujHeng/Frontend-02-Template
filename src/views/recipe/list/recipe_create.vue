@@ -512,19 +512,19 @@ export default {
       search_material_name: null,
       select_recipe_component: false,
       sp_num_options: [{
-        value: '1',
+        value: 1,
         label: '1车/托'
       }, {
-        value: '2',
+        value: 2,
         label: '2车/托'
       }, {
-        value: '3',
+        value: 3,
         label: '3车/托'
       }, {
-        value: '4',
+        value: 4,
         label: '4车/托'
       }, {
-        value: '5',
+        value: 5,
         label: '5车/托'
       }],
       generateRecipeForm: {
@@ -556,7 +556,19 @@ export default {
       // 配料弹框
       dialogRubberMaterialStandard: false,
       ProductRecipe: [],
-      RecipeMaterialList: [],
+      RecipeMaterialList: [
+        {
+          sn: '',
+          //     condition:"",
+          time: null,
+          temperature: null,
+          energy: null,
+          power: null,
+          //     action:"",
+          pressure: null,
+          rpm: null
+        }
+      ],
       raw_material_index: null,
       auto_flag: 0,
       // 原材料弹框
@@ -953,6 +965,13 @@ export default {
         if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
           var step_details_list = []
           // 循环整个表格
+          if (this.RecipeMaterialList.length === 0) {
+            this.$message({
+              message: '密炼步序不能为空',
+              type: 'error'
+            })
+            return
+          }
           for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
             // 只有步序的所有字段都填时，才能往step_details_list中push
             // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
