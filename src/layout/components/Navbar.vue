@@ -77,8 +77,6 @@ export default {
     margin-top: 0 !important;
   }
   .hamburger-container {
-    filter: drop-shadow(#fff 80px 0);
-    transform: translateX(-80px);
     line-height: 46px;
     height: 100%;
     float: left;
