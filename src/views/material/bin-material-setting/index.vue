@@ -2,7 +2,7 @@
   <div style="margin-top: 25px; margin:25px auto auto auto">
     <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="机台">
-        <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
+        <el-select v-model="equip" placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
           <el-option
             v-for="item in equipOptions"
             :key="item.equip_no"
