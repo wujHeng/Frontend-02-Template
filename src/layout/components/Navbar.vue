@@ -9,18 +9,27 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <el-dropdown
+        class="avatar-container"
+        trigger="click"
+      >
         <div class="avatar-wrapper">
           <span>用户名：</span>
           <div style="margin-right:5px">{{ name }}</div>
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" /> -->
           <i class="el-icon-caret-bottom" />
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+        <el-dropdown-menu
+          slot="dropdown"
+          class="user-dropdown"
+        >
           <router-link to="/">
             <el-dropdown-item>首 页</el-dropdown-item>
           </router-link>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item
+            divided
+            @click.native="logout"
+          >
             <span style="display:block;">退 出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -55,14 +64,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .navbar {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  color:#fff !important;
+  background: #e99d2a;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
+  .right-menu .avatar-container .avatar-wrapper{
+    margin-top: 0 !important;
+  }
   .hamburger-container {
+    filter: drop-shadow(#fff 80px 0);
+    transform: translateX(-80px);
     line-height: 46px;
     height: 100%;
     float: left;
@@ -113,6 +129,7 @@ export default {
         margin-top: 5px;
         position: relative;
         display:flex;
+        color:#fff;
 
         .user-avatar {
           cursor: pointer;

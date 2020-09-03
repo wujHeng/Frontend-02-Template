@@ -22,7 +22,7 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
   const hasPermission = store.getters.permission && JSON.stringify(store.getters.permission) !== '{}'
 
-  console.log(store.getters.permission, 'store.getters.permission')
+  // console.log(store.getters.permission, 'store.getters.permission')
 
   if (hasToken) {
     // 有登录
