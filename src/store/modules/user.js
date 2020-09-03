@@ -55,7 +55,6 @@ const actions = {
         setToken(response.token)
         resolve()
       }).catch(error => {
-        console.log(error, 'error')
         reject(error)
       })
     })

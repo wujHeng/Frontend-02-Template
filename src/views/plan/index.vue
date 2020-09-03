@@ -389,7 +389,6 @@ export default {
       this.$refs.addPlanDialog.show()
     },
     handleCurrentChange(val) {
-      console.log(val)
       this.currentRow = val
       if (val) {
         this.disabled = false

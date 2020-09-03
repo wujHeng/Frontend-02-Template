@@ -7,7 +7,6 @@ export function roles(method, id, data = {}) {
     method: method
   }
   Object.assign(obj, data)
-  console.log(obj, 'obj')
   return request(obj)
 }
 
