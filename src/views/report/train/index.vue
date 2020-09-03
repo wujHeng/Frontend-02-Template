@@ -485,7 +485,7 @@ export default {
     async getFormulaList() {
       try {
         const data = await rubberMaterial('get', {
-          params: { page_size: 10000000 }
+          params: {  all: 1 }
         })
         const formulaList = data.results || []
         // 去重
@@ -504,7 +504,7 @@ export default {
       try {
         // groups: 91,
         const data = await personnelsUrl('get', null, {
-          params: { page_size: 100000000, all: 1 }
+          params: {  all: 1 }
         })
         const operators = data.results || []
         // 去重

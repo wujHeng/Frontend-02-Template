@@ -48,7 +48,7 @@ export default {
   methods: {
     getMachineList() {
       var _this = this
-      equip('get', { params: { page_size: 100000000 }})
+      equip('get', { params: { all: 1 }})
         .then(function(response) {
           _this.machineList = response.results || []
         })
