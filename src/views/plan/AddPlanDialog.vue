@@ -237,7 +237,7 @@ export default {
           if (plan.pdp_product_classes_plan.filter(class_plan => {
             return class_plan.plan_trains > 0
           }).length === 0) {
-            this.$alert('至少一个班次车次大于0', '错误', {
+            this.$alert('至少一个班次的车次大于0', '错误', {
               confirmButtonText: '确定'
             })
             return
