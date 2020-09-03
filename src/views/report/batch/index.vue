@@ -376,7 +376,7 @@ export default {
       var _this = this
       rubberMaterial('get', {
         params: {
-          page_size: 10000000
+          all: 1
         }
       })
         .then(function(response) {
