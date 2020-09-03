@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading" element-loading-text="加载中...">
     <br>
     <el-form :inline="true">
       <el-form-item label="机台">
@@ -205,6 +205,7 @@ import { dataTool } from 'echarts/lib/echarts'
 export default {
   data: function() {
     return {
+      loading: null,
       SelectEquipOptions: [],
       SelectCopyEquipOptions: [],
       SelectRecipeStatusOptions: [{
@@ -253,6 +254,7 @@ export default {
         var v_SelectSite = this.SelectSite ? this.SelectSite : ''
         var v_SelectStage = this.SelectStage ? this.SelectStage : ''
         var v_input_rubber_no = this.input_rubber_no ? this.input_rubber_no : ''
+        this.loading = true
         const recipe_listData = await recipe_list('get', null, {
           params: {
             page: val,
@@ -265,6 +267,7 @@ export default {
         })
         this.tableData = recipe_listData.results
         this.tableDataTotal = recipe_listData.count
+        this.loading = false
         this.currentRow = {
           product_name: null
         }
