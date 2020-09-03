@@ -13,7 +13,6 @@
       </el-form-item>
       <el-form-item style="float: right">
         <el-button type="info" @click="save">保存并下载</el-button>
-        <el-button type="info">返回</el-button>
       </el-form-item>
     </el-form>
     <el-form style="margin-left: 10px" :inline="true">
@@ -29,34 +28,34 @@
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.low_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
+            <el-input-number v-model="scope.row.low_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.advance_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
+            <el-input-number v-model="scope.row.advance_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
       </el-table-column>
       <el-table-column label="（单位0.1S）">
         <el-table-column prop="adjust_value" label="调整值">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.adjust_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
+            <el-input-number v-model="scope.row.adjust_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.dot_time" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
+            <el-input-number v-model="scope.row.dot_time" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
         <el-table-column prop="fast_speed" label="快称速度">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.fast_speed" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="fast_speed_change(scope.row, scope.row.fast_speed)" />
+            <el-input-number v-model="scope.row.fast_speed" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="fast_speed_change(scope.row, scope.row.fast_speed)" />
           </template>
         </el-table-column>
         <el-table-column prop="low_speed" label="慢称速度">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.low_speed" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="low_speed_change(scope.row, scope.row.low_speed)" />
+            <el-input-number v-model="scope.row.low_speed" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="low_speed_change(scope.row, scope.row.low_speed)" />
           </template>
         </el-table-column>
       </el-table-column>
@@ -69,22 +68,22 @@
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.low_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
+            <el-input-number v-model="scope.row.low_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.advance_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
+            <el-input-number v-model="scope.row.advance_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="adjust_value" label="调整值">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.adjust_value" size="mini" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
+            <el-input-number v-model="scope.row.adjust_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
           <template v-if="scope.row.use_flag" slot-scope="scope">
-            <el-input-number v-model="scope.row.dot_time" size="mini" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
+            <el-input-number v-model="scope.row.dot_time" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
       </el-table-column>

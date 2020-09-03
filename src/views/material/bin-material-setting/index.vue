@@ -13,7 +13,6 @@
       </el-form-item>
       <el-form-item style="float: right">
         <el-button type="info" @click="save">保存并下载</el-button>
-        <el-button type="info">返回</el-button>
       </el-form-item>
     </el-form>
     <el-form style="margin-left: 10px" :inline="true">
