@@ -108,8 +108,13 @@ export default {
     this.getOilList()
     this.getMaterialsCbList()
     this.getMaterialsOilList()
+    this.getEquip()
   },
   methods: {
+    async getEquip() {
+      const equipData = await equip('get')
+      this.equip = equipData.results[0].equip_no
+    },
     async getCbList() {
       try {
         const cbData = await weighCb('get', { params: { equip_no: this.equip }})
