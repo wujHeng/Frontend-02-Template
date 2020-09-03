@@ -282,7 +282,7 @@ export default {
         this.reuse_time = process_step_listData.results[0]['reuse_time']
         this.reuse_flag = process_step_listData.results[0]['reuse_flag']
         this.temp_use_flag = process_step_listData.results[0]['temp_use_flag']
-        this.sp_num = process_step_listData.results[0]['sp_num']
+        this.sp_num = process_step_listData.results[0]['sp_num'] + '车/托'
         this.use_flag = process_step_listData.results[0]['use_flag']
         console.log('====================2222')
         console.log(process_step_listData.results)
@@ -306,6 +306,23 @@ export default {
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })
+    },
+    sp_numFormatter: function() {
+      return this.sp_numChoice(this.sp_num)
+    },
+    sp_numChoice: function(sp_num_ele) {
+      switch (sp_num_ele) {
+        case 1:
+          return '1车/托'
+        case 2:
+          return '2车/托'
+        case 3:
+          return '3车/托'
+        case 4:
+          return '4车/托'
+        case 5:
+          return '5车/托'
+      }
     }
 
   }

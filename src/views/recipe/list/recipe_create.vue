@@ -355,46 +355,48 @@
 
       <table
         class="table table-bordered"
-        style="width: 100%; color: #909399; font-size: 14px;"
+        border="1"
+        bordercolor="#ebeef4"
+        style="width: 100%; color: #909399; font-size: 14px; border-collapse:collapse"
       >
         <thead>
           <tr>
-            <th style="text-align: center">No</th>
-            <th style="text-align: center">类别</th>
-            <!-- <th style="text-align: center">自动与否</th> -->
-            <th style="text-align: center">原材料</th>
-            <td style="text-align: center">设定值(kg)</td>
-            <td style="text-align: center">误差值(kg)</td>
-            <th style="text-align: center">操作</th>
+            <th style="text-align: center; height: 48px">No</th>
+            <th style="text-align: center; height: 48px">类别</th>
+            <!-- <th style="text-align: center; height: 48px">自动与否</th> -->
+            <th style="text-align: center; height: 48px">原材料</th>
+            <td style="text-align: center; height: 48px">设定值(kg)</td>
+            <td style="text-align: center; height: 48px">误差值(kg)</td>
+            <th style="text-align: center; height: 48px">操作</th>
           </tr>
         </thead>
         <tbody style="color: #606266;">
           <tr v-for="(material_ele, index) in ProductRecipe" :key="index">
             <!--<td>{{ new_material_ele.sn }}</td>-->
             <td v-show="false">{{ material_ele.material }}</td>
-            <td style="text-align: center">{{ index + 1 }}</td>
-            <td style="text-align: center">{{ material_ele.material_type }}</td>
-            <!-- <td style="text-align: center">
+            <td style="text-align: center; height: 48px">{{ index + 1 }}</td>
+            <td style="text-align: center; height: 48px">{{ material_ele.material_type }}</td>
+            <!-- <td style="text-align: center; height: 48px">
               <template>
                 <el-radio v-model="material_ele.auto_flag" :label="1">自动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="2">手动</el-radio>
                 <el-radio v-model="material_ele.auto_flag" :label="0">其他</el-radio>
               </template>
             </td> -->
-            <td style="text-align: center">
+            <td style="text-align: center; height: 48px">
               <!-- <div style="margin-top: 12px;"> -->
               <el-input v-model="material_ele.material_name" size="mini" style="width: 70%" class="input-with-select" :disabled="true">
                 <el-button slot="append" icon="el-icon-search" @click="pop_up_raw_material(material_ele, index)" />
               </el-input>
               <!-- </div> -->
             </td>
-            <td style="text-align: center">
+            <td style="text-align: center; height: 48px">
               <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.01" size="mini" controls-position="right" />
             </td>
-            <td style="text-align: center">
+            <td style="text-align: center; height: 48px">
               <el-input-number v-model.number="material_ele.standard_error" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
             </td>
-            <td style="text-align: center">
+            <td style="text-align: center; height: 48px">
               <el-button size="mini" @click="del_material_row(material_ele, index)">删除</el-button>
             </td>
           </tr>
