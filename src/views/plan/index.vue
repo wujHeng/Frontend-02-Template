@@ -297,7 +297,7 @@ export default {
         this.params['end_time'] = this.endTime
       }
       if (this.calss) {
-        this.params['classes'] = this.beginTcalssime
+        this.params['classes'] = this.calss
       }
       if (this.recipe) {
         this.params['product_no'] = this.recipe
