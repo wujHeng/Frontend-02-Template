@@ -66,6 +66,7 @@
           <template v-if="scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[0].plan_trains"
+              :precision="1"
               :disabled="scope.row.sum"
               :min="0"
               @change="planTrainsChanged(scope.row, 0)"
@@ -88,6 +89,7 @@
           <template v-if="scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[1].plan_trains"
+              :precision="1"
               :disabled="scope.row.sum"
               :min="0"
               @change="planTrainsChanged(scope.row, 1)"
@@ -110,6 +112,7 @@
           <template v-if="scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[2].plan_trains"
+              :precision="1"
               :disabled="scope.row.sum"
               :min="0"
               @change="planTrainsChanged(scope.row, 2)"
@@ -211,6 +214,12 @@ export default {
     },
 
     batchSave() {
+      if (!this.plansForAdd.length) {
+        this.$alert('请添加计划', '错误', {
+          confirmButtonText: '确定'
+        })
+        return
+      }
       var app = this
       var plansForAdd_ = []
       this.plansForAdd.forEach(plan => {
