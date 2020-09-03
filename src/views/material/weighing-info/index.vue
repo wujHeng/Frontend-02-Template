@@ -24,37 +24,37 @@
       <el-table-column label="炭黑称">
         <el-table-column prop="tank_name" label="炭黑罐" />
         <el-table-column prop="material_name" label="物料名称">
-          <template v-if="scope.row.use_flag" slot-scope="scope">{{ scope.row.material_name }}</template>
+          <template slot-scope="scope">{{ scope.row.material_name }}</template>
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.low_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.advance_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
       </el-table-column>
       <el-table-column label="（单位0.1S）">
         <el-table-column prop="adjust_value" label="调整值">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.adjust_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.dot_time" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
         <el-table-column prop="fast_speed" label="快称速度">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.fast_speed" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="fast_speed_change(scope.row, scope.row.fast_speed)" />
           </template>
         </el-table-column>
         <el-table-column prop="low_speed" label="慢称速度">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.low_speed" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="low_speed_change(scope.row, scope.row.low_speed)" />
           </template>
         </el-table-column>
@@ -64,25 +64,25 @@
       <el-table-column label="油料称">
         <el-table-column prop="tank_name" label="油料罐" />
         <el-table-column prop="material_name" label="物料名称">
-          <template v-if="scope.row.use_flag" slot-scope="scope">{{ scope.row.material_name }}</template>
+          <template slot-scope="scope">{{ scope.row.material_name }}</template>
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.low_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="low_value_change(scope.row, scope.row.low_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="advance_value" label="提前量">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.advance_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="advance_value_change(scope.row, scope.row.advance_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="adjust_value" label="调整值">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.adjust_value" size="medium" :step="0.01" :max="99" :min="0" step-strictly @blur="adjust_value_change(scope.row, scope.row.adjust_value)" />
           </template>
         </el-table-column>
         <el-table-column prop="dot_time" label="点动时间">
-          <template v-if="scope.row.use_flag" slot-scope="scope">
+          <template slot-scope="scope">
             <el-input-number v-model="scope.row.dot_time" size="medium" :step="1" :max="99" :min="0" step-strictly @blur="dot_time_change(scope.row, scope.row.dot_time)" />
           </template>
         </el-table-column>
@@ -119,7 +119,7 @@ export default {
     async getCbList() {
       try {
         const cbData = await weighCb('get', {
-          params: { equip_no: this.equip, all: 1 }
+          params: { equip_no: this.equip }
         })
         this.tableBinCbData = cbData.results
       // eslint-disable-next-line no-empty
@@ -128,7 +128,7 @@ export default {
     async getOilList() {
       try {
         const oilData = await weighOil('get', {
-          params: { equip_no: this.equip, all: 1 }
+          params: { equip_no: this.equip }
         })
         this.tableBinOilData = oilData.results
       // eslint-disable-next-line no-empty

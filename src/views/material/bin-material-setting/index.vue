@@ -22,12 +22,12 @@
     </el-form>
     <el-table :data="tableBinCbData" border style="width: 80%">
       <el-table-column label="炭黑称">
-        <el-table-column prop="tank_name" label="炭黑罐" />
+        <el-table-column prop="tank_name" width="150%" label="炭黑罐" />
         <el-table-column prop="material_name" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-if="scope.row.use_flag"
               v-model="scope.row.material_name"
+              style="width:100%"
               @change="masterialChange"
             >
               <el-option
@@ -54,12 +54,12 @@
     </el-table>
     <el-table :data="tableBinOilData" border style="width: 80%">
       <el-table-column label="油料称">
-        <el-table-column prop="tank_name" label="油料罐" />
+        <el-table-column prop="tank_name" width="150%" label="油料罐" />
         <el-table-column prop="material_name" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-if="scope.row.use_flag"
               v-model="scope.row.material_name"
+              style="width:100%"
               @change="masterialChange"
             >
               <el-option v-for="item in oilOptions" :key="item" :label="item" :value="item" />
