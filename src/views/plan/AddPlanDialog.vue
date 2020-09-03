@@ -223,6 +223,7 @@ export default {
       var app = this
       var plansForAdd_ = []
       this.plansForAdd.forEach(plan => {
+        console.log(plan, 'plan')
         if (!plan.sum) {
           var plan_ = JSON.parse(JSON.stringify(plan))
           if (!plan_.product_batching) {
@@ -232,6 +233,15 @@ export default {
             return
           }
           plan_.pdp_product_classes_plan = []
+          console.log(plan.pdp_product_classes_plan, 'plan.pdp_product_classes_plan')
+          if (plan.pdp_product_classes_plan.filter(class_plan => {
+            return class_plan.plan_trains > 0
+          }).length === 0) {
+            this.$alert('至少一个班次车次大于0', '错误', {
+              confirmButtonText: '确定'
+            })
+            return
+          }
           for (var i = 0; i < plan.pdp_product_classes_plan.length; i++) {
             if (plan.pdp_product_classes_plan[i].enable) {
               plan_.pdp_product_classes_plan.push(
