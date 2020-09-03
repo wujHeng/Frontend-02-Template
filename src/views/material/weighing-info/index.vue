@@ -119,7 +119,7 @@ export default {
     async getCbList() {
       try {
         const cbData = await weighCb('get', {
-          params: { equip_no: this.equip, all: 1 }
+          params: { equip_no: this.equip }
         })
         this.tableBinCbData = cbData.results
       // eslint-disable-next-line no-empty
@@ -128,7 +128,7 @@ export default {
     async getOilList() {
       try {
         const oilData = await weighOil('get', {
-          params: { equip_no: this.equip, all: 1 }
+          params: { equip_no: this.equip }
         })
         this.tableBinOilData = oilData.results
       // eslint-disable-next-line no-empty
