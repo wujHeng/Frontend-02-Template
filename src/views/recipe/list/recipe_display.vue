@@ -93,7 +93,7 @@
 
     <br>
     <el-row :gutter="20">
-      <el-col :span="10">
+      <el-col :span="9">
         <div class="grid-content bg-purple">
           <span class="font_custom">胶料称量</span>
           <el-table
@@ -102,11 +102,11 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="sn" label="序号" />
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <!-- <el-table-column width="80%" prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="material_name" label="胶料名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="material_name" label="胶料名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">炭黑称量</span>
           <el-table
@@ -115,12 +115,12 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="sn" label="序号" />
-            <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
+            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="material_name" label="炭黑名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="material_name" label="炭黑名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">油料称量</span>
           <el-table
@@ -129,63 +129,37 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="stage_product_batch_no" label="序号" />
-            <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="50%" prop="stage_product_batch_no" label="序号" />
+            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="product_name" label="油脂名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="product_name" label="油脂名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
         </div>
       </el-col>
 
-      <el-col :span="14"><div class="grid-content bg-purple">
-        <span class="font_custom">密炼规程</span>
-        <el-table
-          highlight-current-row
-          :data="process_step_tableData"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="sn"
-            label="序号"
-          />
-          <el-table-column
-            prop="condition_name"
-            label="条件"
-          />
-          <el-table-column
-            prop="time"
-            label="时间"
-          />
-          <el-table-column
-            prop="temperature"
-            label="温度"
-          />
-          <el-table-column
-            prop="energy"
-            label="能量"
-          />
-          <el-table-column
-            prop="power"
-            label="功率"
-          />
-          <el-table-column
-            prop="action_name"
-            label="动作"
-          />
-          <el-table-column
-            prop="pressure"
-            label="压力"
-          />
-          <el-table-column
-            prop="rpm"
-            label="转速"
-          />
+      <el-col :span="15">
+        <div class="grid-content bg-purple">
+          <span class="font_custom">密炼规程</span>
+          <el-table
+            highlight-current-row
+            :data="process_step_tableData"
+            border
+            style="width: 100%"
+          >
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
+            <el-table-column align="center" prop="condition_name" label="条件" />
+            <el-table-column align="center" width="60%" prop="time" label="时间" />
+            <el-table-column align="center" width="60%" prop="temperature" label="温度" />
+            <el-table-column align="center" width="60%" prop="energy" label="能量" />
+            <el-table-column align="center" width="60%" prop="power" label="功率" />
+            <el-table-column align="center" width="148%" prop="action_name" label="动作" />
+            <el-table-column align="center" width="60%" prop="pressure" label="压力" />
+            <el-table-column align="center" width="60%" prop="rpm" label="转速" />
 
-        </el-table>
-      </div></el-col>
+          </el-table>
+        </div></el-col>
     </el-row>
 
   </div>

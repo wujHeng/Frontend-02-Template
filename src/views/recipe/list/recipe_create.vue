@@ -204,7 +204,7 @@
 
     <br>
     <el-row :gutter="20">
-      <el-col :span="10">
+      <el-col :span="9">
         <div class="grid-content bg-purple">
           <span class="font_custom">胶料称量</span>
           <el-table
@@ -213,11 +213,11 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="sn" label="序号" />
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="material_name" label="胶料名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="material_name" label="胶料名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">炭黑称量</span>
           <el-table
@@ -226,12 +226,12 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="sn" label="序号" />
-            <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
+            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="material_name" label="炭黑名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="material_name" label="炭黑名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">油料称量</span>
           <el-table
@@ -240,41 +240,43 @@
             border
             style="width: 100%"
           >
-            <el-table-column width="60%" prop="stage_product_batch_no" label="序号" />
-            <el-table-column width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="50%" prop="stage_product_batch_no" label="序号" />
+            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column prop="product_name" label="油脂名称" />
-            <el-table-column prop="actual_weight" label="设定值(kg)" />
-            <el-table-column prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" prop="product_name" label="油脂名称" />
+            <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
         </div>
       </el-col>
 
-      <el-col :span="14">
+      <el-col :span="15">
         <div class="grid-content bg-purple">
           <span class="font_custom">密炼规程</span>
           <table
             class="table table-bordered"
-            style="width: 100%; color: #909399; font-size: 14px;"
+            border="1"
+            bordercolor="#ebeef4"
+            style="width: 100%; color: #909399; font-size: 14px; border-collapse:collapse"
           >
             <thead>
               <tr>
-                <th style="text-align: center">序号</th>
-                <th style="text-align: center">条件</th>
-                <th style="text-align: center">时间</th>
-                <th style="text-align: center">温度</th>
-                <td style="text-align: center">能量</td>
-                <td style="text-align: center">功率</td>
-                <th style="text-align: center">动作</th>
-                <th style="text-align: center">压力</th>
-                <th style="text-align: center">转速</th>
-                <th style="text-align: center">操作</th>
+                <th style="text-align: center; height: 48px">序号</th>
+                <th style="text-align: center; height: 48px">条件</th>
+                <th style="text-align: center; height: 48px">时间</th>
+                <th style="text-align: center; height: 48px">温度</th>
+                <td style="text-align: center; height: 48px">能量</td>
+                <td style="text-align: center; height: 48px">功率</td>
+                <th style="text-align: center; height: 48px">动作</th>
+                <th style="text-align: center; height: 48px">压力</th>
+                <th style="text-align: center; height: 48px">转速</th>
+                <th style="text-align: center; height: 48px">操作</th>
               </tr>
             </thead>
             <tbody style="color: #606266;">
               <tr v-for="(step_ele, index) in RecipeMaterialList" :key="index">
-                <td style="text-align: center">{{ index + 1 }}</td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">{{ index + 1 }}</td>
+                <td style="text-align: center; height: 48px">
 
                   <el-select v-model="step_ele.condition" size="mini" style="width: 100px" clearable placeholder="请选择">
                     <el-option
@@ -286,19 +288,19 @@
                   </el-select>
 
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
 
                   <el-select v-model="step_ele.action" size="mini" style="width: 100px" clearable placeholder="请选择">
                     <el-option
@@ -310,13 +312,13 @@
                   </el-select>
 
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" controls-position="right" style="width: 60px" size="mini" />
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center; height: 48px">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
                 </td>
               </tr>
@@ -380,11 +382,11 @@
               </template>
             </td> -->
             <td style="text-align: center">
-              <div style="margin-top: 12px;">
-                <el-input v-model="material_ele.material_name" size="mini" style="width: 70%" class="input-with-select" :disabled="true">
-                  <el-button slot="append" icon="el-icon-search" @click="pop_up_raw_material(material_ele, index)" />
-                </el-input>
-              </div>
+              <!-- <div style="margin-top: 12px;"> -->
+              <el-input v-model="material_ele.material_name" size="mini" style="width: 70%" class="input-with-select" :disabled="true">
+                <el-button slot="append" icon="el-icon-search" @click="pop_up_raw_material(material_ele, index)" />
+              </el-input>
+              <!-- </div> -->
             </td>
             <td style="text-align: center">
               <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.01" size="mini" controls-position="right" />
