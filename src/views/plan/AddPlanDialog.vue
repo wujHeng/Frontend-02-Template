@@ -51,7 +51,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="batching_weight" label="配料重量（吨）" />
-      <el-table-column prop="production_time_interval" label="炼胶时间（分钟）" />
+      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" />
       <el-table-column label="当前库存（吨）" />
       <el-table-column label="早班计划">
         <el-table-column label="顺序" width="210">
