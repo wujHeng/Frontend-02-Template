@@ -3,7 +3,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
+          <el-select v-model="equip" placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -40,7 +40,7 @@
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="机台">
-            <el-input v-model="currentAlive.equip_no" type="text" disabled />
+            <el-input v-model="equip" type="text" disabled />
           </el-form-item>
         </el-form>
       </el-row>
