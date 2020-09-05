@@ -53,6 +53,15 @@ export function equip_url(method, data = {}) {
   return request(obj)
 }
 
+export function equip_copy_url(method, data = {}) {
+  const obj = {
+    url: API.EquipCopyAllUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
 export function site_url(method, data = {}) {
   const obj = {
     url: API.SiteUrl,
