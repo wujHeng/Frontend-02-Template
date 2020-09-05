@@ -126,35 +126,6 @@
           <el-input v-model="userForm.username" />
         </el-form-item>
         <el-form-item
-          v-if="userForm.id"
-          label="原密码"
-          prop="oldPassword"
-        >
-          <!-- :class="[{'is-error':isErrorOldPassword?true:false}]" -->
-          <!-- <div class="el-input">
-            <input
-              type="password"
-              autocomplete="off"
-              class="el-input__inner"
-              @input="changeOldPassword"
-              @blur="blurOldPassword"
-            >
-            <transition name="show">
-              <div
-                v-show="isErrorOldPassword"
-                class="el-form-item__error"
-              >
-                {{ titleOldPassword }}
-              </div>
-            </transition>
-          </div> -->
-          <el-input
-            v-model="userForm.oldPassword"
-            type="password"
-            autocomplete="off"
-          />
-        </el-form-item>
-        <el-form-item
           :label="userForm.id?'新密码':'密码'"
           prop="password"
         >
@@ -259,15 +230,6 @@ export default {
         callback()
       }
     }
-    var validatePass3 = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入原密码'))
-      } else if (value && (value.length < 6 || value.length > 16)) {
-        callback(new Error('请输入6~16位长度的密码'))
-      } else {
-        callback()
-      }
-    }
     var validatePass2 = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请再次输入密码'))
@@ -311,9 +273,6 @@ export default {
         ],
         num: [
           { required: true, message: '请填写工号', trigger: 'blur' }
-        ],
-        oldPassword: [
-          { required: true, validator: validatePass3, trigger: 'blur' }
         ]
       },
       permissionsArr: [],
@@ -359,18 +318,6 @@ export default {
     },
     changeOldPassword(e) {
       this.userForm.oldPassword = e.target.value
-    },
-    blurOldPassword() {
-      const value = this.userForm.oldPassword
-      if (!value) {
-        this.titleOldPassword = '请输入原密码'
-        this.isErrorOldPassword = true
-      } else if (value && (value.length < 6 || value.length > 16)) {
-        this.isErrorOldPassword = true
-        this.titleOldPassword = '请输入6~16位长度的密码'
-      } else {
-        this.isErrorOldPassword = false
-      }
     },
     currentChange() {
       const app = this

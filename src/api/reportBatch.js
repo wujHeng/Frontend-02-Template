@@ -103,7 +103,7 @@ export function mixerInformation(method, data) {
 }
 export function curveInformation(method, data) {
   const obj = {
-    url: API.CurveInformationUrl + data.params.id + '/',
+    url: API.CurveInformationUrl,
     method: method
   }
   Object.assign(obj, data)
