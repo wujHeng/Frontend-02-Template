@@ -17,6 +17,11 @@
         </el-form-item>
       </el-row>
       <el-row>
+        <el-form-item label="完成车次: ">
+          <el-input v-model="currentRow.actual_trains" type="text" :disabled="true" />
+        </el-form-item>
+      </el-row>
+      <el-row>
         <el-form-item label="修改后车次: " :error="formError[0]">
           <el-input-number v-model.number="trains" :precision="1" :min="0" />
         </el-form-item>

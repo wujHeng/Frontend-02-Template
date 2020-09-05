@@ -3,7 +3,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item label="机台">
-          <el-select v-model="equip" clearable placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
+          <el-select v-model="equip" placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -40,37 +40,37 @@
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="机台">
-            <el-input type="text" disabled />
+            <el-input v-model="equip" type="text" disabled />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="开始">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.begin_time" type="text" style="float: left" disabled />
           </el-form-item>
           <el-form-item label="配方">
             <span style="float: right; margin-left: 30px" />
-            <el-input type="text" style="float: right" disabled />
+            <el-input v-model="currentAlive.product_no" type="text" style="float: right" disabled />
           </el-form-item>
           <el-form-item label="设定车次">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.plan_trains" type="text" style="float: left" disabled />
           </el-form-item>
           <el-form-item label="状态">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.status" type="text" style="float: left" disabled />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="结束">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.end_time" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前计划">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.plan_classes_uid" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前车次">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.actual_trains" type="text" disabled />
           </el-form-item>
         </el-form>
       </el-row>
@@ -123,9 +123,9 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select v-model="calss" clearable placeholder="请选择" @visible-change="calssVisibleChange">
+            <el-select v-model="classes" clearable placeholder="请选择" @visible-change="classesVisibleChange">
               <el-option
-                v-for="item in calssOptions"
+                v-for="item in classesOptions"
                 :key="item.global_name"
                 :label="item.global_name"
                 :value="item.global_name"
@@ -169,7 +169,8 @@ import {
   upRegulation,
   downRegulation,
   globalCodes,
-  productbatching
+  productbatching,
+  getPlanStatusList
 } from '@/api/plan'
 import AlterTrainNumberDialog from './AlterTrainNumberDialog'
 import AddPlanDialog from './AddPlanDialog'
@@ -186,6 +187,7 @@ export default {
       },
       tableData: [],
       currentRow: {},
+      currentAlive: {},
       total: 0,
       page: 1,
 
@@ -194,8 +196,8 @@ export default {
       endTime: '',
       recipe: '',
       recipeOptions: [],
-      calss: '',
-      calssOptions: [],
+      classes: '',
+      classesOptions: [],
       findForm: {},
       formError: {},
 
@@ -204,9 +206,20 @@ export default {
     }
   },
   created() {
-    this.getPlanList()
+    this.getEquip()
   },
   methods: {
+    async getEquip() {
+      console.log(this.currentAlive)
+      const equipData = await equip('get')
+      this.equip = equipData.results[0].equip_no
+      this.getPlanStatusList()
+      this.getPlanList()
+    },
+    async getPlanStatusList() {
+      const planStatusListData = await getPlanStatusList({ equip_no: this.equip })
+      this.currentAlive = planStatusListData.results
+    },
     async getPlanList() {
       this.params['page'] = this.page
       this.params['equip_no'] = this.equip
@@ -224,7 +237,7 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
-    calssVisibleChange(bool) {
+    classesVisibleChange(bool) {
       if (bool) {
         this.getClassList()
       }
@@ -249,7 +262,7 @@ export default {
         const classData = await globalCodes('get', {
           params: { all: 1, class_name: '班次' }
         })
-        this.calssOptions = classData.results
+        this.classesOptions = classData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -275,7 +288,7 @@ export default {
       const Second = second < 10 ? ('0' + second) : second
       this.beginTime = Y + '-' + M + '-' + D + ' 00:00:00'
       this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
-      this.calss = ''
+      this.classes = ''
       this.recipe = ''
       this.params = {
         page: 1
@@ -296,8 +309,8 @@ export default {
       if (this.endTime) {
         this.params['end_time'] = this.endTime
       }
-      if (this.calss) {
-        this.params['classes'] = this.calss
+      if (this.classes) {
+        this.params['classes'] = this.classes
       }
       if (this.recipe) {
         this.params['product_no'] = this.recipe
