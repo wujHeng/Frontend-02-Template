@@ -141,7 +141,7 @@
         prop="production_details.间隔时间"
         label="间隔时间"
       />
-      <el-table-column label="操作">
+      <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
