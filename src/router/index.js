@@ -231,6 +231,17 @@ export const asyncRoutes = [{
       title: '车次报表',
       permissionName: 'trainsfeedbacks'
     }
+  },
+  {
+    path: 'train-statistics-info/:id',
+    component: () => import('@/views/report/train/trainInfo'),
+    name: 'trainStatisticsReportInfo',
+    hidden: true,
+    meta: {
+      title: '车次报表详情',
+      activeMenu: '/report/train-statistics'
+      // permissionName: 'trainsfeedbacksInfo'
+    }
   }
   ]
 },

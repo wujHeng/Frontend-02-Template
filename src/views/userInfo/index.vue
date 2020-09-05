@@ -1,6 +1,9 @@
 /* eslint-disable prefer-const */
 <template>
-  <div>
+  <div
+    v-loading="loading"
+    class="userInfo"
+  >
     <el-form :inline="true">
       <el-form-item label="工号">
         <el-input
@@ -20,6 +23,7 @@
     </el-form>
 
     <el-table
+      v-loading="loadingTable"
       :data="tableData"
       border
       style="width: 100%"
@@ -38,17 +42,17 @@
         prop="username"
         label="用户名"
       />
-      <el-table-column label="组织">
+      <!-- <el-table-column label="组织">
         <template slot-scope="scope">
           {{ scope.row.section?scope.row.section:'--' }}
         </template>
-      </el-table-column>
-      <el-table-column
+      </el-table-column> -->
+      <!-- <el-table-column
         prop="is_leave"
         label="离职与否"
         width="80"
         :formatter="formatter"
-      />
+      /> -->
       <el-table-column label="创建人">
         <template slot-scope="scope">
           {{ scope.row.created_user?scope.row.created_user:'--' }}
@@ -56,7 +60,7 @@
       </el-table-column>
       <el-table-column label="创建日期">
         <template slot-scope="scope">
-          {{ scope.row.created_time?scope.row.created_time:'--' }}
+          {{ scope.row.created_date?scope.row.created_date:'--' }}
         </template>
       </el-table-column>
       <el-table-column
@@ -87,27 +91,90 @@
     />
 
     <el-dialog
-      title="编辑用户"
+      :title="userForm.id?'编辑用户':'新增用户'"
       :visible.sync="dialogCreateUserVisible"
       :before-close="handleClose"
+      width="800px"
     >
       <el-form
         ref="userForm"
         :model="userForm"
         :rules="rules"
-        label-width="80px"
+        label-width="100px"
       >
         <el-form-item
           label="用户名"
           prop="username"
         >
+          <!-- :class="[{'is-error':isError?true:false}]" -->
+          <!-- <div class="el-input">
+            <input
+              :value="userForm.username"
+              type="text"
+              autocomplete="off"
+              class="el-input__inner"
+              @input="changeUsername"
+              @blur="blurUsername"
+            >
+            <div
+              v-show="isError"
+              class="el-form-item__error"
+            >
+              请填写用户名
+            </div>
+          </div> -->
           <el-input v-model="userForm.username" />
         </el-form-item>
         <el-form-item
-          v-if="!userForm.id"
-          label="密码"
+          v-if="userForm.id"
+          label="原密码"
+          prop="oldPassword"
+        >
+          <!-- :class="[{'is-error':isErrorOldPassword?true:false}]" -->
+          <!-- <div class="el-input">
+            <input
+              type="password"
+              autocomplete="off"
+              class="el-input__inner"
+              @input="changeOldPassword"
+              @blur="blurOldPassword"
+            >
+            <transition name="show">
+              <div
+                v-show="isErrorOldPassword"
+                class="el-form-item__error"
+              >
+                {{ titleOldPassword }}
+              </div>
+            </transition>
+          </div> -->
+          <el-input
+            v-model="userForm.oldPassword"
+            type="password"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="userForm.id?'新密码':'密码'"
           prop="password"
         >
+          <!-- <div class="el-input">
+            <input
+              type="password"
+              autocomplete="off"
+              class="el-input__inner"
+              @input="changePassword"
+              @blur="blurPassword"
+            >
+            <transition name="show">
+              <div
+                v-show="isErrorPassword"
+                class="el-form-item__error"
+              >
+                {{ titleNewPassword }}
+              </div>
+            </transition>
+          </div> -->
           <el-input
             v-model="userForm.password"
             type="password"
@@ -115,8 +182,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="!userForm.id"
-          label="确认密码"
+          :label="userForm.id?'确认新密码':'确认密码'"
           prop="checkPass"
         >
           <el-input
@@ -126,25 +192,34 @@
           />
         </el-form-item>
         <el-form-item
+          v-if="!userForm.id"
           label="工号"
           prop="num"
         >
           <el-input v-model.number="userForm.num" />
         </el-form-item>
-        <el-form-item label="角色" size="medium">
+        <el-form-item
+          label="角色"
+          size="medium"
+        >
           <el-transfer
             v-model="userForm.groups"
+            :render-content="renderFunc"
             :titles="['可用 角色', '选中的 角色']"
-            :props="{key: 'id', label: 'name'}"
             :data="groups"
           />
         </el-form-item>
-        <el-form-item label="权限" size="medium">
+        <el-form-item
+          label="权限"
+          size="medium"
+          class="permissions-transfer"
+        >
           <el-transfer
             v-model="userForm.user_permissions"
-            :titles="['可用 用户权限', '选中的 用户权限']"
             :props="{key: 'id', label: 'name'}"
-            :data="permissions"
+            :render-content="renderFunc"
+            :titles="['可用 用户权限', '选中的 用户权限']"
+            :data="permissionsArr"
           />
         </el-form-item>
       </el-form>
@@ -173,9 +248,9 @@ export default {
   components: { page },
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === '') {
+      if (!value) {
         callback(new Error('请输入密码'))
-      } else if (value.length < 6 || value.length > 16) {
+      } else if (value && (value.length < 6 || value.length > 16)) {
         callback(new Error('请输入6~16位长度的密码'))
       } else {
         if (this.userForm.checkPass !== '') {
@@ -184,8 +259,17 @@ export default {
         callback()
       }
     }
+    var validatePass3 = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入原密码'))
+      } else if (value && (value.length < 6 || value.length > 16)) {
+        callback(new Error('请输入6~16位长度的密码'))
+      } else {
+        callback()
+      }
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
+      if (!value) {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.userForm.password) {
         callback(new Error('两次输入密码不一致!'))
@@ -194,6 +278,10 @@ export default {
       }
     }
     return {
+      isError: false,
+      isErrorOldPassword: false,
+      titleOldPassword: '',
+      titleNewPassword: true,
       btnloading: false,
       getParams: {
         num: '',
@@ -223,38 +311,83 @@ export default {
         ],
         num: [
           { required: true, message: '请填写工号', trigger: 'blur' }
+        ],
+        oldPassword: [
+          { required: true, validator: validatePass3, trigger: 'blur' }
         ]
       },
-      permissions: [],
-      groups: []
+      permissionsArr: [],
+      groups: [],
+      loading: true,
+      loadingTable: false
     }
   },
   created() {
+    this.loading = true
     roles('get', null, {
       params: { all: 1 }
     }).then(response => {
-      this.groups = response.results
-    // eslint-disable-next-line handle-callback-err
+      const groups = response.results
+      groups.forEach(D => {
+        D.key = D.id
+        D.label = D.name
+      })
+      this.groups = groups
+      // eslint-disable-next-line handle-callback-err
     }).catch(error => {
     })
     permissions('get', null).then(response => {
-      this.permissions = response.results
-    // eslint-disable-next-line handle-callback-err
+      this.permissionsArr = response.results
+      // eslint-disable-next-line handle-callback-err
     }).catch(error => {
     })
     this.currentChange()
   },
   methods: {
+    renderFunc(h, option) {
+      return <span title={option.name}>{option.name}</span>
+    },
+    changeUsername(e) {
+      this.userForm.username = e.target.value
+    },
+    blurUsername() {
+      if (!this.userForm.username) {
+        this.isError = true
+      } else {
+        this.isError = false
+      }
+    },
+    changeOldPassword(e) {
+      this.userForm.oldPassword = e.target.value
+    },
+    blurOldPassword() {
+      const value = this.userForm.oldPassword
+      if (!value) {
+        this.titleOldPassword = '请输入原密码'
+        this.isErrorOldPassword = true
+      } else if (value && (value.length < 6 || value.length > 16)) {
+        this.isErrorOldPassword = true
+        this.titleOldPassword = '请输入6~16位长度的密码'
+      } else {
+        this.isErrorOldPassword = false
+      }
+    },
     currentChange() {
-      this.tableData = []
       const app = this
+      if (!this.loading) {
+        this.loadingTable = true
+      }
       personnelsUrl('get', null, {
         params: this.getParams
       }).then((response) => {
         this.count = response.count || 0
         app.tableData = response.results || []
+        this.loading = false
+        this.loadingTable = false
         // eslint-disable-next-line handle-callback-err
       }).catch((error) => {
+        this.loading = false
+        this.loadingTable = false
       })
     },
     numChanged() {
@@ -324,7 +457,7 @@ export default {
           personnelsUrl(type, paramsId, { data: { ...app.userForm } })
             .then((response) => {
               app.dialogCreateUserVisible = false
-              app.$message.success(app.userForm.username + '创建成功')
+              app.$message.success(app.userForm.username + '操作成功')
               app.currentChange()
               this.btnloading = false
             }).catch(() => {
@@ -337,6 +470,8 @@ export default {
     },
     handleClose(done) {
       this.$refs['userForm'].resetFields()
+      this.isError = false
+      this.isErrorOldPassword = false
       done()
     },
     formatter(row, column) {
@@ -346,8 +481,35 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.el-input{
-  width:auto;
+<style lang="scss">
+.userInfo{
+  .el-input{
+    width:auto;
+  }
+  .el-transfer__buttons{
+      padding: 0 15px;
+    }
+  // .permissions-transfer{
+    .el-transfer-panel{
+      width: 240px;
+    }
+    .el-checkbox{
+      margin-right: 5px;
+    }
+  // }
+
+    .show-enter-active{
+       transition:all .9s;
+    }
+    .show-leave-active{
+       transition:all .1s;
+    }
+    .show-enter,.show-leave{
+        margin-top:1px;
+
+    }
+     .show-enter-to,.show-leave-to{
+        margin-top: 1px;
+   }
 }
 </style>

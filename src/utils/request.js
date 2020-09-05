@@ -41,8 +41,17 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   response => {
-    const res = response.data
-    return Promise.resolve(res)
+    if (response.status === 200) {
+      const res = response.data
+      return Promise.resolve(res)
+    } else {
+      Message({
+        message: '请求失败' + response.status,
+        type: 'error',
+        duration: 3 * 1000
+      })
+      return Promise.reject(response)
+    }
   },
   error => {
     if (error.response.status && error.response.status === 403) {

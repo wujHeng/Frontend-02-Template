@@ -1,5 +1,9 @@
 <template>
-  <el-select v-model="productBatchingId" clearable @change="productBatchingChanged">
+  <el-select
+    v-model="productBatchingId"
+    clearable
+    @change="productBatchingChanged"
+  >
     <el-option
       v-for="item in productBatchings"
       :key="item.id"
@@ -12,6 +16,12 @@
 <script>
 import { getAllProductBatchings } from '@/api/product-batching'
 export default {
+  props: {
+    isStageProductbatchNoRemove: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       productBatchings: [],
@@ -28,10 +38,22 @@ export default {
     },
     getProductBatchings() {
       getAllProductBatchings().then(response => {
-        this.productBatchings = response.results
-        this.productBatchings.forEach(productBatching => {
+        let productBatchings = response.results
+        productBatchings.forEach(productBatching => {
           this.productBatchingById[productBatching.id] = productBatching
         })
+        if (this.isStageProductbatchNoRemove) {
+          // 根据stage_product_batch_no去重
+          var obj = {}
+          var newArr = productBatchings.reduce((item, next) => {
+            obj[next.stage_product_batch_no]
+              ? ' '
+              : (obj[next.stage_product_batch_no] = true && item.push(next))
+            return item
+          }, [])
+          productBatchings = newArr || []
+        }
+        this.productBatchings = productBatchings
       })
     }
   }
