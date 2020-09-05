@@ -88,7 +88,8 @@ export const asyncRoutes = [{
     meta: {
       title: '配方详情',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   },
   {
@@ -98,7 +99,8 @@ export const asyncRoutes = [{
     meta: {
       title: '新增配方',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   },
   {
@@ -108,7 +110,19 @@ export const asyncRoutes = [{
     meta: {
       title: '修改配方',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
+    }
+  },
+  {
+    path: 'Copy',
+    component: () => import('@/views/recipe/list/recipe_copy'),
+    name: 'RecipeCopy',
+    meta: {
+      title: '复制新增配方',
+      navHidden: true,
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   }
   ]

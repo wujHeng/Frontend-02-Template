@@ -24,7 +24,7 @@
     <el-form :inline="true">
       <br>
       <el-row :gutter="20">
-        <el-col :span="14">
+        <el-col :span="24">
           <div class="grid-content bg-purple">
             <el-form-item label="超温最短时间">
               <el-input v-model="mini_time" size="mini" :disabled="true" style="width: 70px" />
@@ -38,10 +38,6 @@
             <el-form-item label="胶料总误差">
               <el-input v-model="batching_error" size="mini" :disabled="true" style="width: 70px" />
             </el-form-item>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div class="grid-content bg-purple">
             <el-form-item label="转子水温">
               <el-input v-model="zz_temp" size="mini" :disabled="true" style="width: 70px" />
             </el-form-item>
@@ -53,9 +49,12 @@
             </el-form-item>
           </div>
         </el-col>
+        <el-col :span="0">
+          <div class="grid-content bg-purple" />
+        </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="14">
+        <el-col :span="24">
           <div class="grid-content bg-purple">
 
             <el-form-item label="炼胶超时时间">
@@ -72,10 +71,7 @@
                 <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
                 <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
               </template>
-            </el-form-item></div>
-        </el-col>
-        <el-col :span="10">
-          <div class="grid-content bg-purple">
+            </el-form-item>
             <el-form-item label=" ">
               <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
               <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
@@ -83,10 +79,14 @@
             <el-form-item label="收皮">
               <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
             </el-form-item>
+            <el-form-item label="车/托" />
             <el-form-item v-show="false" label="配方停用">
               <el-checkbox v-model="use_flag" :disabled="true" />
             </el-form-item>
           </div>
+        </el-col>
+        <el-col :span="0">
+          <div class="grid-content bg-purple" />
         </el-col>
       </el-row>
     </el-form>
@@ -206,8 +206,8 @@ export default {
     console.log(this.$route.params)
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
-    // 配方详情界面的配方信息和密炼步序信息接口访问
-    this.recipe_process_step_list(this.$route.params['id'], this.$route.params['equip'])
+    // 配方详情界面的配方信息和密炼步序信息接口访问(已废弃)
+    // this.recipe_process_step_list(this.$route.params['id'], this.$route.params['equip'])
   },
   methods: {
 
@@ -261,7 +261,36 @@ export default {
             })
           }
         }
-      } catch (e) {}
+        // 超温最短时间、进胶最低温度...
+        this.mini_time = recipe_listData['processes']['mini_time']
+        this.mini_temp = recipe_listData['processes']['mini_temp']
+        this.over_temp = recipe_listData['processes']['over_temp']
+        this.batching_error = recipe_listData['processes']['batching_error']
+        this.zz_temp = recipe_listData['processes']['zz_temp']
+        this.xlm_temp = recipe_listData['processes']['xlm_temp']
+        this.cb_temp = recipe_listData['processes']['cb_temp']
+        // 炼胶超时时间、进胶最高温度...
+        this.over_time = recipe_listData['processes']['over_time']
+        this.max_temp = recipe_listData['processes']['max_temp']
+        this.reuse_time = recipe_listData['processes']['reuse_time']
+        this.reuse_flag = recipe_listData['processes']['reuse_flag']
+        this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
+        this.sp_num = recipe_listData['processes']['sp_num']
+        this.use_flag = recipe_listData['processes']['use_flag']
+        for (var i = 0; i < recipe_listData['processes']['process_details'].length; ++i) {
+          this.process_step_tableData.push({
+            sn: this.process_step_tableData.length + 1,
+            condition_name: recipe_listData['processes']['process_details'][i]['condition_name'],
+            time: recipe_listData['processes']['process_details'][i]['time'],
+            temperature: recipe_listData['processes']['process_details'][i]['temperature'],
+            energy: recipe_listData['processes']['process_details'][i]['energy'],
+            power: recipe_listData['processes']['process_details'][i]['power'],
+            action_name: recipe_listData['processes']['process_details'][i]['action_name'],
+            pressure: recipe_listData['processes']['process_details'][i]['pressure'],
+            rpm: recipe_listData['processes']['process_details'][i]['rpm']
+          })
+        }
+      } catch (e) { e }
     },
     async recipe_process_step_list(id, equip) {
       try {
@@ -282,7 +311,7 @@ export default {
         this.reuse_time = process_step_listData.results[0]['reuse_time']
         this.reuse_flag = process_step_listData.results[0]['reuse_flag']
         this.temp_use_flag = process_step_listData.results[0]['temp_use_flag']
-        this.sp_num = process_step_listData.results[0]['sp_num'] + '车/托'
+        this.sp_num = process_step_listData.results[0]['sp_num']
         this.use_flag = process_step_listData.results[0]['use_flag']
         console.log('====================2222')
         console.log(process_step_listData.results)
@@ -313,15 +342,15 @@ export default {
     sp_numChoice: function(sp_num_ele) {
       switch (sp_num_ele) {
         case 1:
-          return '1车/托'
+          return '1'
         case 2:
-          return '2车/托'
+          return '2'
         case 3:
-          return '3车/托'
+          return '3'
         case 4:
-          return '4车/托'
+          return '4'
         case 5:
-          return '5车/托'
+          return '5'
       }
     }
 
