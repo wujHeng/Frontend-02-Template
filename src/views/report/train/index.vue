@@ -210,32 +210,7 @@ export default {
     async getList() {
       try {
         const data = await trainsFeedbacks('get', { params: this.getParams })
-        // this.tableData = data.results || []
-        this.tableData = [
-          {
-            id: 1,
-            equip_no: 111,
-            product_no: 222,
-            plan_classes_uid: 20200620081020,
-            begin_time: '2020-06-20 8:30:30',
-            end_time: '2020-06-20 8:30:33',
-            plan_trains: 200,
-            actual_trains: 300,
-            production_details: {
-              控制方式: '远控',
-              作业方式: '自动',
-              总重量: '26.2',
-              排胶时间: '111',
-              排胶温度: '135',
-              排胶能量: '15',
-              员工代号: '张三',
-              存盘时间: '2020-06-20 10:20:30',
-              密炼时间: 126,
-              间隔时间: 16
-            }
-          }
-        ]
-
+        this.tableData = data.results || []
         this.total = data.count || 0
 
         this.tableData.forEach((D) => {
