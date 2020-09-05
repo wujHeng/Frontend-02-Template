@@ -140,3 +140,11 @@ export function postProductDayPlanManyCreate(data) {
   })
 }
 
+export function getPlanStatusList(params) {
+  return request({
+    url: API.planStatusListUrl,
+    method: 'get',
+    params
+  })
+}
+
