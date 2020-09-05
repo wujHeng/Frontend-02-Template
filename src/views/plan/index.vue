@@ -40,37 +40,37 @@
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="机台">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.equip_no" type="text" disabled />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="开始">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.begin_time" type="text" style="float: left" disabled />
           </el-form-item>
           <el-form-item label="配方">
             <span style="float: right; margin-left: 30px" />
-            <el-input type="text" style="float: right" disabled />
+            <el-input v-model="currentAlive.product_no" type="text" style="float: right" disabled />
           </el-form-item>
           <el-form-item label="设定车次">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.plan_trains" type="text" style="float: left" disabled />
           </el-form-item>
           <el-form-item label="状态">
-            <el-input type="text" style="float: left" disabled />
+            <el-input v-model="currentAlive.status" type="text" style="float: left" disabled />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
         <el-form style="margin-left: 10px" :inline="true">
           <el-form-item label="结束">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.end_time" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前计划">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.plan_classes_uid" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前车次">
-            <el-input type="text" disabled />
+            <el-input v-model="currentAlive.actual_trains" type="text" disabled />
           </el-form-item>
         </el-form>
       </el-row>
@@ -169,7 +169,8 @@ import {
   upRegulation,
   downRegulation,
   globalCodes,
-  productbatching
+  productbatching,
+  getPlanStatusList
 } from '@/api/plan'
 import AlterTrainNumberDialog from './AlterTrainNumberDialog'
 import AddPlanDialog from './AddPlanDialog'
@@ -186,6 +187,7 @@ export default {
       },
       tableData: [],
       currentRow: {},
+      currentAlive: {},
       total: 0,
       page: 1,
 
@@ -204,9 +206,20 @@ export default {
     }
   },
   created() {
-    this.getPlanList()
+    this.getEquip()
   },
   methods: {
+    async getEquip() {
+      console.log(this.currentAlive)
+      const equipData = await equip('get')
+      this.equip = equipData.results[0].equip_no
+      this.getPlanStatusList()
+      this.getPlanList()
+    },
+    async getPlanStatusList() {
+      const planStatusListData = await getPlanStatusList('get')
+      this.currentAlive = planStatusListData.results
+    },
     async getPlanList() {
       this.params['page'] = this.page
       this.params['equip_no'] = this.equip

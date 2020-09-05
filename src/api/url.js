@@ -78,5 +78,7 @@ export default {
 
   GroupUrl: '/api/v1/system/group_extension/',
 
-  PermissionUrl: '/api/v1/system/permission/'
+  PermissionUrl: '/api/v1/system/permission/',
+  // 当前运行中的计划
+  planStatusListUrl: 'api/v1/plan/plan-status-list/'
 }
