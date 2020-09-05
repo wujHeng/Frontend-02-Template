@@ -61,26 +61,6 @@ export const asyncRoutes = [{
       // permissionName: 'equip'
     }
   }]
-}, {
-  path: '/plan',
-  component: Layout,
-  alwaysShow: true,
-  redirect: '/plan/manage',
-  name: 'Plan',
-  meta: {
-    title: '计划管理',
-    icon: 'productionPlanManagement',
-    permissionName: 'plan'
-  },
-  children: [{
-    path: 'manage',
-    name: 'PlanManage',
-    component: () => import('@/views/plan/index'),
-    meta: {
-      title: '计划列表',
-      permissionName: 'productclassesplan'
-    }
-  }]
 },
 {
   path: '/recipe',
@@ -132,6 +112,27 @@ export const asyncRoutes = [{
     }
   }
   ]
+},
+{
+  path: '/plan',
+  component: Layout,
+  alwaysShow: true,
+  redirect: '/plan/manage',
+  name: 'Plan',
+  meta: {
+    title: '计划管理',
+    icon: 'productionPlanManagement',
+    permissionName: 'plan'
+  },
+  children: [{
+    path: 'manage',
+    name: 'PlanManage',
+    component: () => import('@/views/plan/index'),
+    meta: {
+      title: '计划列表',
+      permissionName: 'productclassesplan'
+    }
+  }]
 },
 {
   path: '/material',
