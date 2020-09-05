@@ -123,9 +123,9 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select v-model="calss" clearable placeholder="请选择" @visible-change="calssVisibleChange">
+            <el-select v-model="classes" clearable placeholder="请选择" @visible-change="classesVisibleChange">
               <el-option
-                v-for="item in calssOptions"
+                v-for="item in classesOptions"
                 :key="item.global_name"
                 :label="item.global_name"
                 :value="item.global_name"
@@ -194,8 +194,8 @@ export default {
       endTime: '',
       recipe: '',
       recipeOptions: [],
-      calss: '',
-      calssOptions: [],
+      classes: '',
+      classesOptions: [],
       findForm: {},
       formError: {},
 
@@ -224,7 +224,7 @@ export default {
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
-    calssVisibleChange(bool) {
+    classesVisibleChange(bool) {
       if (bool) {
         this.getClassList()
       }
@@ -249,7 +249,7 @@ export default {
         const classData = await globalCodes('get', {
           params: { all: 1, class_name: '班次' }
         })
-        this.calssOptions = classData.results
+        this.classesOptions = classData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -275,7 +275,7 @@ export default {
       const Second = second < 10 ? ('0' + second) : second
       this.beginTime = Y + '-' + M + '-' + D + ' 00:00:00'
       this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
-      this.calss = ''
+      this.classes = ''
       this.recipe = ''
       this.params = {
         page: 1
@@ -296,8 +296,8 @@ export default {
       if (this.endTime) {
         this.params['end_time'] = this.endTime
       }
-      if (this.calss) {
-        this.params['classes'] = this.calss
+      if (this.classes) {
+        this.params['classes'] = this.classes
       }
       if (this.recipe) {
         this.params['product_no'] = this.recipe
