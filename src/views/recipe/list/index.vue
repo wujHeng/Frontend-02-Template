@@ -9,6 +9,7 @@
           style="width: 150px"
           clearable
           placeholder="请选择"
+          @visible-change="SelectEquipDisplay"
           @change="SelectEquipChange"
         >
           <el-option
@@ -43,6 +44,7 @@
           style="width: 150px"
           clearable
           placeholder="请选择"
+          @visible-change="SelectSiteDisplay"
           @change="SelectSiteChange"
         >
           <el-option
@@ -61,6 +63,7 @@
           style="width: 150px"
           clearable
           placeholder="请选择"
+          @visible-change="SelectStageDisplay"
           @change="SelectStageChange"
         >
           <el-option
@@ -85,8 +88,8 @@
         <el-button :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
-        <el-button>删除</el-button>
-      </el-form-item> -->
+<el-button>删除</el-button>
+</el-form-item> -->
       <el-form-item style="float: right">
         <el-button @click="AddRecipeButton">新增</el-button>
       </el-form-item>
@@ -116,7 +119,7 @@
       <el-table-column v-if="false" align="center" width="100%" prop="equip" label="机台id" />
       <el-table-column align="center" width="100%" prop="dev_type_name" label="炼胶机类型" />
       <el-table-column align="center" prop="used_type" label="状态" :formatter="usedTypeFormatter" />
-      <el-table-column fixed="right" align="center" label="审核">
+      <el-table-column align="center" label="审核">
         <template slot-scope="scope">
           <el-button-group>
             <el-button v-if="scope.row.used_type === 1" size="mini" @click="status_true(scope.row)">
@@ -128,7 +131,7 @@
             <el-button v-if="scope.row.used_type === 3" size="mini" @click="status_true(scope.row)">
               启用
             </el-button>
-            <el-button v-if="scope.row.used_type === 2 || scope.row.used_type === 3" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 2 | scope.row.used_type === 3" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
             <el-button v-if="scope.row.used_type === 4" size="mini" @click="status_false(scope.row)">
@@ -144,10 +147,11 @@
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
-      <el-table-column fixed="right" align="center" label="操作">
+      <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button size="mini" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
             <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
           </el-button-group>
         </template>
@@ -198,7 +202,7 @@
 </template>
 
 <script>
-import { recipe_list, recipe_copy_list, equip_url, site_url, stage_url } from '@/api/recipe_fun'
+import { recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 
@@ -242,9 +246,6 @@ export default {
   },
   created() {
     this.get_recipe_list()
-    this.equip_list()
-    this.site_list()
-    this.stage_list()
   },
   methods: {
     async get_recipe_list(val = 1) {
@@ -271,19 +272,23 @@ export default {
         this.currentRow = {
           product_name: null
         }
-      } catch (e) {}
+      } catch (e) {
+        this.loading = false
+      }
     },
     async status_recipe_fun(id, obj) {
       try {
         await recipe_list('patch', id, obj)
-      } catch (e) {}
+        this.$message('状态切换成功')
+        this.get_recipe_list(this.currentPage)
+      } catch (e) { e }
     },
     async delete_recipe_fun(id) {
       try {
         await recipe_list('delete', id, {
           params: { }
         })
-      } catch (e) {}
+      } catch (e) { return e }
     },
     async copy_recipe_list(obj) {
       try {
@@ -298,32 +303,53 @@ export default {
         const equip_list = await equip_url('get', {
           params: { category_name: '密炼设备' }
         })
-        this.SelectEquipOptions = equip_list.results
-      } catch (e) {}
+        if (equip_list.results.length !== 0) {
+          this.SelectEquipOptions = equip_list.results
+        }
+      } catch (e) { e }
     },
     async equip_copy_list(dev_type_param) {
       try {
-        const equip_list = await equip_url('get', {
-          params: { category_name: '密炼设备', dev_type: dev_type_param }
+        const equip_copy_list = await equip_copy_url('get', {
+          params: { dev_type: dev_type_param }
         })
-        this.SelectCopyEquipOptions = equip_list.results
-      } catch (e) {}
+        this.SelectCopyEquipOptions = equip_copy_list.results
+      } catch (e) { e }
     },
     async site_list() {
       try {
         const site_list = await site_url('get', {
           params: { }
         })
-        this.SelectSiteOptions = site_list.results
-      } catch (e) {}
+        if (site_list.results.length !== 0) {
+          this.SelectSiteOptions = site_list.results
+        }
+      } catch (e) { e }
     },
     async stage_list() {
       try {
         const stage_list = await stage_url('get', {
           params: { }
         })
-        this.SelectStageOptions = stage_list.results
-      } catch (e) {}
+        if (stage_list.results.length !== 0) {
+          this.SelectStageOptions = stage_list.results
+        }
+      } catch (e) { e }
+    },
+    SelectEquipDisplay: function(bool) {
+      if (bool) {
+        this.equip_list()
+      }
+    },
+    SelectSiteDisplay: function(bool) {
+      if (bool) {
+        this.site_list()
+      }
+    },
+    SelectStageDisplay: function(bool) {
+      if (bool) {
+        this.stage_list()
+      }
     },
 
     handleCurrentChange: function(val) {
@@ -356,15 +382,22 @@ export default {
           return '废弃'
       }
     },
+    RecipeSourceFormatter: function(row, column) {
+      return this.RecipeSourceChoice(row.batching_type)
+    },
+    RecipeSourceChoice: function(usedType) {
+      switch (usedType) {
+        case 1:
+          return '上辅机'
+        case 2:
+          return 'MES'
+      }
+    },
     status_true: async function(check_row) {
       await this.status_recipe_fun(check_row['id'], { data: { pass_flag: true }})
-      this.$message('状态切换成功')
-      this.get_recipe_list(this.currentPage)
     },
     status_false: async function(check_row) {
       await this.status_recipe_fun(check_row['id'], { data: { pass_flag: false }})
-      this.$message('状态切换成功')
-      this.get_recipe_list(this.currentPage)
     },
     SelectEquipChange: function() {
       this.get_recipe_list()
@@ -432,31 +465,27 @@ export default {
         })
         return
       }
-      var copy_recipe_return = await this.copy_recipe_list(
-        { data: {
-          'product_batching': this.currentRow['id'],
-          'equip': this.CopySelectEquip
-        }}
-      )
-      console.log('-------aa---------')
-      console.log(copy_recipe_return)
-      console.log('-------aa---------')
-      if (copy_recipe_return.error !== undefined) {
-        console.log('-------==============')
-        return
-      }
+      // var copy_recipe_return = await this.copy_recipe_list(
+      // { data: {
+      // 'product_batching': this.currentRow['id'],
+      // 'equip': this.CopySelectEquip
+      // }}
+      // )
+      // if (copy_recipe_return.error !== undefined) {
+      // return
+      // }
+      // this.dialogCopyRecipeSync = false
+      // this.currentRow = {
+      // product_name: null
+      // }
+      // this.get_recipe_list()
 
-      this.dialogCopyRecipeSync = false
-      this.currentRow = {
-        product_name: null
-      }
-      this.get_recipe_list()
-      // console.log('----------------------------------------')
+      console.log('----------------------------------------')
       // console.log(this.currentRow)
-      // var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip })
-      // console.log(add_currentRow)
-      // this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
-      // this.$route.params
+      var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip })
+      console.log(add_currentRow)
+      this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
+      this.$route.params
     }
   }
 }

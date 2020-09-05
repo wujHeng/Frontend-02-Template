@@ -17,6 +17,8 @@ export default {
   RubberProcessStepUrl: '/api/v1/recipe/process-steps/',
   // 设备/机台接口
   EquipAllUrl: '/api/v1/basics/equips/?all=1',
+  // 复制配方时：设备/机台接口
+  EquipCopyAllUrl: '/api/v1/recipe/batching-equips/?all=1',
   // 产地接口
   SiteUrl: '/api/v1/basics/global-codes/?all=1&class_name=产地',
   // 胶料编号接口
