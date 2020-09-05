@@ -87,7 +87,7 @@ export function operatorList(method, data) {
 
 export function weighInformation(method, data) {
   const obj = {
-    url: API.WeighInformationUrl + data.params.id + '/',
+    url: API.WeighInformationUrl,
     method: method
   }
   Object.assign(obj, data)
@@ -95,7 +95,7 @@ export function weighInformation(method, data) {
 }
 export function mixerInformation(method, data) {
   const obj = {
-    url: API.MixerInformationUrl + data.params.id + '/',
+    url: API.MixerInformationUrl,
     method: method
   }
   Object.assign(obj, data)

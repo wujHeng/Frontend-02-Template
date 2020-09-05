@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <!-- <div v-if="chartDataList.length===0">暂无数据</div> -->
+    <div v-if="chartDataList.length===0">暂无数据</div>
     <el-dialog
       :title="chartDataList.length>0?chartDataList[currentIndex].equip_no+'#机台 生产信息统计':''"
       center
@@ -182,20 +182,24 @@ export default {
     async getList() {
       try {
         const data = await equipStatusSlanList('get')
-        const dataArr = data || []
-
+        const dataArr = data || {}
         this.loading = false
         const arr = []
 
         for (const key in dataArr) {
+          const newdataArr = dataArr[key]
+          // 早中晚按classes_id排序
+          dataArr[key].sort(compare('classes_id'))
           arr.push({
             equip_no: key,
             chartData: {
               columns: ['global_name', 'plan_num', 'actual_num'],
-              rows: dataArr[key]
+              rows: newdataArr
             }
           })
         }
+
+        console.log(arr, 'arr')
         this.chartDataList = arr
       } catch (e) {
         this.loading = false
@@ -232,6 +236,13 @@ export default {
     afterSetOptionRight(chartObj) {
       chartObj.setOption(this.optionsRight)
     }
+  }
+}
+function compare(property) {
+  return function(a, b) {
+    var value1 = a[property]
+    var value2 = b[property]
+    return value1 - value2
   }
 }
 </script>

@@ -1,17 +1,27 @@
 <template>
-  <div>
+  <div
+    v-loading="loading"
+    class="roles-manage"
+  >
     <el-form :inline="true">
       <el-form-item label="角色">
-        <el-input v-model="getParams.group_code" @input="groupCodeChanged" />
+        <el-input
+          v-model="getParams.group_code"
+          @input="groupCodeChanged"
+        />
       </el-form-item>
       <el-form-item label="角色名">
-        <el-input v-model="getParams.name" @input="nameChanged" />
+        <el-input
+          v-model="getParams.name"
+          @input="nameChanged"
+        />
       </el-form-item>
       <el-form-item style="float: right">
         <el-button @click="showCreateGroupDialog">新建</el-button>
       </el-form-item>
     </el-form>
     <el-table
+      v-loading="loadingTable"
       :data="tableData"
       border
       style="width: 100%"
@@ -65,29 +75,55 @@
       :total="count"
       @currentChange="changePage"
     />
-    <el-dialog :title="dialogTitle" :visible.sync="dialogEditGroupVisible">
-      <el-form ref="groupForm" :model="groupForm">
-        <el-form-item :error="groupFormError.group_code" label="角色代码">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogEditGroupVisible"
+      width="800px"
+    >
+      <el-form
+        ref="groupForm"
+        :model="groupForm"
+      >
+        <el-form-item
+          :error="groupFormError.group_code"
+          label="角色代码"
+        >
           <el-input v-model="groupForm.group_code" />
         </el-form-item>
-        <el-form-item :error="groupFormError.name" label="角色名称">
+        <el-form-item
+          :error="groupFormError.name"
+          label="角色名称"
+        >
           <el-input v-model="groupForm.name" />
         </el-form-item>
-        <el-form-item :error="groupFormError.use_flag" label="是否使用">
+        <el-form-item
+          :error="groupFormError.use_flag"
+          label="是否使用"
+        >
           <el-switch v-model="groupForm.use_flag" />
         </el-form-item>
-        <el-form-item label="权限" size="medium">
+        <el-form-item
+          label="权限"
+          size="medium"
+        >
           <el-transfer
             v-model="groupForm.permissions"
+            :render-content="renderFunc"
             :titles="['可用 权限', '选中的 权限']"
             :props="{key: 'id', label: 'name'}"
             :data="permissions"
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogEditGroupVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleEditGroup('groupForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="handleEditGroup('groupForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -120,27 +156,37 @@ export default {
       },
       permissions: [],
       dialogEditGroupVisible: false,
-      dialogTitle: '新增角色'
+      dialogTitle: '新增角色',
+      loading: true,
+      loadingTable: false
     }
   },
   created() {
     this.currentChange()
     permissions('get', null).then(response => {
       this.permissions = response.results
-    // eslint-disable-next-line handle-callback-err
+      // eslint-disable-next-line handle-callback-err
     }).catch(error => {
     })
   },
   methods: {
+    renderFunc(h, option) {
+      return <span title={option.name}>{option.name}</span>
+    },
     currentChange() {
-    //   this.tableData = []
+      this.loadingTable = true
+      //   this.tableData = []
       roles('get', null, {
         params: this.getParams
       }).then(response => {
+        this.loading = false
+        this.loadingTable = false
         this.count = response.count || 0
         this.tableData = response.results || []
-      // eslint-disable-next-line handle-callback-err
+        // eslint-disable-next-line handle-callback-err
       }).catch(error => {
+        this.loading = false
+        this.loadingTable = false
       })
     },
     formatter: function(row, column) {
@@ -182,12 +228,13 @@ export default {
       this.clearGroupFormError()
       const type = this.groupForm.id ? 'put' : 'post'
       const id = this.groupForm.id ? this.groupForm.id : ''
-      roles(type, id, { data: { ...this.groupForm }})
+      // eslint-disable-next-line object-curly-spacing
+      roles(type, id, { data: { ...this.groupForm } })
         .then(response => {
           this.dialogEditGroupVisible = false
           this.$message.success(this.groupForm.name + this.groupForm.id ? '编辑成功' : '创建成功')
           this.currentChange()
-        // eslint-disable-next-line handle-callback-err
+          // eslint-disable-next-line handle-callback-err
         }).catch(error => {
 
         })
@@ -219,3 +266,16 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  .roles-manage{
+    .el-transfer__buttons{
+      padding: 0 15px;
+    }
+    .el-transfer-panel{
+      width: 240px;
+    }
+    .el-checkbox{
+      margin-right: 5px;
+    }
+  }
+</style>

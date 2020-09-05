@@ -58,6 +58,7 @@
       </el-form-item>
     </el-form>
     <el-table
+      v-loading="loadingTable"
       border
       :data="tableData"
       style="width: 100%"
@@ -303,6 +304,7 @@ export default {
     return {
       // tableDataUrl: "InternalMixerUrl",
       loading: true,
+      loadingTable: false,
       tableData: [],
       search_date: [],
       getParams: {
@@ -358,7 +360,6 @@ export default {
   methods: {
     getList() {
       var _this = this
-      this.loading = true
       reportBatch('get', { params: _this.getParams })
         // eslint-disable-next-line space-before-function-paren
         .then(function(response) {
@@ -366,9 +367,11 @@ export default {
 
           _this.total = response.count || 0
           _this.loading = false
+          _this.loadingTable = false
           // eslint-disable-next-line handle-callback-err
         }).catch((error) => {
           this.loading = false
+          this.loadingTable = false
           // this.$message.error("请求错误");
         })
     },
@@ -479,9 +482,11 @@ export default {
       this.getParams.product_no = val ? val.stage_product_batch_no : ''
 
       this.getParams.page = 1
+      this.loadingTable = true
       this.getList()
     },
     changeSearch() {
+      this.loadingTable = true
       if (this.search_date) {
         this.getParams.st = this.search_date[0]
         this.getParams.et = this.search_date[1]

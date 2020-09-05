@@ -1,6 +1,14 @@
-import { login } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import {
+  login
+} from '@/api/user'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
+import {
+  resetRouter
+} from '@/router'
 import Cookies from 'js-cookie'
 
 const getDefaultState = () => {
@@ -37,16 +45,27 @@ const mutations = {
   },
   SET_ROLES: (state, permission) => {
     state.permission = permission
+    if (!permission) {
+      localStorage.removeItem('permission')
+    }
     localStorage.setItem('permission', permission)
   }
 }
 
 const actions = {
   // user login
-  async login({ commit }, userInfo) {
-    const { username, password } = userInfo
+  async login({
+    commit
+  }, userInfo) {
+    const {
+      username,
+      password
+    } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({
+        username: username.trim(),
+        password: password
+      }).then(response => {
         commit('SET_TOKEN', response.token)
         commit('SET_NAME', response.username)
         commit('SET_ROLES', JSON.stringify(response.results))
@@ -61,7 +80,10 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({
+    commit,
+    state
+  }) {
     return new Promise((resolve, reject) => {
       // getInfo(state.token).then(response => {
       // let data = response
@@ -91,7 +113,10 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, rootState }) {
+  logout({
+    commit,
+    rootState
+  }) {
     return new Promise((resolve, reject) => {
       // logout(state.token).then(() => {
       removeToken() // must remove  token  first
@@ -123,4 +148,3 @@ export default {
   mutations,
   actions
 }
-
