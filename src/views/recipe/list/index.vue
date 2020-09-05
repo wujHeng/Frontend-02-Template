@@ -116,7 +116,7 @@
       <el-table-column v-if="false" align="center" width="100%" prop="equip" label="机台id" />
       <el-table-column align="center" width="100%" prop="dev_type_name" label="炼胶机类型" />
       <el-table-column align="center" prop="used_type" label="状态" :formatter="usedTypeFormatter" />
-      <el-table-column align="center" label="审核">
+      <el-table-column fixed="right" align="center" label="审核">
         <template slot-scope="scope">
           <el-button-group>
             <el-button v-if="scope.row.used_type === 1" size="mini" @click="status_true(scope.row)">
@@ -128,7 +128,7 @@
             <el-button v-if="scope.row.used_type === 3" size="mini" @click="status_true(scope.row)">
               启用
             </el-button>
-            <el-button v-if="scope.row.used_type === 2 | scope.row.used_type === 3" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 2 || scope.row.used_type === 3" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
             <el-button v-if="scope.row.used_type === 4" size="mini" @click="status_false(scope.row)">
@@ -144,7 +144,7 @@
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
-      <el-table-column align="center" label="操作">
+      <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
             <el-button size="mini" @click="ModifyRecipeButton(scope.row)">修改</el-button>
