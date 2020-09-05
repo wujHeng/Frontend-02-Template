@@ -217,7 +217,7 @@ export default {
       this.getPlanList()
     },
     async getPlanStatusList() {
-      const planStatusListData = await getPlanStatusList('get')
+      const planStatusListData = await getPlanStatusList({ equip_no: this.equip })
       this.currentAlive = planStatusListData.results
     },
     async getPlanList() {
