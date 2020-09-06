@@ -1101,6 +1101,8 @@ export default {
               'production_time_interval': this.production_time_interval,
               'batching_details': this.batching_details_list,
               'equip': this.generateRecipeForm['SelectEquip'],
+              // 密炼步序list
+              'process_details': step_details_list,
               'processes': {
                 // 配方基础信息中第一行
                 'mini_time': this.mini_time,
@@ -1118,8 +1120,6 @@ export default {
                 'temp_use_flag': this.temp_use_flag,
                 'sp_num': this.sp_num,
                 'use_flag': this.use_flag,
-                // 密炼步序list
-                'process_details': step_details_list,
                 // 设备id与配方id
                 'equip': this.generateRecipeForm['SelectEquip'],
                 'product_batching': this.product_batching

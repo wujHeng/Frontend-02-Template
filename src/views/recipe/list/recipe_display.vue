@@ -277,17 +277,17 @@ export default {
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
         this.use_flag = recipe_listData['processes']['use_flag']
-        for (var i = 0; i < recipe_listData['processes']['process_details'].length; ++i) {
+        for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.process_step_tableData.push({
             sn: this.process_step_tableData.length + 1,
-            condition_name: recipe_listData['processes']['process_details'][i]['condition_name'],
-            time: recipe_listData['processes']['process_details'][i]['time'],
-            temperature: recipe_listData['processes']['process_details'][i]['temperature'],
-            energy: recipe_listData['processes']['process_details'][i]['energy'],
-            power: recipe_listData['processes']['process_details'][i]['power'],
-            action_name: recipe_listData['processes']['process_details'][i]['action_name'],
-            pressure: recipe_listData['processes']['process_details'][i]['pressure'],
-            rpm: recipe_listData['processes']['process_details'][i]['rpm']
+            condition_name: recipe_listData['process_details'][i]['condition_name'],
+            time: recipe_listData['process_details'][i]['time'],
+            temperature: recipe_listData['process_details'][i]['temperature'],
+            energy: recipe_listData['process_details'][i]['energy'],
+            power: recipe_listData['process_details'][i]['power'],
+            action_name: recipe_listData['process_details'][i]['action_name'],
+            pressure: recipe_listData['process_details'][i]['pressure'],
+            rpm: recipe_listData['process_details'][i]['rpm']
           })
         }
       } catch (e) { e }
