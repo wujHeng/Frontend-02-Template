@@ -578,21 +578,21 @@ export default {
         this.sp_num = recipe_listData['processes']['sp_num']
         this.use_flag = recipe_listData['processes']['use_flag']
         this.RecipeMaterialList = []
-        for (var i = 0; i < recipe_listData['processes']['process_details'].length; ++i) {
+        for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
-            condition: recipe_listData['processes']['process_details'][i]['condition'],
-            time: recipe_listData['processes']['process_details'][i]['time'],
-            temperature: recipe_listData['processes']['process_details'][i]['temperature'],
-            energy: recipe_listData['processes']['process_details'][i]['energy'],
-            power: recipe_listData['processes']['process_details'][i]['power'],
-            action: recipe_listData['processes']['process_details'][i]['action'],
-            pressure: recipe_listData['processes']['process_details'][i]['pressure'],
-            rpm: recipe_listData['processes']['process_details'][i]['rpm']
+            condition: recipe_listData['process_details'][i]['condition'],
+            time: recipe_listData['process_details'][i]['time'],
+            temperature: recipe_listData['process_details'][i]['temperature'],
+            energy: recipe_listData['process_details'][i]['energy'],
+            power: recipe_listData['process_details'][i]['power'],
+            action: recipe_listData['process_details'][i]['action'],
+            pressure: recipe_listData['process_details'][i]['pressure'],
+            rpm: recipe_listData['process_details'][i]['rpm']
           })
         }
         return recipe_listData
-      } catch (e) {}
+      } catch (e) { e }
     },
     //   原材料接口
     async raw_material_list(val = 1) {
@@ -948,8 +948,10 @@ export default {
         await this.put_recipe_list(
           this.$route.params['id'],
           { data: {
+            // 密炼步序list
+            'process_details': step_details_list,
             'processes': {
-            // 配方基础信息中第一行
+              // 配方基础信息中第一行
               'mini_time': this.mini_time,
               'mini_temp': this.mini_temp,
               'over_temp': this.over_temp,
@@ -965,8 +967,6 @@ export default {
               'temp_use_flag': this.temp_use_flag,
               'sp_num': this.sp_num,
               'use_flag': this.use_flag,
-              // 密炼步序list
-              'process_details': step_details_list,
               // 设备id与配方id
               'equip': this.$route.params['equip'],
               'product_batching': this.$route.params['id']
