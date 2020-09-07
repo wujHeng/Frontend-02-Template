@@ -11,14 +11,14 @@ import {
 } from '@/router'
 import Cookies from 'js-cookie'
 
-const getDefaultState = () => {
-  return {
-    token: '',
-    name: '',
-    avatar: '',
-    permission: ''
-  }
-}
+// const getDefaultState = () => {
+//   return {
+//     token: '',
+//     name: '',
+//     avatar: '',
+//     permission: {}
+//   }
+// }
 
 const state = () => {
   return {
@@ -31,7 +31,7 @@ const state = () => {
 
 const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
+    // Object.assign(state, getDefaultState())
   },
   SET_TOKEN: (state, token) => {
     state.token = token
@@ -122,8 +122,9 @@ const actions = {
       removeToken() // must remove  token  first
       resetRouter()
       rootState.permission.addRoutes = []
-      commit('RESET_STATE', '')
+      // commit('RESET_STATE', {})
       commit('SET_PERMISSION', '')
+      commit('SET_TOKEN', '')
       commit('SET_NAME', '')
       resolve()
       // }).catch(error => {
