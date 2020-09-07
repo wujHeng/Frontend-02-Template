@@ -101,14 +101,7 @@ import { mapGetters } from 'vuex'
 export default {
   data: function() {
     return {
-      tableBinCbData: [{
-        low_value: 11,
-        use_flag: true
-      },
-      {
-        low_value: 22,
-        use_flag: false
-      }],
+      tableBinCbData: [],
       tableBinOilData: [],
       equip: '',
       equipOptions: [],
@@ -130,7 +123,7 @@ export default {
     async getEquip() {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
-      // this.getCbList()
+      this.getCbList()
       this.getOilList()
     },
     async getCbList() {
