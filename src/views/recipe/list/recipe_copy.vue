@@ -587,21 +587,21 @@ export default {
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
         this.use_flag = recipe_listData['processes']['use_flag']
-        for (var i = 0; i < recipe_listData['processes']['process_details'].length; ++i) {
+        for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
-            condition: recipe_listData['processes']['process_details'][i]['condition'],
-            time: recipe_listData['processes']['process_details'][i]['time'],
-            temperature: recipe_listData['processes']['process_details'][i]['temperature'],
-            energy: recipe_listData['processes']['process_details'][i]['energy'],
-            power: recipe_listData['processes']['process_details'][i]['power'],
-            action: recipe_listData['processes']['process_details'][i]['action'],
-            pressure: recipe_listData['processes']['process_details'][i]['pressure'],
-            rpm: recipe_listData['processes']['process_details'][i]['rpm']
+            condition: recipe_listData['process_details'][i]['condition'],
+            time: recipe_listData['process_details'][i]['time'],
+            temperature: recipe_listData['process_details'][i]['temperature'],
+            energy: recipe_listData['process_details'][i]['energy'],
+            power: recipe_listData['process_details'][i]['power'],
+            action: recipe_listData['process_details'][i]['action'],
+            pressure: recipe_listData['process_details'][i]['pressure'],
+            rpm: recipe_listData['process_details'][i]['rpm']
           })
         }
         return recipe_listData
-      } catch (e) {}
+      } catch (e) { e }
     },
     //   原材料接口
     async raw_material_list(val = 1) {
@@ -991,6 +991,8 @@ export default {
             'production_time_interval': this.confirm_recipe_list['production_time_interval'],
             'batching_details': this.confirm_recipe_list['batching_details'],
             'equip': this.$route.params['copy_equip_id'],
+            // 密炼步序list
+            'process_details': step_details_list,
             'processes': {
             // 配方基础信息中第一行
               'mini_time': this.mini_time,
@@ -1008,8 +1010,6 @@ export default {
               'temp_use_flag': this.temp_use_flag,
               'sp_num': this.sp_num,
               'use_flag': this.use_flag,
-              // 密炼步序list
-              'process_details': step_details_list,
               // 设备id与配方id
               'equip': this.$route.params['copy_equip_id'],
               'product_batching': this.$route.params['id']
