@@ -126,12 +126,9 @@
               提交
             </el-button>
             <el-button v-if="scope.row.used_type === 2" size="mini" @click="status_true(scope.row)">
-              校对
-            </el-button>
-            <el-button v-if="scope.row.used_type === 3" size="mini" @click="status_true(scope.row)">
               启用
             </el-button>
-            <el-button v-if="scope.row.used_type === 2 || scope.row.used_type === 3" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 2" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
             <el-button v-if="scope.row.used_type === 4" size="mini" @click="status_false(scope.row)">
@@ -216,8 +213,6 @@ export default {
         value: 1, label: '编辑'
       }, {
         value: 2, label: '提交'
-      }, {
-        value: 3, label: '校对'
       }, {
         value: 4, label: '启用'
       }, {
