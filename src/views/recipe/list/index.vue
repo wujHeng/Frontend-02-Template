@@ -120,7 +120,7 @@
       <el-table-column v-if="false" align="center" width="100%" prop="equip" label="机台id" />
       <el-table-column align="center" width="100%" prop="dev_type_name" label="炼胶机类型" />
       <el-table-column align="center" prop="used_type" label="状态" :formatter="usedTypeFormatter" />
-      <el-table-column align="center" label="审核">
+      <el-table-column fixed="right" align="center" label="审核">
         <template slot-scope="scope">
           <el-button-group>
             <el-button v-if="scope.row.used_type === 1" size="mini" @click="status_true(scope.row)">
@@ -146,7 +146,7 @@
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
       <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
-      <el-table-column align="center" label="操作">
+      <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
             <el-button v-if="permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
