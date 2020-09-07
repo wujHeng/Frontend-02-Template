@@ -141,6 +141,7 @@
     <el-dialog
       title="胶料产出反馈"
       :visible.sync="dialogVisibleRubber"
+      width="900px"
     >
       <el-form :inline="true">
         <el-form-item label="胶料区分: ">{{ palletFeedObj.hasOwnProperty("stage")?palletFeedObj.stage:'--' }}</el-form-item>
@@ -197,6 +198,7 @@
     <el-dialog
       title="BAT查询"
       :visible.sync="dialogVisibleBAT"
+      width="900px"
     >
       <div style="position: relative">
         <el-form
@@ -209,14 +211,11 @@
           <el-form-item label="机台: ">{{ BATObj.equip_no }}</el-form-item>
           <el-form-item label="车次: ">{{ BATObj.begin_trains }} -- {{ BATObj.end_trains }}</el-form-item>
         </el-form>
-        <!-- <el-button
-          style="position: absolute;right:10px;top:0"
-          @click="viewGraph"
-        >图形</el-button> -->
       </div>
       <el-table
         :data="BATList"
         style="width: 100%"
+        border
       >
         <el-table-column
           prop="equip_no"
@@ -225,6 +224,7 @@
         <el-table-column
           prop="name"
           label="日期"
+          width="110"
         >
           <template slot-scope="scope">{{ scope.row.end_time.split(' ')[0] }}</template>
         </el-table-column>
@@ -245,8 +245,8 @@
           label="胶"
         />
         <el-table-column
-          prop="end_time-begin-time"
           label="时间"
+          width="160"
         >
           <template slot-scope="scope">{{ scope.row.begin_time }} -- {{ scope.row.end_time }}</template>
         </el-table-column>
@@ -281,7 +281,7 @@
       width="900px"
       :visible.sync="dialogVisibleGraph"
     >
-      <div style="margin: 0 0 20px 5px;">{{ chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:'' }}</div>
+      <!-- <div style="margin: 0 0 20px 5px;">{{ chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('product_time')?chartData.rows[0].product_time.split(" ")[0]:'' }}</div> -->
       <ve-line
         height="500px"
         :data="chartData"
@@ -320,8 +320,8 @@ export default {
       },
       axisSite: {
         right: ['temperature', 'rpm', 'energy', 'pressure']
-      },
-      yAxisName: ['功率']
+      }
+      // yAxisName: ['功率']
     }
     return {
       // tableDataUrl: "InternalMixerUrl",
@@ -366,6 +366,11 @@ export default {
       },
       total: 0,
       options: {
+        title: {
+          show: true,
+          text: '主标题',
+          textAlign: 'left'
+        },
         yAxis: [
           {
             min: 0,
@@ -379,7 +384,21 @@ export default {
             splitNumber: 5,
             interval: (200 - 0) / 5
           }
-        ]
+        ],
+        toolbox: {
+          itemSize: 20,
+          itemGap: 30,
+          right: 50,
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
+            },
+            saveAsImage: {
+              name: '',
+              pixelRatio: 2
+            }
+          }
+        }
       }
     }
   },
@@ -505,7 +524,7 @@ export default {
           product_no: row.product_no,
           plan_classes_uid: row.plan_classes_uid,
           equip_no: row.equip_no,
-          actual_trains: row.actual_trains
+          current_trains: row.actual_trains
         }
       })
         .then(function(response) {
@@ -513,7 +532,7 @@ export default {
           // const results = [
           //   {
           //     id: 3,
-          //     created_date: '2013',
+          //     product_time: '2016-8-6 12:5:1',
           //     temperature: 111,
           //     power: 1000,
           //     rpm: 145,
@@ -523,7 +542,7 @@ export default {
           //   },
           //   {
           //     id: 3,
-          //     created_date: '2014',
+          //     product_time: '2016-8-6 12:5:2',
           //     temperature: 123,
           //     power: 1112,
           //     rpm: 144,
@@ -532,7 +551,7 @@ export default {
           //   },
           //   {
           //     id: 3,
-          //     created_date: '2016',
+          //     product_time: '2016-8-6 12:5:3',
           //     temperature: 111,
           //     power: 2112,
           //     rpm: 133,
@@ -541,11 +560,14 @@ export default {
           //   }
           // ]
           results.forEach((element) => {
-            element.created_date_date = element.created_date.split(' ')[1] ? element.created_date.split(' ')[1] : element.created_date
+            element.created_date_date = element.product_time.split(' ')[1] ? element.product_time.split(' ')[1] : element.product_time
           })
           _this.chartData.rows = results
-
-          setRangeSome(_this, results)
+          _this.options.title.text = _this.chartData.rows.length > 0 &&
+            // eslint-disable-next-line no-prototype-builtins
+            _this.chartData.rows[0].hasOwnProperty('product_time')
+            ? _this.chartData.rows[0].product_time.split(' ')[0] : ''
+          _this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + (row.equip_no || '') + '-' + (row.product_no || '') + '-' + (row.begin_time || '')
         })
         // eslint-disable-next-line handle-callback-err
         .catch(() => { })
@@ -586,25 +608,25 @@ export default {
     }
   }
 }
-function setRangeSome(_this, results) {
-  // 设置左右量程相同的刻度值
-  const powerArr = []
-  const otherArr = []
-  results.forEach(D => {
-    powerArr.push(D.power)
-    otherArr.push(D.pressure)
-    otherArr.push(D.temperature)
-    otherArr.push(D.energy)
-    otherArr.push(D.rpm)
-  })
-  const powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
-  const otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
+// function setRangeSome(_this, results) {
+// 设置左右量程相同的刻度值
+// const powerArr = []
+// const otherArr = []
+// results.forEach(D => {
+//   powerArr.push(D.power)
+//   otherArr.push(D.pressure)
+//   otherArr.push(D.temperature)
+//   otherArr.push(D.energy)
+//   otherArr.push(D.rpm)
+// })
+// const powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
+// const otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
 
-  _this.options.yAxis[0].max = powerArrMax
-  _this.options.yAxis[0].interval = (powerArrMax - 0) / 5
-  _this.options.yAxis[1].max = otherArrMax
-  _this.options.yAxis[1].interval = (otherArrMax - 0) / 5
-}
+//   _this.options.yAxis[0].max = 2500
+//   _this.options.yAxis[0].interval = (2500 - 0) / 5
+//   _this.options.yAxis[1].max = 200
+//   _this.options.yAxis[1].interval = (200 - 0) / 5
+// }
 </script>
 
 <style scoped>

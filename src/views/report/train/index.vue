@@ -428,7 +428,7 @@ export default {
   data() {
     this.chartSettings = {
       labelMap: {
-        'product_time': '时间',
+        'created_date_date': '时间',
         'power': '功率',
         'temperature': '温度',
         'rpm': '转速',
@@ -437,8 +437,7 @@ export default {
       },
       axisSite: {
         right: ['temperature', 'rpm', 'energy', 'pressure']
-      },
-      yAxisName: ['功率']
+      }
     }
     return {
       currentRowId: '',
@@ -451,16 +450,20 @@ export default {
       operatorList: [],
       tableData: [],
       chartData: {
-        columns: ['product_time', 'power', 'temperature', 'energy', 'pressure', 'rpm'],
+        columns: ['created_date_date', 'power', 'temperature', 'energy', 'pressure', 'rpm'],
         rows: []
       },
       options: {
         backgroundColor: '#fff',
+        title: {
+          show: true,
+          text: '主标题',
+          textAlign: 'left'
+        },
         grid: {
           y: 50
         },
         yAxis: [
-          // options.yAxis
           {
             min: 0,
             max: 2500,
@@ -508,6 +511,7 @@ export default {
     }
   },
   created() {
+    this.currentRowId = ''
     this.loading = true
     this.getList()
     this.getFormulaList()
@@ -524,7 +528,7 @@ export default {
     async getList() {
       try {
         const data = await trainsFeedbacks('get', { params: this.getParams })
-        this.tableData = data.results || []
+        // this.tableData = data.results || []
         // this.tableData = [{
         //   'id': 1,
         //   'created_date': '2020-09-05T20:34:34.661620',
@@ -712,7 +716,7 @@ export default {
         // const test = [
         //   {
         //     id: 3,
-        //     product_time: '2013',
+        //     product_time: '2016-8-5 10:8:9',
         //     temperature: 111,
         //     power: 1000,
         //     rpm: 145,
@@ -722,7 +726,7 @@ export default {
         //   },
         //   {
         //     id: 3,
-        //     product_time: '2014',
+        //     product_time: '2016-8-5 10:8:10',
         //     temperature: 123,
         //     power: 1112,
         //     rpm: 144,
@@ -731,7 +735,7 @@ export default {
         //   },
         //   {
         //     id: 3,
-        //     product_time: '2016',
+        //     product_time: '2016-8-5 10:8:11',
         //     temperature: 111,
         //     power: 2222,
         //     rpm: 133,
@@ -739,7 +743,14 @@ export default {
         //     energy: 200
         //   }
         // ]
+        // test.forEach((element) => {
+        //   element.created_date_date = element.product_time.split(' ')[1] ? element.product_time.split(' ')[1] : element.product_time
+        // })
         // return test
+
+        data.results.forEach((element) => {
+          element.created_date_date = element.product_time.split(' ')[1] ? element.product_time.split(' ')[1] : element.product_time
+        })
         return data.results || []
         // eslint-disable-next-line no-empty
       } catch (e) { }
@@ -771,24 +782,8 @@ export default {
         this.mixerInformationList = arr[1] || []
         this.curveInformationList = arr[2] || []
 
-        // 设置左右量程相同的刻度值
-        const powerArr = []
-        const otherArr = []
-        this.curveInformationList.forEach(D => {
-          powerArr.push(D.power)
-          otherArr.push(D.pressure)
-          otherArr.push(D.temperature)
-          otherArr.push(D.energy)
-          otherArr.push(D.rpm)
-        })
-        const powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
-        const otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
-        this.options.yAxis[0].max = powerArrMax
-        this.options.yAxis[0].interval = (powerArrMax - 0) / 5
-        this.options.yAxis[1].max = otherArrMax
-        this.options.yAxis[1].interval = (otherArrMax - 0) / 5
-
         this.chartData.rows = this.curveInformationList
+        this.options.title.text = this.curveInformationList[0].product_time.split(' ')[0]
         this.loaddingExal = false
         this.showRowTable = await true
       } catch (e) {
