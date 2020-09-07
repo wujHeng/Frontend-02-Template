@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+import mesRequest from '@/utils/mes-request'
 import API from '@/api/url'
-import axios from 'axios'
 
 export function Synchronization() {
   return request({
@@ -10,9 +10,9 @@ export function Synchronization() {
 }
 
 export function SynchronizationMes(lost_time) {
-  return axios.get(API.SynchronizationMesUrl, {
-    params: {
-      lost_time
-    }
+  return mesRequest({
+    url: API.SynchronizationUrl,
+    method: 'get',
+    params: { lost_time }
   })
 }

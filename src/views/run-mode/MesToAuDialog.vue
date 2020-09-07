@@ -48,7 +48,8 @@ export default {
       tableData: [],
       dialogVisible: false,
       synchronizationData: null,
-      lost_time: null
+      lost_time: null,
+      plan_classes_uid_by_row: {}
     }
   },
   created() {
@@ -57,8 +58,6 @@ export default {
   methods: {
     getData() {
       this.tableData = []
-
-
       Synchronization().then(response => {
         this.synchronizationData = response
         const appsData = this.synchronizationData['Upper auxiliary machine group control system']
@@ -66,21 +65,38 @@ export default {
           if (appName !== 'lost_time') {
             for (const tableName of Object.keys(appsData[appName])) {
               for (const plan_classes_uid of Object.keys(appsData[appName][tableName])) {
-                this.tableData.push({
+                const tableRow = {
                   au_data_type: appName,
                   au_data_no: plan_classes_uid
-                })
+                }
+                this.tableData.push(tableRow)
+                this.plan_classes_uid_by_row[plan_classes_uid] = tableRow
               }
             }
           } else {
             this.lost_time = appsData[appName]
           }
         }
-        console.log(response, 'Synchronization')
-        console.log(this.lost_time, 'lost_time')
         if (this.lost_time) {
           SynchronizationMes(this.lost_time).then(response => {
             console.log(response)
+            const appsData = response.data['MES系统']
+            for (const appName of Object.keys(appsData)) {
+              if (appName !== 'lost_time') {
+                for (const tableName of Object.keys(appsData[appName])) {
+                  for (const plan_classes_uid of Object.keys(appsData[appName][tableName])) {
+                    let tableRow = this.plan_classes_uid_by_row[plan_classes_uid]
+                    if (!tableRow) {
+                      tableRow = {}
+                      this.tableData.push(tableRow)
+                      this.plan_classes_uid_by_row[plan_classes_uid] = tableRow
+                    }
+                    tableRow['mes_data_type'] = appName
+                    tableRow['mes_data_no'] = plan_classes_uid
+                  }
+                }
+              }
+            }
           })
         }
       })
