@@ -23,7 +23,7 @@
       </el-row>
       <el-row>
         <el-form-item label="修改后车次: " :error="formError[0]">
-          <el-input-number v-model.number="trains" :precision="1" :min="0" />
+          <el-input-number v-model.number="trains" :precision="0" :min="0" />
         </el-form-item>
       </el-row>
     </el-form>
