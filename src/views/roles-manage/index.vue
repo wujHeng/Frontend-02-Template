@@ -53,7 +53,7 @@
         prop="created_date"
         label="创建日期"
       />
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="140">
         <template slot-scope="scope">
           <el-button-group>
             <el-button
@@ -78,6 +78,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogEditGroupVisible"
+      :close-on-click-modal="false"
       width="800px"
     >
       <el-form
@@ -96,12 +97,12 @@
         >
           <el-input v-model="groupForm.name" />
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           :error="groupFormError.use_flag"
           label="是否使用"
         >
           <el-switch v-model="groupForm.use_flag" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item
           label="权限"
           size="medium"
@@ -266,7 +267,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
   .roles-manage{
     .el-transfer__buttons{
       padding: 0 15px;

@@ -43,7 +43,7 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, permission) => {
+  SET_PERMISSION: (state, permission) => {
     state.permission = permission
     if (!permission) {
       localStorage.removeItem('permission')
@@ -68,7 +68,7 @@ const actions = {
       }).then(response => {
         commit('SET_TOKEN', response.token)
         commit('SET_NAME', response.username)
-        commit('SET_ROLES', JSON.stringify(response.results))
+        commit('SET_PERMISSION', JSON.stringify(response.results))
 
         // 登录获取token,存到全局中
         setToken(response.token)
@@ -103,7 +103,7 @@ const actions = {
       //   name: 'name-admin', avatar: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2310890073,3469009192&fm=26&gp=0.jpg'
       // }
 
-      // commit('SET_ROLES', JSON.stringify(data.results))
+      // commit('SET_PERMISSION', JSON.stringify(data.results))
       // commit('SET_AVATAR', data.avatar)
       // resolve(data)
       // }).catch(error => {
@@ -123,7 +123,7 @@ const actions = {
       resetRouter()
       rootState.permission.addRoutes = []
       commit('RESET_STATE', '')
-      commit('SET_ROLES', '')
+      commit('SET_PERMISSION', '')
       commit('SET_NAME', '')
       resolve()
       // }).catch(error => {
