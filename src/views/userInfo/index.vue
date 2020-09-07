@@ -17,7 +17,10 @@
           @input="numChanged"
         />
       </el-form-item>
-      <el-form-item style="float: right">
+      <el-form-item
+        v-if="permission.system.user.indexOf('add')>-1"
+        style="float: right"
+      >
         <el-button @click="showCreateUserDialog">新建</el-button>
       </el-form-item>
     </el-form>
@@ -94,6 +97,7 @@
       :title="userForm.id?'编辑用户':'新增用户'"
       :visible.sync="dialogCreateUserVisible"
       :before-close="handleClose"
+      :close-on-click-modal="false"
       width="800px"
     >
       <el-form
@@ -214,6 +218,7 @@ import { personnelsUrl } from '@/api/user'
 import { permissions } from '@/api/permission'
 import { roles } from '@/api/roles-manage'
 import page from '@/components/page'
+import { mapGetters } from 'vuex'
 // import { setDate } from '@/utils/index'
 export default {
   components: { page },
@@ -235,6 +240,17 @@ export default {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.userForm.password) {
         callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    var validatePass3 = (rule, value, callback) => {
+      if (!/^[a-zA-Z0-9\u4e00-\u9fa5]/g.test(value)) {
+        callback(new Error('用户名格式错误，请输入字母和数字组合'))
+      } else if (!value) {
+        callback(new Error('请输入用户名!'))
+      } else if (value.length > 64) {
+        callback(new Error('长度小于64个字符!'))
       } else {
         callback()
       }
@@ -269,7 +285,7 @@ export default {
           { required: true, validator: validatePass2, trigger: 'blur' }
         ],
         username: [
-          { required: true, message: '请填写用户名', trigger: 'blur' }
+          { required: true, validator: validatePass3, trigger: 'blur' }
         ],
         num: [
           { required: true, message: '请填写工号', trigger: 'blur' }
@@ -280,6 +296,9 @@ export default {
       loading: true,
       loadingTable: false
     }
+  },
+  computed: {
+    ...mapGetters(['permission'])
   },
   created() {
     this.loading = true

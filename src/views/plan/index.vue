@@ -16,7 +16,7 @@
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="showFindDialog">查询</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1" type="info" @click="showAddPlanDialog">新增</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button>
+          <!-- <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button> -->
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
         </el-form-item>
       </el-form>
@@ -136,12 +136,12 @@
         </el-row>
         <el-row>
           <el-form-item label="配方: ">
-            <el-select v-model="recipe" clearable placeholder="请选择" @visible-change="recipeVisibleChange">
+            <el-select v-model="recipe" filterable clearable placeholder="请选择" @visible-change="recipeVisibleChange">
               <el-option
-                v-for="item in recipeOptions"
-                :key="item.stage_product_batch_no"
-                :label="item.stage_product_batch_no"
-                :value="item.stage_product_batch_no"
+                v-for="(item, index) in recipeOptions"
+                :key="index"
+                :label="item"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -274,7 +274,8 @@ export default {
     },
     async getRecipeList() {
       try {
-        const recipeData = await productbatching('get', { params: { all: 1 }})
+        const recipeData = await productbatching('get', { params: { all: 1, distinct: 1 }})
+        console.log(recipeData, 'recipeData')
         this.recipeOptions = recipeData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
