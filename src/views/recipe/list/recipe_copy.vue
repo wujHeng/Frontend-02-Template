@@ -2,10 +2,10 @@
   <div class="recipe_modify">
     <br>
     <el-form :inline="true">
-      <el-form-item label="机台">
+      <!-- <el-form-item v-show="!!equip_name" label="机台">
         <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item>
-      <!-- <el-form-item label="机台">
+      </el-form-item> -->
+      <el-form-item label="机台">
         <el-select
           v-model="equip_name"
           size="mini"
@@ -20,7 +20,7 @@
             :value="item.id"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="配方编号">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
@@ -31,7 +31,7 @@
         <el-button @click="recipe_return_list">返回</el-button>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button @click="recipe_save_return">保存退出</el-button>
+        <el-button @click="recipe_save_return">确定复制</el-button>
       </el-form-item>
       <el-form-item style="float: right">
         <el-button @click="modify_material_button">修改配料</el-button>
@@ -480,7 +480,8 @@ export default {
       tableDataTotal: 0,
       recipe_step_id: null,
       auto_flag: 0,
-      batching_details_list: []
+      batching_details_list: [],
+      confirm_recipe_list: []
     }
   },
   created() {
@@ -503,6 +504,14 @@ export default {
         this.SelectEquipOptions = equip_list.results
       } catch (e) {}
     },
+    async post_recipe_list(obj) {
+      try {
+        const recipe_listData = await recipe_list('post', null, obj)
+        return recipe_listData
+      } catch (e) {
+        return e
+      }
+    },
 
     async recipe_material_list(id) {
       try {
@@ -511,9 +520,9 @@ export default {
         })
         // 机台、配方编号、配方名称
         console.log('===============xxxx=========')
-        console.log(this.$route.params)
+        console.log(this.$route.params, recipe_listData)
         console.log('==============xxxx===========')
-        this.equip_name = this.$route.params['equip_name']
+        this.equip_name = this.$route.params['copy_equip_id']
         if (this.equip_name == null) {
           this.equip_display_bool = false
         } else {
@@ -521,6 +530,7 @@ export default {
         }
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
+        this.confirm_recipe_list = recipe_listData
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           var v_auto_falg = ''
           if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
@@ -577,7 +587,6 @@ export default {
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
         this.use_flag = recipe_listData['processes']['use_flag']
-        this.RecipeMaterialList = []
         for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
@@ -709,25 +718,21 @@ export default {
 
     modify_material_button: async function() {
       this.dialogRubberMaterialStandard = true
-      var popup_materialData = await this.popup_material_list(this.$route.params['id'])
-      // console.log('------------xx--------')
-      // console.log(popup_materialData)
-      // console.log('------------xx--------')
-      if (popup_materialData['production_time_interval']) {
-        this.production_time_interval = popup_materialData['production_time_interval']
+      if (this.confirm_recipe_list['production_time_interval']) {
+        this.production_time_interval = this.confirm_recipe_list['production_time_interval']
       } else {
         this.production_time_interval = undefined
       }
       this.ProductRecipe = []
-      for (var i = 0; i < popup_materialData['batching_details'].length; ++i) {
+      for (var i = 0; i < this.confirm_recipe_list['batching_details'].length; ++i) {
         this.ProductRecipe.push({
           sn: this.ProductRecipe.length + 1,
-          material: popup_materialData['batching_details'][i]['material'],
-          material_type: popup_materialData['batching_details'][i]['material_type'],
-          auto_flag: popup_materialData['batching_details'][i]['auto_flag'],
-          material_name: popup_materialData['batching_details'][i]['material_name'],
-          actual_weight: popup_materialData['batching_details'][i]['actual_weight'],
-          standard_error: popup_materialData['batching_details'][i]['standard_error']
+          material: this.confirm_recipe_list['batching_details'][i]['material'],
+          material_type: this.confirm_recipe_list['batching_details'][i]['material_type'],
+          auto_flag: this.confirm_recipe_list['batching_details'][i]['auto_flag'],
+          material_name: this.confirm_recipe_list['batching_details'][i]['material_name'],
+          actual_weight: this.confirm_recipe_list['batching_details'][i]['actual_weight'],
+          standard_error: this.confirm_recipe_list['batching_details'][i]['standard_error']
         })
       }
     },
@@ -778,21 +783,22 @@ export default {
       app.dialogRawMaterialSync = false
     },
     saveMaterialClicked: async function() {
-      var app = this
-      var batching_details_list = []
       // 循环整个表格
+      this.batching_details_list = []
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
         // 只有原材料和实际重量两个必选项都填写时，才能往batching_details_list中push
-        if (app.ProductRecipe[i].material_name && app.ProductRecipe[i].actual_weight) {
+        if (this.ProductRecipe[i].material_name && this.ProductRecipe[i].actual_weight) {
           var now_stage_material = {
             sn: i + 1,
             // auto_flag: app.ProductRecipe[i].auto_flag,
             auto_flag: 0,
-            material: app.ProductRecipe[i].material,
-            actual_weight: app.ProductRecipe[i].actual_weight,
-            standard_error: app.ProductRecipe[i].standard_error
+            material: this.ProductRecipe[i].material,
+            actual_weight: this.ProductRecipe[i].actual_weight.toFixed(2),
+            standard_error: this.ProductRecipe[i].standard_error.toFixed(2),
+            material_name: this.ProductRecipe[i].material_name,
+            material_type: this.ProductRecipe[i].material_type
           }
-          batching_details_list.push(now_stage_material)
+          this.batching_details_list.push(now_stage_material)
         } else {
           this.$message({
             message: '必填字段不能为空',
@@ -801,26 +807,51 @@ export default {
           return
         }
       }
-      var v_production_time_interval = null
-      if (this.production_time_interval) {
-        v_production_time_interval = this.production_time_interval
-      }
-      try {
-        await this.put_recipe_list(
-          this.$route.params['id'],
-          { data: {
-            'production_time_interval': v_production_time_interval,
-            'batching_details': batching_details_list
-          }}
-        )
-      } catch (e) { e }
-
+      //   console.log('------------------c------------')
+      //   console.log(this.ProductRecipe, this.batching_details_list)
       this.dialogRubberMaterialStandard = false
-      // 调用接口，重新加载数据
+      this.confirm_recipe_list['production_time_interval'] = this.production_time_interval
+      this.confirm_recipe_list['batching_details'] = this.batching_details_list
       this.carbon_tableData = []
       this.oil_tableData = []
       this.rubber_tableData = []
-      this.recipe_material_list(this.$route.params['id'])
+      for (var j = 0; j < this.batching_details_list.length; ++j) {
+        var v_auto_falg = ''
+        if (this.batching_details_list[j]['auto_flag'] === 1) {
+          v_auto_falg = '自动'
+        } else if (this.batching_details_list[j]['auto_flag'] === 2) {
+          v_auto_falg = '手动'
+        } else {
+          v_auto_falg = '其他'
+        }
+        if (this.batching_details_list[j]['material_type'] === '炭黑') {
+          this.carbon_tableData.push({
+            sn: this.carbon_tableData.length + 1,
+            auto_flag: v_auto_falg,
+            material_name: this.batching_details_list[j]['material_name'],
+            actual_weight: this.batching_details_list[j]['actual_weight'],
+            standard_error: this.batching_details_list[j]['standard_error']
+          })
+        } else if (this.batching_details_list[j]['material_type'] === '油料') {
+          this.oil_tableData.push({
+            sn: this.oil_tableData.length + 1,
+            action_name: '投料',
+            auto_flag: v_auto_falg,
+            material_name: this.batching_details_list[j]['material_name'],
+            actual_weight: this.batching_details_list[j]['actual_weight'],
+            standard_error: this.batching_details_list[j]['standard_error']
+          })
+        } else {
+          this.rubber_tableData.push({
+            sn: this.rubber_tableData.length + 1,
+            action_name: '投料',
+            auto_flag: v_auto_falg,
+            material_name: this.batching_details_list[j]['material_name'],
+            actual_weight: this.batching_details_list[j]['actual_weight'],
+            standard_error: this.batching_details_list[j]['standard_error']
+          })
+        }
+      }
     },
     // saveMaterialClicked: async function() {
     //   // 循环整个表格
@@ -949,13 +980,22 @@ export default {
       }
       if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
         try {
-          await this.put_recipe_list(
-            this.$route.params['id'],
+          await this.post_recipe_list(
             { data: {
-            // 密炼步序list
+              'factory': this.confirm_recipe_list['factory'],
+              'site': this.confirm_recipe_list['site'],
+              'product_info': this.confirm_recipe_list['product_info'],
+              'precept': this.confirm_recipe_list['precept'],
+              'stage_product_batch_no': this.confirm_recipe_list['stage_product_batch_no'],
+              'stage': this.confirm_recipe_list['stage'],
+              'versions': this.confirm_recipe_list['versions'],
+              'production_time_interval': this.confirm_recipe_list['production_time_interval'],
+              'batching_details': this.confirm_recipe_list['batching_details'],
+              'equip': this.$route.params['copy_equip_id'],
+              // 密炼步序list
               'process_details': step_details_list,
               'processes': {
-              // 配方基础信息中第一行
+                // 配方基础信息中第一行
                 'mini_time': this.mini_time,
                 'mini_temp': this.mini_temp,
                 'over_temp': this.over_temp,
@@ -972,17 +1012,19 @@ export default {
                 'sp_num': this.sp_num,
                 'use_flag': this.use_flag,
                 // 设备id与配方id
-                'equip': this.$route.params['equip'],
+                'equip': this.$route.params['copy_equip_id'],
                 'product_batching': this.$route.params['id']
               }
             }},
             this.$message({
-              message: this.stage_product_batch_no + '配方步序修改成功',
+              message: this.stage_product_batch_no + '配方复制成功',
               type: 'success'
             }),
             this.$router.push({ name: 'RecipeList' })
           )
-        } catch (e) { e }
+        } catch (e) {
+        //   console.log(e)
+        }
 
         // else {
         //   await this.post_recipe_info_step_list(

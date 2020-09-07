@@ -88,7 +88,8 @@ export const asyncRoutes = [{
     meta: {
       title: '配方详情',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   },
   {
@@ -98,7 +99,8 @@ export const asyncRoutes = [{
     meta: {
       title: '新增配方',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   },
   {
@@ -108,7 +110,19 @@ export const asyncRoutes = [{
     meta: {
       title: '修改配方',
       navHidden: true,
-      permissionName: 'productbatching'
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
+    }
+  },
+  {
+    path: 'Copy',
+    component: () => import('@/views/recipe/list/recipe_copy'),
+    name: 'RecipeCopy',
+    meta: {
+      title: '复制新增配方',
+      navHidden: true,
+      permissionName: 'productbatching',
+      activeMenu: '/recipe/list'
     }
   }
   ]
@@ -230,17 +244,6 @@ export const asyncRoutes = [{
     meta: {
       title: '车次报表',
       permissionName: 'trainsfeedbacks'
-    }
-  },
-  {
-    path: 'train-statistics-info/:id',
-    component: () => import('@/views/report/train/trainInfo'),
-    name: 'trainStatisticsReportInfo',
-    hidden: true,
-    meta: {
-      title: '车次报表详情',
-      activeMenu: '/report/train-statistics'
-      // permissionName: 'trainsfeedbacksInfo'
     }
   }
   ]

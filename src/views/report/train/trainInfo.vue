@@ -378,15 +378,31 @@ export default {
     async getCurveInformation(id) {
       try {
         // eslint-disable-next-line object-curly-spacing
-        const data = await curveInformation('get', { params: { id: id } })
+        const data = await curveInformation('get', { params: { feed_back_id: id } })
         // const test = [
         //   {
         //     序号: 3,
-        //     存盘时间: '35',
-        //     温度: 85,
-        //     功率: 42,
-        //     转速: 36,
-        //     压力: 88
+        //     存盘时间: '2013',
+        //     温度: 111,
+        //     功率: 1000,
+        //     转速: 145,
+        //     压力: 230
+        //   },
+        //   {
+        //     序号: 3,
+        //     存盘时间: '2014',
+        //     温度: 123,
+        //     功率: 1112,
+        //     转速: 144,
+        //     压力: 123
+        //   },
+        //   {
+        //     序号: 3,
+        //     存盘时间: '2016',
+        //     温度: 111,
+        //     功率: 2222,
+        //     转速: 133,
+        //     压力: 139
         //   }
         // ]
         // return test
