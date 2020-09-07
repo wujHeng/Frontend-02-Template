@@ -40,30 +40,51 @@
 </template>
 
 <script>
+import { Synchronization, SynchronizationMes } from '@/api/synchronization'
+
 export default {
   data() {
     return {
-      tableData: [
-        {
-          mes_data_type: '计划',
-          mes_data_no: '202123213132',
-          sync_data_no: '',
-          au_data_type: '计划',
-          au_data_no: '202123213132'
-        },
-        {
-          mes_data_type: '配方',
-          mes_data_no: '202123213132',
-          sync_data_no: '',
-          au_data_type: '配方',
-          au_data_no: '202123213132'
-        }
-      ],
-      dialogVisible: false
+      tableData: [],
+      dialogVisible: false,
+      synchronizationData: null,
+      lost_time: null
     }
   },
-
+  created() {
+    this.getData()
+  },
   methods: {
+    getData() {
+      this.tableData = []
+
+
+      Synchronization().then(response => {
+        this.synchronizationData = response
+        const appsData = this.synchronizationData['Upper auxiliary machine group control system']
+        for (const appName of Object.keys(appsData)) {
+          if (appName !== 'lost_time') {
+            for (const tableName of Object.keys(appsData[appName])) {
+              for (const plan_classes_uid of Object.keys(appsData[appName][tableName])) {
+                this.tableData.push({
+                  au_data_type: appName,
+                  au_data_no: plan_classes_uid
+                })
+              }
+            }
+          } else {
+            this.lost_time = appsData[appName]
+          }
+        }
+        console.log(response, 'Synchronization')
+        console.log(this.lost_time, 'lost_time')
+        if (this.lost_time) {
+          SynchronizationMes(this.lost_time).then(response => {
+            console.log(response)
+          })
+        }
+      })
+    },
     show() {
       this.dialogVisible = true
     }

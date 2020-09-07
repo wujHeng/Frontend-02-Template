@@ -108,7 +108,6 @@ export default {
   methods: {
     getChildSystems() {
       getChildSystems().then(response => {
-        console.log(response.results)
         response.results.forEach(result => {
           if (result.system_name === 'MES') {
             this.mesSystemTableData.push(result)
