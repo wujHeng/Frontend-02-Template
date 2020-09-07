@@ -39,7 +39,7 @@ export default {
   // 用户列表?all=1
   PersonnelsUrl: '/api/v1/system/personnels/',
   // 报表-批次记录
-  ClassesListUrl: '/api/v1/basics/classes/',
+  ClassesListUrl: '/api/v1/basics/global-codes/',
   ReportBatchUrl: '/api/v1/production/production-record/',
   EchartsListUrl: '/api/v1/production/equip-status/',
   // 批次-胶料编码列表
