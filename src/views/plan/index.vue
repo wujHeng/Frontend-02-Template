@@ -16,7 +16,7 @@
           <el-button type="info" @click="showFindDialog">查询</el-button>
           <el-button type="info" @click="showAddPlanDialog">新增</el-button>
           <el-button type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
-          <el-button type="info" :disabled="disabled" @click="delPlan">删除</el-button>
+          <!-- <el-button type="info" :disabled="disabled" @click="delPlan">删除</el-button> -->
           <el-button type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
         </el-form-item>
       </el-form>
