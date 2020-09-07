@@ -331,7 +331,7 @@ export default {
             rpm: process_step_listData.results[0]['process_details'][i]['rpm']
           })
         }
-      } catch (e) {}
+      } catch (e) { e }
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })

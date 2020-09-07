@@ -630,7 +630,7 @@ export default {
         if (equip_list.results.length !== 0) {
           this.SelectEquipOptions = equip_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
 
     async site_list() {
@@ -641,7 +641,7 @@ export default {
         if (site_list.results.length !== 0) {
           this.SelectSiteOptions = site_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async recipe_no_list() {
       try {
@@ -651,7 +651,7 @@ export default {
         if (recipe_no_list.results.length !== 0) {
           this.SelectRecipeNoOptions = recipe_no_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async stage_list() {
       try {
@@ -661,7 +661,7 @@ export default {
         if (stage_list.results.length !== 0) {
           this.SelectStageOptions = stage_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async dev_type_list() {
       try {
@@ -669,7 +669,7 @@ export default {
           params: { }
         })
         this.RubberStageOptions = dev_type_list.results
-      } catch (e) {}
+      } catch (e) { throw new Error(e) }
     },
     async global_SITE_list() {
       try {
@@ -679,7 +679,7 @@ export default {
         if (global_SITE_list.results.length !== 0) {
           this.SelectSITEOptions = global_SITE_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async condition_list() {
       try {
@@ -687,7 +687,7 @@ export default {
           params: { }
         })
         this.SelectConditionOptions = condition_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async action_list() {
       try {
@@ -695,7 +695,7 @@ export default {
           params: { }
         })
         this.SelectActionOptions = action_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
 
     //   原材料接口
@@ -715,7 +715,7 @@ export default {
         })
         this.tableData = raw_material_list.results
         this.tableDataTotal = raw_material_list.count
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async material_type_list() {
       try {
@@ -725,21 +725,21 @@ export default {
         if (material_type_list.results.length !== 0) {
           this.materialTypeOptions = material_type_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async post_recipe_list(obj) {
       try {
         const recipe_listData = await recipe_list('post', null, obj)
         return recipe_listData
       } catch (e) {
-        return e
+        throw new Error(e)
       }
     },
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
         console.log(recipe_info_step_list)
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     SelectEquipDisplay: function(bool) {
       if (bool) {
@@ -1124,13 +1124,13 @@ export default {
                   'equip': this.generateRecipeForm['SelectEquip'],
                   'product_batching': this.product_batching
                 }
-              }},
-              this.$message({
-                message: this.stage_product_batch_no + '配方步序添加成功',
-                type: 'success'
-              }),
-              this.$router.push({ name: 'RecipeList' })
+              }}
             )
+            this.$message({
+              message: this.stage_product_batch_no + '配方步序添加成功',
+              type: 'success'
+            })
+            this.$router.push({ name: 'RecipeList' })
           } catch (e) { e }
         } else {
           this.$message({
