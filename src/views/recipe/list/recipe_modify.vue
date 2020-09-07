@@ -2,10 +2,10 @@
   <div class="recipe_modify">
     <br>
     <el-form :inline="true">
-      <!-- <el-form-item v-show="!!equip_name" label="机台">
-        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item> -->
       <el-form-item label="机台">
+        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
+      </el-form-item>
+      <!-- <el-form-item label="机台">
         <el-select
           v-model="equip_name"
           size="mini"
@@ -20,7 +20,7 @@
             :value="item.id"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="配方编号">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
@@ -513,7 +513,7 @@ export default {
         console.log('===============xxxx=========')
         console.log(this.$route.params)
         console.log('==============xxxx===========')
-        this.equip_name = this.$route.params['equip']
+        this.equip_name = this.$route.params['equip_name']
         if (this.equip_name == null) {
           this.equip_display_bool = false
         } else {
@@ -805,13 +805,16 @@ export default {
       if (this.production_time_interval) {
         v_production_time_interval = this.production_time_interval
       }
-      await this.put_recipe_list(
-        this.$route.params['id'],
-        { data: {
-          'production_time_interval': v_production_time_interval,
-          'batching_details': batching_details_list
-        }}
-      )
+      try {
+        await this.put_recipe_list(
+          this.$route.params['id'],
+          { data: {
+            'production_time_interval': v_production_time_interval,
+            'batching_details': batching_details_list
+          }}
+        )
+      } catch (e) { e }
+
       this.dialogRubberMaterialStandard = false
       // 调用接口，重新加载数据
       this.carbon_tableData = []
@@ -945,39 +948,41 @@ export default {
         }
       }
       if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
-        await this.put_recipe_list(
-          this.$route.params['id'],
-          { data: {
+        try {
+          await this.put_recipe_list(
+            this.$route.params['id'],
+            { data: {
             // 密炼步序list
-            'process_details': step_details_list,
-            'processes': {
+              'process_details': step_details_list,
+              'processes': {
               // 配方基础信息中第一行
-              'mini_time': this.mini_time,
-              'mini_temp': this.mini_temp,
-              'over_temp': this.over_temp,
-              'batching_error': this.batching_error,
-              'zz_temp': this.zz_temp,
-              'xlm_temp': this.xlm_temp,
-              'cb_temp': this.cb_temp,
-              // 配方基础信息中第二行
-              'over_time': this.over_time,
-              'max_temp': this.max_temp,
-              'reuse_time': this.reuse_time,
-              'reuse_flag': this.reuse_flag,
-              'temp_use_flag': this.temp_use_flag,
-              'sp_num': this.sp_num,
-              'use_flag': this.use_flag,
-              // 设备id与配方id
-              'equip': this.$route.params['equip'],
-              'product_batching': this.$route.params['id']
-            }
-          }},
-          this.$message({
-            message: this.stage_product_batch_no + '配方步序修改成功',
-            type: 'success'
-          }),
-          this.$router.push({ name: 'RecipeList' })
-        )
+                'mini_time': this.mini_time,
+                'mini_temp': this.mini_temp,
+                'over_temp': this.over_temp,
+                'batching_error': this.batching_error,
+                'zz_temp': this.zz_temp,
+                'xlm_temp': this.xlm_temp,
+                'cb_temp': this.cb_temp,
+                // 配方基础信息中第二行
+                'over_time': this.over_time,
+                'max_temp': this.max_temp,
+                'reuse_time': this.reuse_time,
+                'reuse_flag': this.reuse_flag,
+                'temp_use_flag': this.temp_use_flag,
+                'sp_num': this.sp_num,
+                'use_flag': this.use_flag,
+                // 设备id与配方id
+                'equip': this.$route.params['equip'],
+                'product_batching': this.$route.params['id']
+              }
+            }},
+            this.$message({
+              message: this.stage_product_batch_no + '配方步序修改成功',
+              type: 'success'
+            }),
+            this.$router.push({ name: 'RecipeList' })
+          )
+        } catch (e) { e }
 
         // else {
         //   await this.post_recipe_info_step_list(
