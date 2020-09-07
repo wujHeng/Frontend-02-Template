@@ -59,7 +59,7 @@
       border
       :data="tableData"
       style="width: 100%"
-      max-height="250"
+      :height="maxHeightTable"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -507,10 +507,13 @@ export default {
       mixerInformationList: [],
       curveInformationList: [],
       totalWeighing: 0,
-      totalMixer: 0
+      totalMixer: 0,
+      // table高度
+      maxHeightTable: ''
     }
   },
   created() {
+    this.maxHeightTable = (document.body.clientHeight / 2) + 'px'
     this.currentRowId = ''
     this.loading = true
     this.getList()
@@ -528,7 +531,7 @@ export default {
     async getList() {
       try {
         const data = await trainsFeedbacks('get', { params: this.getParams })
-        // this.tableData = data.results || []
+        this.tableData = data.results || []
         // this.tableData = [{
         //   'id': 1,
         //   'created_date': '2020-09-05T20:34:34.661620',
