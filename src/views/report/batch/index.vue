@@ -288,6 +288,7 @@ import {
   echartsListUrl,
   productionTrainsFeedbacks
 } from '@/api/reportBatch'
+import { mapGetters } from 'vuex'
 export default {
   components: { page, selectEquip, ProductNoSelect },
   data() {
@@ -344,6 +345,9 @@ export default {
       },
       total: 0
     }
+  },
+  computed: {
+    ...mapGetters(['permission'])
   },
   created() {
     this.getList()

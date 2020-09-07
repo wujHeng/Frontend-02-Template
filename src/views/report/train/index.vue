@@ -426,11 +426,16 @@ import { personnelsUrl } from '@/api/user'
 import page from '@/components/page'
 import selectEquip from '@/components/select_w/equip'
 import ProductNoSelect from '@/components/ProductNoSelect'
+
 export default {
   components: { page, selectEquip, ProductNoSelect },
   data() {
     this.chartSettings = {
       // labelMap: {},
+      axisSite: {
+        right: ['温度', '转速', '压力', '能量']
+      },
+      yAxisName: ['功率']
     }
     return {
       search_date: [],
@@ -442,7 +447,7 @@ export default {
       operatorList: [],
       tableData: [],
       chartData: {
-        columns: ['存盘时间', '温度', '功率', '转速', '压力'],
+        columns: ['存盘时间', '功率', '温度', '转速', '能量', '压力'],
         rows: []
       },
       options: {
@@ -450,6 +455,21 @@ export default {
         grid: {
           y: 50
         },
+        yAxis: [
+          // options.yAxis
+          {
+            min: 0,
+            max: 2500,
+            splitNumber: 5,
+            interval: (2500 - 0) / 5
+          },
+          {
+            min: 0,
+            max: 200,
+            splitNumber: 5,
+            interval: (200 - 0) / 5
+          }
+        ],
         toolbox: {
           // show: true,
           itemSize: 20,
@@ -557,7 +577,9 @@ export default {
         //   'begin_time': '2020-09-05T20:36:32.708891',
         //   'end_time': '2020-09-05T20:36:32.708891',
         //   'operation_user': '施满',
-        //   'classes': '早班'
+        //   'classes': '早班',
+        //   production_details: null,
+        //   status: null
         // }]
 
         this.total = data.count || 0
@@ -690,7 +712,9 @@ export default {
         //     温度: 111,
         //     功率: 1000,
         //     转速: 145,
-        //     压力: 230
+        //     压力: 130,
+        //     能量: 120
+
         //   },
         //   {
         //     序号: 3,
@@ -698,7 +722,8 @@ export default {
         //     温度: 123,
         //     功率: 1112,
         //     转速: 144,
-        //     压力: 123
+        //     压力: 123,
+        //     能量: 124
         //   },
         //   {
         //     序号: 3,
@@ -706,7 +731,8 @@ export default {
         //     温度: 111,
         //     功率: 2222,
         //     转速: 133,
-        //     压力: 139
+        //     压力: 139,
+        //     能量: 200
         //   }
         // ]
         // return test
@@ -719,7 +745,7 @@ export default {
       // 整条行详情
       this.rowInfo = JSON.parse(JSON.stringify(row))
       // eslint-disable-next-line no-prototype-builtins
-      if (!this.rowInfo.hasOwnProperty('production_details')) {
+      if (!this.rowInfo.hasOwnProperty('production_details') || !this.rowInfo.production_details) {
         this.rowInfo.production_details = {}
       }
       this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + this.rowInfo.equip_no + '-' + this.rowInfo.product_no + '-' + this.rowInfo.begin_time
@@ -732,6 +758,23 @@ export default {
         this.weighInformationList = arr[0] || []
         this.mixerInformationList = arr[1] || []
         this.curveInformationList = arr[2] || []
+
+        // 设置左右量程相同的刻度值
+        const powerArr = []
+        const otherArr = []
+        this.curveInformationList.forEach(D => {
+          powerArr.push(D.功率)
+          otherArr.push(D.压力)
+          otherArr.push(D.温度)
+          otherArr.push(D.能量)
+          otherArr.push(D.转速)
+        })
+        this.powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
+        this.otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
+        this.options.yAxis[0].max = this.powerArrMax
+        this.options.yAxis[0].interval = (this.powerArrMax - 0) / 5
+        this.options.yAxis[1].max = this.otherArrMax
+        this.options.yAxis[1].interval = (this.otherArrMax - 0) / 5
 
         this.chartData.rows = this.curveInformationList
         this.loaddingExal = false

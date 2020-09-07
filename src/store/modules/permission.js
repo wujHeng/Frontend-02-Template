@@ -56,7 +56,7 @@ const actions = {
     state
   }, permission) {
     return new Promise(resolve => {
-      const permissionObj = JSON.parse(permission)
+      const permissionObj = permission
       const accessedRoutes = filterAsyncRoutesMy(asyncRoutes, permissionObj)
       // 添加的路由
       commit('SET_ROUTES', accessedRoutes)
