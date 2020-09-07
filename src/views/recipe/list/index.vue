@@ -85,13 +85,14 @@
       </el-form-item>
       <br>
       <el-form-item style="float: right">
-        <el-button :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
+        <el-button v-if="permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
 <el-button>删除</el-button>
 </el-form-item> -->
       <el-form-item style="float: right">
-        <el-button @click="AddRecipeButton">新增</el-button>
+        <!-- <el-button @click="AddRecipeButton">新增</el-button> -->
+        <el-button v-if="permissionObj.recipe.productbatching.indexOf('add')>-1" @click="AddRecipeButton">新增</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -148,7 +149,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button v-if="permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
             <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
           </el-button-group>
         </template>
@@ -202,8 +203,12 @@
 import { recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['permission'])
+  },
   data: function() {
     return {
       loading: null,
@@ -240,6 +245,7 @@ export default {
     }
   },
   created() {
+    this.permissionObj = this.permission
     this.get_recipe_list()
   },
   methods: {
