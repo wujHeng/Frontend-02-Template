@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-spacing */
 <template>
   <div
     v-loading="loading"
@@ -47,10 +46,6 @@
       </el-form-item>
       <el-form-item>
         <!-- <el-button @click="showRowTable = true">展示详情</el-button> -->
-        <el-button
-          v-if="showRowTable"
-          @click="showRowTable = false"
-        >关闭查看</el-button>
 
         <!-- <el-button @click="selectRubber">导出批记录</el-button>
         <el-button @click="selectRubber">单页导出</el-button>
@@ -64,6 +59,7 @@
       border
       :data="tableData"
       style="width: 100%"
+      max-height="250"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -431,13 +427,21 @@ export default {
   components: { page, selectEquip, ProductNoSelect },
   data() {
     this.chartSettings = {
-      // labelMap: {},
+      labelMap: {
+        'product_time': '时间',
+        'power': '功率',
+        'temperature': '温度',
+        'rpm': '转速',
+        'energy': '能量',
+        'pressure': '压力'
+      },
       axisSite: {
-        right: ['温度', '转速', '压力', '能量']
+        right: ['temperature', 'rpm', 'energy', 'pressure']
       },
       yAxisName: ['功率']
     }
     return {
+      currentRowId: '',
       search_date: [],
       getParams: {
         page: 1
@@ -447,7 +451,7 @@ export default {
       operatorList: [],
       tableData: [],
       chartData: {
-        columns: ['存盘时间', '功率', '温度', '转速', '能量', '压力'],
+        columns: ['product_time', 'power', 'temperature', 'energy', 'pressure', 'rpm'],
         rows: []
       },
       options: {
@@ -642,7 +646,7 @@ export default {
       this.getParams.begin_time = this.search_date ? this.search_date[0] : ''
       this.getParams.end_time = this.search_date ? this.search_date[1] : ''
 
-      this.showRowTable = false
+      // this.showRowTable = false
       this.getParams.page = 1
       this.getList()
     },
@@ -707,32 +711,32 @@ export default {
         const data = await curveInformation('get', { params: { feed_back_id: id } })
         // const test = [
         //   {
-        //     序号: 3,
-        //     存盘时间: '2013',
-        //     温度: 111,
-        //     功率: 1000,
-        //     转速: 145,
-        //     压力: 130,
-        //     能量: 120
+        //     id: 3,
+        //     product_time: '2013',
+        //     temperature: 111,
+        //     power: 1000,
+        //     rpm: 145,
+        //     pressure: 130,
+        //     energy: 120
 
         //   },
         //   {
-        //     序号: 3,
-        //     存盘时间: '2014',
-        //     温度: 123,
-        //     功率: 1112,
-        //     转速: 144,
-        //     压力: 123,
-        //     能量: 124
+        //     id: 3,
+        //     product_time: '2014',
+        //     temperature: 123,
+        //     power: 1112,
+        //     rpm: 144,
+        //     pressure: 123,
+        //     energy: 124
         //   },
         //   {
-        //     序号: 3,
-        //     存盘时间: '2016',
-        //     温度: 111,
-        //     功率: 2222,
-        //     转速: 133,
-        //     压力: 139,
-        //     能量: 200
+        //     id: 3,
+        //     product_time: '2016',
+        //     temperature: 111,
+        //     power: 2222,
+        //     rpm: 133,
+        //     pressure: 139,
+        //     energy: 200
         //   }
         // ]
         // return test
@@ -741,6 +745,14 @@ export default {
       } catch (e) { }
     },
     async clickView(row, id, index) {
+      if (this.currentRowId === id) {
+        this.showRowTable = !this.showRowTable
+        if (!this.showRowTable) {
+          return
+        }
+      }
+
+      this.currentRowId = id
       this.currentIndex = index
       // 整条行详情
       this.rowInfo = JSON.parse(JSON.stringify(row))
@@ -763,18 +775,18 @@ export default {
         const powerArr = []
         const otherArr = []
         this.curveInformationList.forEach(D => {
-          powerArr.push(D.功率)
-          otherArr.push(D.压力)
-          otherArr.push(D.温度)
-          otherArr.push(D.能量)
-          otherArr.push(D.转速)
+          powerArr.push(D.power)
+          otherArr.push(D.pressure)
+          otherArr.push(D.temperature)
+          otherArr.push(D.energy)
+          otherArr.push(D.rpm)
         })
-        this.powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
-        this.otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
-        this.options.yAxis[0].max = this.powerArrMax
-        this.options.yAxis[0].interval = (this.powerArrMax - 0) / 5
-        this.options.yAxis[1].max = this.otherArrMax
-        this.options.yAxis[1].interval = (this.otherArrMax - 0) / 5
+        const powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
+        const otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
+        this.options.yAxis[0].max = powerArrMax
+        this.options.yAxis[0].interval = (powerArrMax - 0) / 5
+        this.options.yAxis[1].max = otherArrMax
+        this.options.yAxis[1].interval = (otherArrMax - 0) / 5
 
         this.chartData.rows = this.curveInformationList
         this.loaddingExal = false

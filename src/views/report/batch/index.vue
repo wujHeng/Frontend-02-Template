@@ -5,6 +5,10 @@
     v-loading="loading"
     class="report-batch-style"
   >
+    <!-- <el-button
+      size="mini"
+      @click="clickView({},1)"
+    >查看图表</el-button> -->
     <el-form :inline="true">
       <el-form-item label="日期">
         <el-date-picker
@@ -20,7 +24,10 @@
         />
       </el-form-item>
       <el-form-item label="胶料">
-        <productNo-select @productBatchingChanged="productBatchingChanged" />
+        <productNo-select
+          :is-stage-productbatch-no-remove="true"
+          @productBatchingChanged="productBatchingChanged"
+        />
         <!-- <el-select
           v-model="getParams.product_no"
           placeholder="请选择"
@@ -51,8 +58,8 @@
           <el-option
             v-for="item in classesList"
             :key="item.id"
-            :label="item.work_schedule_name+'--'+item.classes_name"
-            :value="item.classes_name"
+            :label="item.global_name"
+            :value="item.global_name"
           />
         </el-select>
       </el-form-item>
@@ -202,10 +209,10 @@
           <el-form-item label="机台: ">{{ BATObj.equip_no }}</el-form-item>
           <el-form-item label="车次: ">{{ BATObj.begin_trains }} -- {{ BATObj.end_trains }}</el-form-item>
         </el-form>
-        <el-button
+        <!-- <el-button
           style="position: absolute;right:10px;top:0"
           @click="viewGraph"
-        >图形</el-button>
+        >图形</el-button> -->
       </div>
       <el-table
         :data="BATList"
@@ -255,6 +262,14 @@
           prop="equip_status.rpm"
           label="RPM"
         />
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="clickView(scope.row,scope.$index)"
+            >查看图表</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
 
@@ -263,13 +278,15 @@
       :modal="true"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
-      width="600px"
+      width="900px"
       :visible.sync="dialogVisibleGraph"
     >
       <div style="margin: 0 0 20px 5px;">{{ chartData.rows.length>0&&chartData.rows[0].hasOwnProperty('created_date')?chartData.rows[0].created_date.split(" ")[0]:'' }}</div>
       <ve-line
+        height="500px"
         :data="chartData"
         :settings="chartSettings"
+        :after-set-option="afterSetOption"
       />
     </el-dialog>
   </div>
@@ -295,12 +312,16 @@ export default {
     this.chartSettings = {
       labelMap: {
         created_date_date: '时间',
-        temperature: '温度',
         power: '功率',
+        temperature: '温度',
         energy: '能量',
         pressure: '压力',
         rpm: '转速'
-      }
+      },
+      axisSite: {
+        right: ['temperature', 'rpm', 'energy', 'pressure']
+      },
+      yAxisName: ['功率']
     }
     return {
       // tableDataUrl: "InternalMixerUrl",
@@ -335,15 +356,31 @@ export default {
       chartData: {
         columns: [
           'created_date_date',
-          'temperature',
           'power',
+          'temperature',
           'energy',
           'pressure',
           'rpm'
         ],
         rows: []
       },
-      total: 0
+      total: 0,
+      options: {
+        yAxis: [
+          {
+            min: 0,
+            max: 2500,
+            splitNumber: 5,
+            interval: (2500 - 0) / 5
+          },
+          {
+            min: 0,
+            max: 200,
+            splitNumber: 5,
+            interval: (200 - 0) / 5
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -396,7 +433,7 @@ export default {
     getClassesList() {
       var _this = this
       // eslint-disable-next-line object-curly-spacing
-      classesList('get', { params: { schedule_name: '密炼' } })
+      classesList('get', { params: { class_name: '班次' } })
         .then(function(response) {
           _this.classesList = response.results || []
         })
@@ -457,30 +494,64 @@ export default {
         // eslint-disable-next-line handle-callback-err
         .catch(function(error) { })
     },
-    viewGraph() {
+    clickView(row) {
       this.dialogVisibleGraph = true
-      this.getEchartsList()
+      this.getEchartsList(row)
     },
-    getEchartsList() {
+    getEchartsList(row) {
       var _this = this
       echartsListUrl('get', {
         params: {
-          product_no: _this.BATObj.product_no,
-          plan_classes_uid: _this.BATObj.plan_classes_uid,
-          equip_no: _this.BATObj.equip_no,
-          actual_trains:
-            _this.BATObj.begin_trains + ',' + _this.BATObj.end_trains
+          product_no: row.product_no,
+          plan_classes_uid: row.plan_classes_uid,
+          equip_no: row.equip_no,
+          actual_trains: row.actual_trains
         }
       })
         .then(function(response) {
           var results = response
+          // const results = [
+          //   {
+          //     id: 3,
+          //     created_date: '2013',
+          //     temperature: 111,
+          //     power: 1000,
+          //     rpm: 145,
+          //     pressure: 130,
+          //     energy: 120
+
+          //   },
+          //   {
+          //     id: 3,
+          //     created_date: '2014',
+          //     temperature: 123,
+          //     power: 1112,
+          //     rpm: 144,
+          //     pressure: 123,
+          //     energy: 124
+          //   },
+          //   {
+          //     id: 3,
+          //     created_date: '2016',
+          //     temperature: 111,
+          //     power: 2112,
+          //     rpm: 133,
+          //     pressure: 139,
+          //     energy: 200
+          //   }
+          // ]
           results.forEach((element) => {
-            element.created_date_date = element.created_date.split(' ')[1]
+            element.created_date_date = element.created_date.split(' ')[1] ? element.created_date.split(' ')[1] : element.created_date
           })
           _this.chartData.rows = results
+
+          setRangeSome(_this, results)
         })
         // eslint-disable-next-line handle-callback-err
         .catch(() => { })
+    },
+    afterSetOption(chartObj) {
+      chartObj.setOption(this.options)
     },
     productBatchingChanged(val) {
       this.getParams.product_no = val ? val.stage_product_batch_no : ''
@@ -514,6 +585,25 @@ export default {
       this.getList()
     }
   }
+}
+function setRangeSome(_this, results) {
+  // 设置左右量程相同的刻度值
+  const powerArr = []
+  const otherArr = []
+  results.forEach(D => {
+    powerArr.push(D.power)
+    otherArr.push(D.pressure)
+    otherArr.push(D.temperature)
+    otherArr.push(D.energy)
+    otherArr.push(D.rpm)
+  })
+  const powerArrMax = Math.ceil(Math.max(...powerArr) / 1000) * 1000
+  const otherArrMax = Math.ceil(Math.max(...otherArr) / 100) * 100
+
+  _this.options.yAxis[0].max = powerArrMax
+  _this.options.yAxis[0].interval = (powerArrMax - 0) / 5
+  _this.options.yAxis[1].max = otherArrMax
+  _this.options.yAxis[1].interval = (otherArrMax - 0) / 5
 }
 </script>
 
