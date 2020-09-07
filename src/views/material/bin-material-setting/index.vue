@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button v-if="!disable" type="info" @click="save">保存并下载</el-button>
+        <el-button v-if="!disabled" type="info" @click="save">保存并下载</el-button>
       </el-form-item>
     </el-form>
     <el-form style="margin-left: 10px" :inline="true">
@@ -28,6 +28,7 @@
             <el-select
               v-model="scope.row.material_name"
               style="width:100%"
+              :disabled="!scope.row.use_flag"
               @change="masterialChange"
             >
               <el-option
@@ -47,7 +48,7 @@
               inactive-color="#ff4949"
               active-text="启用"
               inactive-text="停用"
-              :disabled="disable"
+              :disabled="disabled"
             />
           </template>
         </el-table-column>
@@ -61,6 +62,7 @@
             <el-select
               v-model="scope.row.material_name"
               style="width:100%"
+              :disabled="!scope.row.use_flag"
               @change="masterialChange"
             >
               <el-option v-for="item in oilOptions" :key="item" :label="item" :value="item" />
@@ -75,7 +77,7 @@
               inactive-color="#ff4949"
               active-text="启用"
               inactive-text="停用"
-              :disabled="disable"
+              :disabled="disabled"
             />
           </template>
         </el-table-column>
@@ -95,7 +97,14 @@ import { mapGetters } from 'vuex'
 export default {
   data: function() {
     return {
-      tableBinCbData: [],
+      tableBinCbData: [{
+        low_value: 11,
+        use_flag: true
+      },
+      {
+        low_value: 22,
+        use_flag: false
+      }],
       tableBinOilData: [],
       equip: '',
       equipOptions: [],
@@ -122,7 +131,7 @@ export default {
     async getEquip() {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
-      this.getCbList()
+      // this.getCbList()
       this.getOilList()
     },
     async getCbList() {
