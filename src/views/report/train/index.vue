@@ -147,7 +147,10 @@
         prop="production_details.间隔时间"
         label="间隔时间"
       />
-      <el-table-column fixed="right" label="操作">
+      <el-table-column
+        fixed="right"
+        label="操作"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -168,10 +171,10 @@
     >
       <el-row
         v-loading="loaddingExal"
-        style="min-width:1600px"
+        style="width:1600px"
       >
         <el-col
-          :span="11"
+          :span="12"
           class="trainContentLeft"
         >
           <div
@@ -372,7 +375,7 @@
           </div>
         </el-col>
         <el-col
-          :span="13"
+          :span="12"
           class="trainContentRight"
         >
           <div style="display:flex">
@@ -498,30 +501,65 @@ export default {
       try {
         const data = await trainsFeedbacks('get', { params: this.getParams })
         this.tableData = data.results || []
-        // this.tableData = [
-        //   {
-        //     id: 1,
-        //     equip_no: 111,
-        //     product_no: 222,
-        //     plan_classes_uid: 20200620081020,
-        //     begin_time: '2020-06-20 8:30:30',
-        //     end_time: '2020-06-20 8:30:33',
-        //     plan_trains: 200,
-        //     actual_trains: 300,
-        //     production_details: {
-        //       控制方式: '远控',
-        //       作业方式: '自动',
-        //       总重量: '26.2',
-        //       排胶时间: '111',
-        //       排胶温度: '135',
-        //       排胶能量: '15',
-        //       员工代号: '张三',
-        //       存盘时间: '2020-06-20 10:20:30',
-        //       密炼时间: 126,
-        //       间隔时间: 16
-        //     }
-        //   }
-        // ]
+        // this.tableData = [{
+        //   'id': 1,
+        //   'created_date': '2020-09-05T20:34:34.661620',
+        //   'last_updated_date': '2020-09-05T20:34:34.661620',
+        //   'delete_date': null,
+        //   'delete_flag': false,
+        //   'created_user_id': null,
+        //   'last_updated_user_id': null,
+        //   'delete_user_id': null,
+        //   'plan_classes_uid': '2020090520340801115A01',
+        //   'plan_trains': 1,
+        //   'actual_trains': 1,
+        //   'bath_no': 1,
+        //   'equip_no': '115A01',
+        //   'product_no': 'C-1MB-J260-01',
+        //   'plan_weight': 1,
+        //   'actual_weight': 1,
+        //   'begin_time': '2020-09-05T20:34:34.654638',
+        //   'end_time': '2020-09-05T20:34:34.654638',
+        //   'operation_user': '云层跳',
+        //   'classes': '早班',
+        //   'product_time': null,
+        //   'production_details': {
+        //     '控制方式': '好累啊',
+        //     '作业方式': '去你妈的作业',
+        //     '总重量': 1,
+        //     '排胶时间': 4,
+        //     '排胶温度': 4,
+        //     '排胶能量': 4,
+        //     '员工代号': '屈妇三',
+        //     '存盘时间': '4',
+        //     '间隔时间': 4,
+        //     '密炼时间': '4'
+        //   },
+        //   'status': null
+        // },
+        // {
+        //   'id': 3,
+        //   'created_date': '2020-09-05T20:36:32.708891',
+        //   'last_updated_date': '2020-09-05T20:36:32.708891',
+        //   'delete_date': null,
+        //   'delete_flag': false,
+        //   'created_user_id': null,
+        //   'last_updated_user_id': null,
+        //   'delete_user_id': null,
+        //   'plan_classes_uid': '2020090520340801115A01',
+        //   'plan_trains': 1,
+        //   'actual_trains': 2,
+        //   'bath_no': 2,
+        //   'equip_no': '115A01',
+        //   'product_no': 'C-1MB-J260-01',
+        //   'plan_weight': 1,
+        //   'actual_weight': 2,
+        //   'begin_time': '2020-09-05T20:36:32.708891',
+        //   'end_time': '2020-09-05T20:36:32.708891',
+        //   'operation_user': '施满',
+        //   'classes': '早班'
+        // }]
+
         this.total = data.count || 0
 
         this.tableData.forEach((D) => {
@@ -679,7 +717,11 @@ export default {
     async clickView(row, id, index) {
       this.currentIndex = index
       // 整条行详情
-      this.rowInfo = row
+      this.rowInfo = JSON.parse(JSON.stringify(row))
+      // eslint-disable-next-line no-prototype-builtins
+      if (!this.rowInfo.hasOwnProperty('production_details')) {
+        this.rowInfo.production_details = {}
+      }
       this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + this.rowInfo.equip_no + '-' + this.rowInfo.product_no + '-' + this.rowInfo.begin_time
       try {
         const arr = await Promise.all([
@@ -692,10 +734,8 @@ export default {
         this.curveInformationList = arr[2] || []
 
         this.chartData.rows = this.curveInformationList
-        // console.log(this.chartData.row, 99999);
         this.loaddingExal = false
         this.showRowTable = await true
-        // console.log(arr, 88888)
       } catch (e) {
         this.loaddingExal = false
       }
@@ -754,6 +794,9 @@ function base64ToBlob(code) {
 <style lang="scss" scoped>
 $border-color: #dcdfe6;
 $border-weight: 0.5px;
+$scrollbar-width: 4px;
+$thumb-color:rgba(0, 0, 0, 0.2);
+$track-color: rgba(0, 0, 0, 0.1);
 .report-train-style {
   .trainContentLeft {
     // min-width: 350px;
@@ -821,11 +864,6 @@ $border-weight: 0.5px;
   .begin_time_width {
     width: 60px;
   }
-        *::-webkit-scrollbar {
-        width: 3px;
-        background-color: #eee;
-      }
-
       .mixerInforStyle{
         max-height: 500px;
         overflow-y: scroll;
@@ -837,6 +875,20 @@ $border-weight: 0.5px;
         .trainContentLeft {
         // min-width: 350px;
          text-align: center;
+          *::-webkit-scrollbar {
+            width: $scrollbar-width;
+          }
+          *::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            background: $thumb-color;
+          }
+          *::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            background: $track-color;
+          }
+
           .trainContentLeftBox {
           border: $border-weight solid $border-color;
           }
