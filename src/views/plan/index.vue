@@ -13,21 +13,22 @@
           </el-select>
         </el-form-item>
         <el-form-item style="float: right">
-          <el-button type="info" @click="showFindDialog">查询</el-button>
-          <el-button type="info" @click="showAddPlanDialog">新增</el-button>
-          <el-button type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
-          <el-button type="info" :disabled="disabled" @click="delPlan">删除</el-button>
-          <el-button type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="showFindDialog">查询</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1" type="info" @click="showAddPlanDialog">新增</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item style="float: right">
-          <el-button type="info" :disabled="disabled" @click="upPlan">上调</el-button>
-          <el-button type="info" :disabled="disabled" @click="downPlan">下调</el-button>
-          <el-button type="info" :disabled="disabled" @click="showAlterTrainNumberDialog">修改车次</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="upPlan">上调</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="downPlan">下调</el-button>
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="showAlterTrainNumberDialog">修改车次</el-button>
           <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
             type="info"
             style="width: 120px"
             :disabled="disabled"
@@ -175,6 +176,7 @@ import {
 import AlterTrainNumberDialog from './AlterTrainNumberDialog'
 import AddPlanDialog from './AddPlanDialog'
 import page from '@/components/page'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { page, AlterTrainNumberDialog, AddPlanDialog },
@@ -205,7 +207,11 @@ export default {
       disabled: true
     }
   },
+  computed: {
+    ...mapGetters(['permission'])
+  },
   created() {
+    this.permissionObj = this.permission
     this.getEquip()
   },
   methods: {

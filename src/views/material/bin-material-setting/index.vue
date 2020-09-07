@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button type="info" @click="save">保存并下载</el-button>
+        <el-button v-if="!disable" type="info" @click="save">保存并下载</el-button>
       </el-form-item>
     </el-form>
     <el-form style="margin-left: 10px" :inline="true">
@@ -47,6 +47,7 @@
               inactive-color="#ff4949"
               active-text="启用"
               inactive-text="停用"
+              :disabled="disable"
             />
           </template>
         </el-table-column>
@@ -74,6 +75,7 @@
               inactive-color="#ff4949"
               active-text="启用"
               inactive-text="停用"
+              :disabled="disable"
             />
           </template>
         </el-table-column>
@@ -89,7 +91,7 @@ import {
   materials,
   equip
 } from '@/api/weigh'
-
+import { mapGetters } from 'vuex'
 export default {
   data: function() {
     return {
@@ -99,15 +101,24 @@ export default {
       equipOptions: [],
       materialsTypeId: '',
       cbOptions: [],
-      oilOptions: []
+      oilOptions: [],
+      disabled: true
     }
   },
+  computed: {
+    ...mapGetters(['permission'])
+  },
   created() {
+    this.grtDisabled()
     this.getEquip()
     this.getMaterialsCbList()
     this.getMaterialsOilList()
   },
   methods: {
+    grtDisabled() {
+      this.permissionObj = this.permission
+      this.disabled = !this.permissionObj.production.materialtankstatus.indexOf('change') > 1
+    },
     async getEquip() {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
