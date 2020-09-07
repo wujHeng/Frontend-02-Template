@@ -216,7 +216,6 @@ export default {
   },
   methods: {
     async getEquip() {
-      console.log(this.currentAlive)
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
       this.getPlanStatusList()
@@ -275,7 +274,6 @@ export default {
     async getRecipeList() {
       try {
         const recipeData = await productbatching('get', { params: { all: 1, distinct: 1 }})
-        console.log(recipeData, 'recipeData')
         this.recipeOptions = recipeData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
