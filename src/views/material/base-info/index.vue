@@ -1,19 +1,21 @@
 <template>
   <div style="margin-top: 25px">
     <el-form style="margin-left: 10px" :inline="true">
-      <el-select
-        v-model="materialType"
-        clearable
-        placeholder="请选择"
-        @change="materialTypeChange"
-      >
-        <el-option
-          v-for="item in materialTypes"
-          :key="item.id"
-          :label="item.global_name"
-          :value="item.id"
-        />
-      </el-select>
+      <el-form-item label="原材料类别">
+        <el-select
+          v-model="materialType"
+          clearable
+          placeholder="请选择"
+          @change="materialTypeChange"
+        >
+          <el-option
+            v-for="item in materialTypes"
+            :key="item.id"
+            :label="item.global_name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item v-if="permissionObj.production.material.indexOf('add')>-1" style="float: right;">
         <el-button @click="showCreateMaterialDialog">新建</el-button>
       </el-form-item>
@@ -23,6 +25,7 @@
       border
       style="width: 100%"
     >
+      <el-table-column align="center" type="index" width="50" label="No" />
       <el-table-column
         prop="material_no"
         label="原材料代码"
