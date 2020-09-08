@@ -31,9 +31,11 @@
             :model="form"
             label-width="90px"
           >
-            <el-form-item label="当前规格:">{{ item.chartData.rows[0]&&item.chartData.rows[0].product_no?item.chartData.rows[0].product_no:'--' }}</el-form-item>
-            <el-form-item label="收皮数量:">{{ item.chartData.rows[0].current_trains }}</el-form-item>
-            <el-form-item label="设备状态:">{{ item.chartData.rows[0].status }}</el-form-item>
+            <el-form-item label="当前规格:">{{ setRetVal(item.chartData.rows,3) }}
+              <!-- item.chartData.rows[0]&&item.chartData.rows[0].product_no?item.chartData.rows[0].product_no:'--'  -->
+            </el-form-item>
+            <el-form-item label="收皮数量:">{{ setRetVal(item.chartData.rows,2) }}</el-form-item>
+            <el-form-item label="设备状态:">{{ setRetVal(item.chartData.rows,4) }}</el-form-item>
             <!-- <el-form-item label="活动名称:">66666</el-form-item> -->
           </el-form>
         </div>
@@ -199,7 +201,6 @@ export default {
           })
         }
 
-        console.log(arr, 'arr')
         this.chartDataList = arr
       } catch (e) {
         this.loading = false
@@ -221,6 +222,9 @@ export default {
       } catch (e) {
         this.dialogLoading = false
       }
+    },
+    setRetVal(row, index) {
+      return (row.ret.split(','))[index] ? (row.ret.split(','))[index] : '--'
     },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options)
