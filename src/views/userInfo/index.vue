@@ -453,10 +453,12 @@ export default {
           // eslint-disable-next-line prefer-const
           let paramsId = app.userForm.id ? app.userForm.id : ''
           // eslint-disable-next-line object-curly-spacing
-          if (app.userForm.id && app.userForm.modifypassword) {
-            app.userForm.password = app.userForm.modifypassword
-          } else {
-            delete app.userForm.password
+          if (app.userForm.id) {
+            if (app.userForm.modifypassword) {
+              app.userForm.password = app.userForm.modifypassword
+            } else {
+              delete app.userForm.password
+            }
           }
           if (this.userForm.password === '') {
             delete app.userForm.password
@@ -464,7 +466,8 @@ export default {
           if (this.userForm.num === '') {
             delete app.userForm.num
           }
-          personnelsUrl(type, paramsId, { data: { ...app.userForm }})
+          // eslint-disable-next-line object-curly-spacing
+          personnelsUrl(type, paramsId, { data: { ...app.userForm } })
             .then((response) => {
               app.dialogCreateUserVisible = false
               app.$message.success(app.userForm.username + '操作成功')
