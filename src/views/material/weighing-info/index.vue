@@ -118,7 +118,7 @@ export default {
   methods: {
     grtDisabled() {
       this.permissionObj = this.permission
-      this.disabled = !this.permissionObj.production.materialtankstatus.indexOf('change') > 1
+      this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
     },
     async getEquip() {
       const equipData = await equip('get')
