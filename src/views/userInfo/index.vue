@@ -32,9 +32,8 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="id"
-        label="序"
-        width="50"
+        type="index"
+        label="No"
       />
       <el-table-column label="工号">
         <template slot-scope="scope">
