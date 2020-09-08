@@ -87,7 +87,7 @@
       <el-table-column type="index" label="No" width="55" />
       <el-table-column prop="plan_classes_uid" label="计划编号" width="180" />
       <el-table-column prop="sn" label="序号" width="55" />
-      <el-table-column prop="stage_product_batch_no" label="配方名称" width="140" />
+      <el-table-column prop="stage_product_batch_no" label="配方名称" width="150" />
       <el-table-column prop="begin_time" label="开始时间" width="160" />
       <el-table-column prop="end_time" label="结束时间" width="160" />
       <el-table-column prop="equip_name" label="机台" width="100" />
