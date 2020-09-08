@@ -37,9 +37,19 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/api': {
-        target: 'http://10.4.14.33:8000',
+      '/api-mes': {
+        target: 'http://10.4.14.4:8000',
         // target: 'http://10.4.14.6:8000/',
+        // target: 'http://10.4.14.33:8000/',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api-mes': ''
+        }
+      },
+      '/api': {
+        // target: 'http://10.4.14.33:8000',
+        target: 'http://10.4.14.6:8000/',
         // target: 'http://10.4.14.33:8000/',
         ws: true,
         changeOrigin: true,
