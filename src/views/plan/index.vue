@@ -84,7 +84,7 @@
       style="width: 100%"
       @current-change="handleCurrentChange"
     >
-      <el-table-column width="55" />
+      <el-table-column type="index" label="No" width="55" />
       <el-table-column prop="plan_classes_uid" label="计划编号" />
       <el-table-column prop="sn" label="序号" />
       <el-table-column prop="stage_product_batch_no" label="配方名称" />
@@ -218,6 +218,7 @@ export default {
     async getEquip() {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
+      this.clearFindForm()
       this.getPlanStatusList()
       this.getPlanList()
     },
@@ -228,6 +229,12 @@ export default {
     async getPlanList() {
       this.params['page'] = this.page
       this.params['equip_no'] = this.equip
+      if (this.beginTime) {
+        this.params['begin_time'] = this.beginTime
+      }
+      if (this.endTime) {
+        this.params['end_time'] = this.endTime
+      }
       try {
         const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
@@ -259,6 +266,9 @@ export default {
     },
     equipChange() {
       this.params = {}
+      this.page = 1
+      this.clearFindForm()
+      this.getPlanStatusList()
       this.getPlanList()
     },
 
@@ -308,12 +318,12 @@ export default {
       this.findDialogVisible = true
     },
     findAlterTrainNumberSubmit() {
-      if (this.beginTime) {
-        this.params['begin_time'] = this.beginTime
-      }
-      if (this.endTime) {
-        this.params['end_time'] = this.endTime
-      }
+      // if (this.beginTime) {
+      //   this.params['begin_time'] = this.beginTime
+      // }
+      // if (this.endTime) {
+      //   this.params['end_time'] = this.endTime
+      // }
       if (this.classes) {
         this.params['classes'] = this.classes
       }
