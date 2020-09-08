@@ -733,6 +733,7 @@ export default {
         const recipe_listData = await recipe_list('post', null, obj)
         return recipe_listData
       } catch (e) {
+        this.select_recipe_component = false
         throw new Error(e)
       }
     },
@@ -806,8 +807,9 @@ export default {
       // }
       // var batching_details_list = []
       // 循环整个表格
-      console.log('------------------b------------')
-      console.log(this.ProductRecipe)
+      // console.log('------------------b------------')
+      // console.log(this.ProductRecipe)
+      this.batching_details_list = []
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
         // 只有原材料和实际重量两个必选项都填写时，才能往batching_details_list中push
         if (this.ProductRecipe[i].material_name && this.ProductRecipe[i].actual_weight) {
@@ -830,10 +832,13 @@ export default {
           return
         }
       }
+      this.rubber_tableData = []
+      this.carbon_tableData = []
+      this.oil_tableData = []
       this.select_recipe_component = true
       this.dialogRubberMaterialStandard = false
-      console.log('------------------c------------')
-      console.log(this.batching_details_list)
+      // console.log('------------------c------------')
+      // console.log(this.batching_details_list)
       for (var j = 0; j < this.batching_details_list.length; ++j) {
         var v_auto_falg = ''
         if (this.batching_details_list[j]['auto_flag'] === 1) {
@@ -1090,6 +1095,8 @@ export default {
             }
           }
           try {
+            // console.log('------------------d--------')
+            // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
             await this.post_recipe_list(
               { data: {
                 'factory': this.generateRecipeForm['SelectSite'],
