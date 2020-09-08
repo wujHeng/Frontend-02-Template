@@ -57,7 +57,7 @@
       /> -->
       <el-table-column label="创建人">
         <template slot-scope="scope">
-          {{ scope.row.created_user?scope.row.created_user:'--' }}
+          {{ scope.row.created_username?scope.row.created_username:'--' }}
         </template>
       </el-table-column>
       <el-table-column label="创建日期">
@@ -452,7 +452,6 @@ export default {
           let type = app.userForm.id ? 'put' : 'post'
           // eslint-disable-next-line prefer-const
           let paramsId = app.userForm.id ? app.userForm.id : ''
-          // eslint-disable-next-line object-curly-spacing
           if (app.userForm.id) {
             if (app.userForm.modifypassword) {
               app.userForm.password = app.userForm.modifypassword
