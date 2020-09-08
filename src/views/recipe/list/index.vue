@@ -85,14 +85,14 @@
       </el-form-item>
       <br>
       <el-form-item style="float: right">
-        <el-button v-if="permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
+        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
 <el-button>删除</el-button>
 </el-form-item> -->
       <el-form-item style="float: right">
         <!-- <el-button @click="AddRecipeButton">新增</el-button> -->
-        <el-button v-if="permissionObj.recipe.productbatching.indexOf('add')>-1" @click="AddRecipeButton">新增</el-button>
+        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" @click="AddRecipeButton">新增</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -123,16 +123,16 @@
       <el-table-column fixed="right" align="center" label="审核">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="scope.row.used_type === 1" size="mini" @click="status_true(scope.row)">
+            <el-button v-if="scope.row.used_type === 1 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('submit')>-1)" size="mini" @click="status_true(scope.row)">
               提交
             </el-button>
-            <el-button v-if="scope.row.used_type === 2" size="mini" @click="status_true(scope.row)">
+            <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_true(scope.row)">
               启用
             </el-button>
-            <el-button v-if="scope.row.used_type === 2" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
-            <el-button v-if="scope.row.used_type === 4" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 4 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
               废弃
             </el-button>
           </el-button-group>
@@ -149,7 +149,7 @@
       <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
             <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
           </el-button-group>
         </template>
@@ -275,6 +275,7 @@ export default {
         }
       } catch (e) {
         this.loading = false
+        throw new Error(e)
       }
     },
     async status_recipe_fun(id, obj) {
@@ -282,14 +283,14 @@ export default {
         await recipe_list('patch', id, obj)
         this.$message('状态切换成功')
         this.get_recipe_list(this.currentPage)
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async delete_recipe_fun(id) {
       try {
         await recipe_list('delete', id, {
           params: { }
         })
-      } catch (e) { return e }
+      } catch (e) { throw new Error(e) }
     },
     async copy_recipe_list(obj) {
       try {
@@ -307,7 +308,7 @@ export default {
         if (equip_list.results.length !== 0) {
           this.SelectEquipOptions = equip_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async equip_copy_list(dev_type_param) {
       try {
@@ -315,7 +316,7 @@ export default {
           params: { dev_type: dev_type_param }
         })
         this.SelectCopyEquipOptions = equip_copy_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async site_list() {
       try {
@@ -325,7 +326,7 @@ export default {
         if (site_list.results.length !== 0) {
           this.SelectSiteOptions = site_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async stage_list() {
       try {
@@ -335,7 +336,7 @@ export default {
         if (stage_list.results.length !== 0) {
           this.SelectStageOptions = stage_list.results
         }
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     SelectEquipDisplay: function(bool) {
       if (bool) {
