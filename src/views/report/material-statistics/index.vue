@@ -38,6 +38,7 @@
       border
       style="width: 100%"
     >
+      <el-table-column align="center" type="index" width="50" label="No" />
       <el-table-column
         prop="equip_no"
         label="机台"
