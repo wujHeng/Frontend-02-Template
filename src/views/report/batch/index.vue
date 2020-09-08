@@ -71,6 +71,10 @@
       style="width: 100%"
     >
       <el-table-column
+        type="index"
+        label="No"
+      />
+      <el-table-column
         prop="equip_no"
         label="机台"
       />

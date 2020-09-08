@@ -63,13 +63,13 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column
+        type="index"
+        label="No"
+      />
+      <!-- <el-table-column
         type="selection"
         width="55"
-      />
-      <el-table-column
-        prop="id"
-        label="ID"
-      />
+      /> -->
       <el-table-column
         prop="equip_no"
         label="机台"
@@ -249,7 +249,7 @@
                 frame="hsides"
               >
                 <tr class="train-one-tr-banburying">
-                  <td>ID</td>
+                  <td>No</td>
                   <td>名称</td>
                   <td>设定值</td>
                   <td>实重</td>
@@ -262,7 +262,7 @@
                   :key="index"
                   class="train-one-tr-banburying"
                 >
-                  <td>{{ item.序号 }}</td>
+                  <td>{{ index+1 }}</td>
                   <td>{{ item.物料名称 }}</td>
                   <td>{{ item.设定重量 }}</td>
                   <td>{{ item.实际重量 }}</td>
@@ -294,7 +294,7 @@
                 frame="hsides"
               >
                 <tr class="train-one-tr-banburying">
-                  <td>ID</td>
+                  <td>No</td>
                   <td>条件名称</td>
                   <td>时间</td>
                   <td>温度</td>
@@ -309,7 +309,7 @@
                   :key="index"
                   class="train-one-tr-banburying"
                 >
-                  <td>{{ item.序号 }}</td>
+                  <td>{{ index+1 }}</td>
                   <td>{{ item.条件 }}</td>
                   <td>{{ item.时间 }}</td>
                   <td>{{ item.温度 }}</td>
@@ -406,6 +406,21 @@
         </el-col>
       </el-row>
     </div>
+
+    <el-dialog
+      :title="'工艺曲线_' + rowInfo.equip_no + '-' + rowInfo.product_no + '-' + rowInfo.begin_time"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      :close-on-click-modal="false"
+    >
+      <ve-line
+        :data="chartData"
+        :height="clientHeight"
+        :after-set-option="afterSetOption"
+        :settings="chartSettings"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -481,7 +496,7 @@ export default {
           // show: true,
           itemSize: 20,
           itemGap: 30,
-          right: 50,
+          right: 0,
           feature: {
             dataZoom: {
               yAxisIndex: 'none'
@@ -491,6 +506,14 @@ export default {
               name: '',
               // excludeComponents :['toolbox'],
               pixelRatio: 2
+            },
+            myTool1: {
+              show: true,
+              title: '放大查看',
+              icon: 'path://M419.61244445 837.17688889c98.53155555 0 191.71555555-33.90577778 266.46755555-96.14222222l269.08444445 269.08444444c7.50933333 7.50933333 17.408 11.264 27.30666666 11.264s19.79733333-3.75466667 27.30666667-11.264c15.13244445-15.13244445 15.13244445-39.59466667 0-54.61333333L740.80711111 686.30755555c136.07822222-163.84 127.43111111-408.12088889-26.05511111-561.6071111-78.848-78.73422222-183.63733333-122.19733333-295.13955555-122.19733334-111.50222222 0-216.29155555 43.46311111-295.13955556 122.19733334-162.70222222 162.70222222-162.70222222 427.46311111 0 590.16533333 78.96177778 78.96177778 183.75111111 122.31111111 295.13955556 122.31111111zM179.2 179.42755555c64.28444445-64.17066667 149.61777778-99.55555555 240.41244445-99.55555555 90.79466667 0 176.24177778 35.38488889 240.41244444 99.55555555 132.55111111 132.55111111 132.55111111 348.38755555 0 480.93866667-64.28444445 64.17066667-149.61777778 99.55555555-240.41244444 99.55555556S243.48444445 724.53688889 179.2 660.36622222C46.64888889 527.70133333 46.64888889 311.97866667 179.2 179.42755555z',
+              onclick: () => {
+                this.dialogVisible = true
+              }
             }
           }
         }
@@ -509,11 +532,13 @@ export default {
       totalWeighing: 0,
       totalMixer: 0,
       // table高度
-      maxHeightTable: ''
+      maxHeightTable: '',
+      dialogVisible: false
     }
   },
   created() {
     this.maxHeightTable = (document.body.clientHeight / 1.8) + 'px'
+    this.clientHeight = (document.body.clientHeight - 300) + 'px'
     this.currentRowId = ''
     this.loading = true
     this.getList()
@@ -594,7 +619,6 @@ export default {
         // }]
 
         this.total = data.count || 0
-
         this.tableData.forEach((D) => {
           D.begin_time = setDate(D.begin_time, true)
           D.end_time = setDate(D.end_time, true)
@@ -798,6 +822,9 @@ export default {
     },
     ChangePageMixer(page) {
       this.mixerInformationList = this.getMixerInformation(this.$route.params.id, page) || []
+    },
+    handleClose(done) {
+      done()
     }
   }
 }
