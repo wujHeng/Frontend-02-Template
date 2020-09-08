@@ -3,16 +3,31 @@
     <el-form style="margin-left: 10px" :inline="true">
       <el-form-item label="原材料类别">
         <el-select
-          v-model="materialType"
+          v-model="params.material_type_id"
           clearable
           placeholder="请选择"
-          @change="materialTypeChange"
+          @change="search"
         >
           <el-option
             v-for="item in materialTypes"
             :key="item.id"
             :label="item.global_name"
             :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否使用">
+        <el-select
+          v-model="params.use_flag"
+          clearable
+          placeholder="请选择"
+          @change="search"
+        >
+          <el-option
+            v-for="(item, index) in [{label: 'Y', value: true}, {label: 'N', value: false}]"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
@@ -129,11 +144,11 @@ export default {
     return {
       tableData: [],
       materialTypes: [],
-      materialType: null,
       packingUnits: [],
       params: {
         page: 1,
-        material_type_id: null
+        material_type_id: null,
+        use_flag: true
       },
       total: 0,
       currentPage: 1
@@ -186,8 +201,7 @@ export default {
         this.packingUnits = response.results
       })
     },
-    materialTypeChange() {
-      this.params.material_type_id = this.materialType
+    search() {
       this.params.page = 1
       this.getMaterialList()
     },
