@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item
-        v-if="permission.system.user.indexOf('add')>-1"
+        v-if="permissionObj.system.user.indexOf('add')>-1"
         style="float: right"
       >
         <el-button @click="showCreateUserDialog">新建</el-button>
@@ -73,11 +73,13 @@
         <template slot-scope="scope">
           <el-button-group>
             <el-button
+              v-if="permissionObj.system.user.indexOf('change')>-1"
               size="mini"
               @click="showEditUserDialog(scope.row)"
             >编辑
             </el-button>
             <el-button
+              v-if="permissionObj.system.user.indexOf('delete')>-1"
               size="mini"
               type="danger"
               @click="handleUserDelete(scope.row)"
@@ -130,7 +132,19 @@
           <el-input v-model="userForm.username" />
         </el-form-item>
         <el-form-item
-          :label="userForm.id?'新密码':'密码'"
+          v-if="userForm.id"
+          label="修改密码"
+          prop="modifypassword"
+        >
+          <el-input
+            v-model="userForm.modifypassword"
+            type="password"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="!userForm.id"
+          label="密码"
           prop="password"
         >
           <!-- <div class="el-input">
@@ -157,8 +171,9 @@
           />
         </el-form-item>
         <el-form-item
-          :label="userForm.id?'确认新密码':'确认密码'"
+          label="确认密码"
           prop="checkPass"
+          :rules="{required: !userForm.id, validator: validatePass2, trigger: 'blur'}"
         >
           <el-input
             v-model="userForm.checkPass"
@@ -171,7 +186,10 @@
           label="工号"
           prop="num"
         >
-          <el-input v-model.number="userForm.num" />
+          <el-input
+            v-model.number="userForm.num"
+            :error="userFormError.num"
+          />
         </el-form-item>
         <el-form-item
           label="角色"
@@ -235,7 +253,14 @@ export default {
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
+    this.validatePass2 = (rule, value, callback) => {
+      if (this.userForm.id) {
+        if (this.userForm.modifypassword && value !== this.userForm.modifypassword) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }
       if (!value) {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.userForm.password) {
@@ -245,12 +270,19 @@ export default {
       }
     }
     var validatePass3 = (rule, value, callback) => {
-      if (!/^[a-zA-Z0-9\u4e00-\u9fa5]/g.test(value)) {
-        callback(new Error('用户名格式错误，请输入字母和数字组合'))
-      } else if (!value) {
+      if (!value) {
         callback(new Error('请输入用户名!'))
+      } else if (!/^[a-zA-Z0-9\u4e00-\u9fa5]+$/g.test(value)) {
+        callback(new Error('用户名格式错误，请输入字母和数字组合'))
       } else if (value.length > 64) {
         callback(new Error('长度小于64个字符!'))
+      } else {
+        callback()
+      }
+    }
+    var validatePass4 = (rule, value, callback) => {
+      if (value && (value.length < 6 || value.length > 16)) {
+        callback(new Error('请输入6~16位长度的密码'))
       } else {
         callback()
       }
@@ -281,8 +313,8 @@ export default {
         password: [
           { required: true, validator: validatePass, trigger: 'blur' }
         ],
-        checkPass: [
-          { required: true, validator: validatePass2, trigger: 'blur' }
+        modifypassword: [
+          { validator: validatePass4, trigger: 'blur' }
         ],
         username: [
           { required: true, validator: validatePass3, trigger: 'blur' }
@@ -294,13 +326,15 @@ export default {
       permissionsArr: [],
       groups: [],
       loading: true,
-      loadingTable: false
+      loadingTable: false,
+      userFormError: {}
     }
   },
   computed: {
     ...mapGetters(['permission'])
   },
   created() {
+    this.permissionObj = this.permission
     this.loading = true
     roles('get', null, {
       params: { all: 1 }
@@ -420,13 +454,28 @@ export default {
           // eslint-disable-next-line prefer-const
           let paramsId = app.userForm.id ? app.userForm.id : ''
           // eslint-disable-next-line object-curly-spacing
-          personnelsUrl(type, paramsId, { data: { ...app.userForm } })
+          if (app.userForm.id && app.userForm.modifypassword) {
+            app.userForm.password = app.userForm.modifypassword
+          } else {
+            delete app.userForm.password
+          }
+          if (this.userForm.password === '') {
+            delete app.userForm.password
+          }
+          if (this.userForm.num === '') {
+            delete app.userForm.num
+          }
+          personnelsUrl(type, paramsId, { data: { ...app.userForm }})
             .then((response) => {
               app.dialogCreateUserVisible = false
               app.$message.success(app.userForm.username + '操作成功')
               app.currentChange()
               this.btnloading = false
-            }).catch(() => {
+            }).catch((e) => {
+              this.userFormError = e
+              // for (const key in this.userFormError) {
+              //   if (error[key]) { this.userFormError[key] = error[key].join(',') }
+              // }
               this.btnloading = false
             })
         } else {

@@ -16,7 +16,10 @@
           @input="nameChanged"
         />
       </el-form-item>
-      <el-form-item style="float: right">
+      <el-form-item
+        v-if="permissionObj.system.groupextension.indexOf('add')>-1"
+        style="float: right"
+      >
         <el-button @click="showCreateGroupDialog">新建</el-button>
       </el-form-item>
     </el-form>
@@ -53,19 +56,24 @@
         prop="created_date"
         label="创建日期"
       />
-      <el-table-column label="操作" width="140">
+      <el-table-column
+        label="操作"
+        width="140"
+      >
         <template slot-scope="scope">
           <el-button-group>
             <el-button
+              v-if="permissionObj.system.groupextension.indexOf('change')>-1"
               size="mini"
               @click="showEditGroupDialog(scope.row)"
             >编辑
             </el-button>
             <el-button
+              v-if="permissionObj.system.groupextension.indexOf('delete')>-1"
               size="mini"
               type="danger"
               @click="handleGroupDelete(scope.row)"
-            >删除
+            >{{ scope.row.use_flag?'停用':'启用' }}
             </el-button>
           </el-button-group>
         </template>
@@ -135,6 +143,7 @@
 import { roles } from '@/api/roles-manage'
 import { permissions } from '@/api/permission'
 import page from '@/components/page'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { page },
@@ -162,7 +171,11 @@ export default {
       loadingTable: false
     }
   },
+  computed: {
+    ...mapGetters(['permission'])
+  },
   created() {
+    this.permissionObj = this.permission
     this.currentChange()
     permissions('get', null).then(response => {
       this.permissions = response.results
@@ -247,7 +260,8 @@ export default {
       this.dialogEditGroupVisible = true
     },
     handleGroupDelete(group) {
-      this.$confirm('此操作将永久删除' + group.name + ', 是否继续?', '提示', {
+      var boolStr = group.use_flag ? '停用' : '启用'
+      this.$confirm('确定' + boolStr + group.name + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -255,11 +269,11 @@ export default {
         roles('delete', group.id).then(response => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '操作成功!'
           })
-          //   if (this.tableData.length === 1 && this.getParams.page !== 1) {
-          //     this.getParams.page = this.getParams.page - 1
-          //   }
+          // if (this.tableData.length === 1 && this.getParams.page !== 1) {
+          //   this.getParams.page = this.getParams.page - 1
+          // }
           this.currentChange()
         })
       })
