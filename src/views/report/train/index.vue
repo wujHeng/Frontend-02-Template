@@ -513,7 +513,7 @@ export default {
     }
   },
   created() {
-    this.maxHeightTable = (document.body.clientHeight / 2) + 'px'
+    this.maxHeightTable = (document.body.clientHeight / 1.8) + 'px'
     this.currentRowId = ''
     this.loading = true
     this.getList()

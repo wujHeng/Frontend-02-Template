@@ -54,7 +54,8 @@ service.interceptors.response.use(
     }
   },
   error => {
-    if (error.response.status && error.response.status === 403) {
+    if (error.response.status && (error.response.status === 403 ||
+        error.response.status === 401)) {
       Message({
         message: '身份信息已过期',
         type: 'error',
