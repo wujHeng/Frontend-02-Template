@@ -59,6 +59,7 @@
       <el-form-item label="胶料编号" prop="SelectRecipeNo">
         <el-select
           v-model="generateRecipeForm.SelectRecipeNo"
+          filterable
           size="mini"
           style="width: 100px"
           clearable
