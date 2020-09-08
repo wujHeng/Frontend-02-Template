@@ -163,7 +163,9 @@ export default {
   components: { page },
   data() {
     return {
-      getParams: {},
+      getParams: {
+        use_flag: 1
+      },
       tableData: [],
       count: 0,
       group_code: '',

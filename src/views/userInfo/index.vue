@@ -315,7 +315,8 @@ export default {
       btnloading: false,
       getParams: {
         num: '',
-        username: ''
+        username: '',
+        is_active: 1
       },
       currentPage: 1,
       dialogCreateUserVisible: false,
