@@ -187,19 +187,7 @@ export default {
       params: {
         page: 1
       },
-      tableData: [{
-        plan_classes_uid: '2020090520484001Z01',
-        sn: 1,
-        stage_product_batch_no: 'C-1MB-UC109-11',
-        begin_time: '2020-09-08 00:11:22',
-        end_time: '2020-09-09 00:11:22',
-        equip_name: 'Z01',
-        classes: '早班',
-        plan_trains: 20,
-        actual_trains: 20,
-        created_username: '18888888888',
-        status: '已下达'
-      }],
+      tableData: [],
       currentRow: {},
       currentAlive: {},
       total: 0,
@@ -232,7 +220,7 @@ export default {
       this.equip = equipData.results[0].equip_no
       this.clearFindForm()
       this.getPlanStatusList()
-      // this.getPlanList()
+      this.getPlanList()
     },
     async getPlanStatusList() {
       const planStatusListData = await getPlanStatusList({ equip_no: this.equip })
