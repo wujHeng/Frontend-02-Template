@@ -330,6 +330,7 @@ export default {
       if (this.recipe) {
         this.params['product_no'] = this.recipe
       }
+      this.page = 1
       this.getPlanList()
       this.findDialogVisible = false
     },
