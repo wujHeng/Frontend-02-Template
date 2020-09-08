@@ -16,6 +16,21 @@
           @input="nameChanged"
         />
       </el-form-item>
+      <el-form-item label="是否使用">
+        <el-select
+          v-model="getParams.use_flag"
+          clearable
+          placeholder="请选择"
+          @change="nameChanged"
+        >
+          <el-option
+            v-for="item in optionsUser"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item
         v-if="permissionObj.system.groupextension.indexOf('add')>-1"
         style="float: right"
@@ -167,7 +182,17 @@ export default {
       dialogEditGroupVisible: false,
       dialogTitle: '新增角色',
       loading: true,
-      loadingTable: false
+      loadingTable: false,
+      optionsUser: [
+        {
+          value: 1,
+          label: 'Y'
+        },
+        {
+          value: 0,
+          label: 'N'
+        }
+      ]
     }
   },
   computed: {

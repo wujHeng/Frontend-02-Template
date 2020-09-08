@@ -191,7 +191,7 @@ export default {
         for (const key in dataArr) {
           const newdataArr = dataArr[key]
           // 早中晚按classes_id排序
-          dataArr[key].sort(compare('classes_id'))
+          // dataArr[key].sort(compare('classes_id'))
           arr.push({
             equip_no: key,
             chartData: {
@@ -242,13 +242,13 @@ export default {
     }
   }
 }
-function compare(property) {
-  return function(a, b) {
-    var value1 = a[property]
-    var value2 = b[property]
-    return value1 - value2
-  }
-}
+// function compare(property) {
+//   return function(a, b) {
+//     var value1 = a[property]
+//     var value2 = b[property]
+//     return value1 - value2
+//   }
+// }
 </script>
 
 <style lang="scss">

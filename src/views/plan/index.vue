@@ -87,7 +87,7 @@
       <el-table-column type="index" label="No" width="55" />
       <el-table-column prop="plan_classes_uid" label="计划编号" width="180" />
       <el-table-column prop="sn" label="序号" width="55" />
-      <el-table-column prop="stage_product_batch_no" label="配方名称" width="140" />
+      <el-table-column prop="stage_product_batch_no" label="配方名称" width="150" />
       <el-table-column prop="begin_time" label="开始时间" width="160" />
       <el-table-column prop="end_time" label="结束时间" width="160" />
       <el-table-column prop="equip_name" label="机台" width="100" />
@@ -187,19 +187,7 @@ export default {
       params: {
         page: 1
       },
-      tableData: [{
-        plan_classes_uid: '2020090520484001Z01',
-        sn: 1,
-        stage_product_batch_no: 'C-1MB-UC109-11',
-        begin_time: '2020-09-08 00:11:22',
-        end_time: '2020-09-09 00:11:22',
-        equip_name: 'Z01',
-        classes: '早班',
-        plan_trains: 20,
-        actual_trains: 20,
-        created_username: '18888888888',
-        status: '已下达'
-      }],
+      tableData: [],
       currentRow: {},
       currentAlive: {},
       total: 0,
@@ -232,7 +220,7 @@ export default {
       this.equip = equipData.results[0].equip_no
       this.clearFindForm()
       this.getPlanStatusList()
-      // this.getPlanList()
+      this.getPlanList()
     },
     async getPlanStatusList() {
       const planStatusListData = await getPlanStatusList({ equip_no: this.equip })
@@ -342,6 +330,7 @@ export default {
       if (this.recipe) {
         this.params['product_no'] = this.recipe
       }
+      this.page = 1
       this.getPlanList()
       this.findDialogVisible = false
     },

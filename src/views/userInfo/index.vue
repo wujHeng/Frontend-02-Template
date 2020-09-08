@@ -17,6 +17,21 @@
           @input="numChanged"
         />
       </el-form-item>
+      <el-form-item label="是否使用">
+        <el-select
+          v-model="getParams.is_active"
+          clearable
+          placeholder="请选择"
+          @change="numChanged"
+        >
+          <el-option
+            v-for="item in optionsUser"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item
         v-if="permissionObj.system.user.indexOf('add')>-1"
         style="float: right"
@@ -55,6 +70,12 @@
         width="80"
         :formatter="formatter"
       /> -->
+      <el-table-column
+        prop="use_flag"
+        label="使用"
+        width="80"
+        :formatter="formatter"
+      />
       <el-table-column label="创建人">
         <template slot-scope="scope">
           {{ scope.row.created_username?scope.row.created_username:'--' }}
@@ -326,7 +347,17 @@ export default {
       groups: [],
       loading: true,
       loadingTable: false,
-      userFormError: {}
+      userFormError: {},
+      optionsUser: [
+        {
+          value: 1,
+          label: 'Y'
+        },
+        {
+          value: 0,
+          label: 'N'
+        }
+      ]
     }
   },
   computed: {
@@ -490,8 +521,8 @@ export default {
       this.isErrorOldPassword = false
       done()
     },
-    formatter(row, column) {
-      return row.is_leave ? 'Y' : 'N'
+    formatter: function(row, column) {
+      return row.is_active ? 'Y' : 'N'
     }
   }
 }
