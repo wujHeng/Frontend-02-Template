@@ -141,7 +141,6 @@ export default {
   },
   created() {
     this.permissionObj = this.permission
-    console.log(this.permission)
     this.getMaterialList()
     this.getMaterialTypes()
     this.getPackingUnits()
