@@ -199,7 +199,7 @@ export default {
           })
         }
 
-        console.log(arr, 'arr')
+        // console.log(arr, 'arr')
         this.chartDataList = arr
       } catch (e) {
         this.loading = false
