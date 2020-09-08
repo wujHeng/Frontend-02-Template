@@ -100,7 +100,12 @@ export default {
       this.search()
     },
     materialTypeChanged(materialType) {
-      this.params.material_type
+      if (materialType) {
+        this.params.material_type = materialType
+      }
+      else {
+        this.params.material_type = null
+      }
       this.search()
     },
     search() {
