@@ -85,16 +85,16 @@
       @current-change="handleCurrentChange"
     >
       <el-table-column type="index" label="No" width="55" />
-      <el-table-column prop="plan_classes_uid" label="计划编号" />
-      <el-table-column prop="sn" label="序号" />
-      <el-table-column prop="stage_product_batch_no" label="配方名称" />
-      <el-table-column prop="begin_time" label="开始时间" width="160px" />
-      <el-table-column prop="end_time" label="结束时间" width="160px" />
-      <el-table-column prop="equip_name" label="机台" />
-      <el-table-column prop="classes" label="班次" />
-      <el-table-column prop="plan_trains" label="设定" />
-      <el-table-column prop="actual_trains" label="完成" />
-      <el-table-column prop="created_username" label="操作员" />
+      <el-table-column prop="plan_classes_uid" label="计划编号" width="180" />
+      <el-table-column prop="sn" label="序号" width="55" />
+      <el-table-column prop="stage_product_batch_no" label="配方名称" width="140" />
+      <el-table-column prop="begin_time" label="开始时间" width="160" />
+      <el-table-column prop="end_time" label="结束时间" width="160" />
+      <el-table-column prop="equip_name" label="机台" width="100" />
+      <el-table-column prop="classes" label="班次" width="80" />
+      <el-table-column prop="plan_trains" label="设定" width="80" />
+      <el-table-column prop="actual_trains" label="完成" width="80" />
+      <el-table-column prop="created_username" label="操作员" width="120" />
       <el-table-column prop="status" label="状态" />
     </el-table>
     <page :total="total" @currentChange="currentChange" />
@@ -187,7 +187,19 @@ export default {
       params: {
         page: 1
       },
-      tableData: [],
+      tableData: [{
+        plan_classes_uid: '2020090520484001Z01',
+        sn: 1,
+        stage_product_batch_no: 'C-1MB-UC109-11',
+        begin_time: '2020-09-08 00:11:22',
+        end_time: '2020-09-09 00:11:22',
+        equip_name: 'Z01',
+        classes: '早班',
+        plan_trains: 20,
+        actual_trains: 20,
+        created_username: '18888888888',
+        status: '已下达'
+      }],
       currentRow: {},
       currentAlive: {},
       total: 0,
@@ -220,7 +232,7 @@ export default {
       this.equip = equipData.results[0].equip_no
       this.clearFindForm()
       this.getPlanStatusList()
-      this.getPlanList()
+      // this.getPlanList()
     },
     async getPlanStatusList() {
       const planStatusListData = await getPlanStatusList({ equip_no: this.equip })
