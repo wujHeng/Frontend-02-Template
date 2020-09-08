@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item label="是否使用">
         <el-select
-          v-model="params.used_flag"
+          v-model="params.use_flag"
           clearable
           placeholder="请选择"
           @change="search"
@@ -148,7 +148,7 @@ export default {
       params: {
         page: 1,
         material_type_id: null,
-        used_flag: true
+        use_flag: true
       },
       total: 0,
       currentPage: 1
