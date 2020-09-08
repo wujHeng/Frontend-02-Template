@@ -30,9 +30,11 @@
         />
       </el-select>
 
-      <el-button style="float: right" @click="batchSave">保存</el-button>
+      <el-button style="float: right" :disabled="!saveEnable" @click="batchSave">保存</el-button>
       <el-button @click="addOnePlan">添加</el-button>
     </div>
+    <p style="text-align: right; color: red"> {{ weightError }} </p>
+    <p style="text-align: right; color: red"> {{ timeError }} </p>
     <el-table
       :data="plansForAdd"
       border
@@ -155,7 +157,34 @@ export default {
       planSchedules: [],
       workSchedules: [],
       plansForAdd: [],
-      productBatchingById: {}
+      productBatchingById: {},
+      saveEnable: false,
+      weightError: '',
+      timeError: ''
+    }
+  },
+  watch: {
+    plansForAdd: {
+      handler(plans) {
+        this.saveEnable = true
+        this.weightError = ''
+        this.timeError = ''
+        plans.forEach(plan => {
+          if (!plan.sum) {
+            plan.pdp_product_classes_plan.forEach(class_plan => {
+              if (class_plan.weight > 99999) {
+                this.saveEnable = false
+                this.weightError = '计划重量过大'
+              }
+              if (class_plan.time > 999999.99) {
+                this.saveEnable = false
+                this.timeError = '计划时间过大'
+              }
+            })
+          }
+        })
+      },
+      deep: true
     }
   },
   created() {
@@ -167,7 +196,6 @@ export default {
     show() {
       this.addPlanVisible = true
     },
-
     async getEquipList() {
       try {
         const equipData = await equip('get')
@@ -223,7 +251,6 @@ export default {
       var app = this
       var plansForAdd_ = []
       this.plansForAdd.forEach(plan => {
-        console.log(plan, 'plan')
         if (!plan.sum) {
           var plan_ = JSON.parse(JSON.stringify(plan))
           if (!plan_.product_batching) {
@@ -233,7 +260,6 @@ export default {
             return
           }
           plan_.pdp_product_classes_plan = []
-          console.log(plan.pdp_product_classes_plan, 'plan.pdp_product_classes_plan')
           if (plan.pdp_product_classes_plan.filter(class_plan => {
             return class_plan.plan_trains > 0
           }).length === 0) {
