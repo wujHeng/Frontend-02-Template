@@ -501,7 +501,7 @@ export default {
           params: { }
         })
         this.SelectEquipOptions = equip_list.results
-      } catch (e) {}
+      } catch (e) { throw new Error(e) }
     },
 
     async recipe_material_list(id) {
@@ -592,7 +592,7 @@ export default {
           })
         }
         return recipe_listData
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     //   原材料接口
     async raw_material_list(val = 1) {
@@ -611,7 +611,7 @@ export default {
         })
         this.tableData = raw_material_list.results
         this.tableDataTotal = raw_material_list.count
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async material_type_list() {
       try {
@@ -619,7 +619,7 @@ export default {
           params: { }
         })
         this.materialTypeOptions = material_type_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async condition_list() {
       try {
@@ -627,7 +627,7 @@ export default {
           params: { }
         })
         this.SelectConditionOptions = condition_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async action_list() {
       try {
@@ -635,7 +635,7 @@ export default {
           params: { }
         })
         this.SelectActionOptions = action_list.results
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     // async recipe_process_step_list(id, equip) {
     //   try {
@@ -687,24 +687,24 @@ export default {
       try {
         const popup_materialData = await recipe_list('get', id)
         return popup_materialData
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
 
     async put_recipe_list(id, obj) {
       try {
         const recipe_listData = await recipe_list('put', id, obj)
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async put_recipe_info_step_list(id, obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('put', id, obj)
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
         console.log(recipe_info_step_list)
-      } catch (e) { e }
+      } catch (e) { throw new Error(e) }
     },
 
     modify_material_button: async function() {
@@ -975,13 +975,13 @@ export default {
                 'equip': this.$route.params['equip'],
                 'product_batching': this.$route.params['id']
               }
-            }},
-            this.$message({
-              message: this.stage_product_batch_no + '配方步序修改成功',
-              type: 'success'
-            }),
-            this.$router.push({ name: 'RecipeList' })
+            }}
           )
+          this.$message({
+            message: this.stage_product_batch_no + '配方步序修改成功',
+            type: 'success'
+          })
+          this.$router.push({ name: 'RecipeList' })
         } catch (e) { e }
 
         // else {
