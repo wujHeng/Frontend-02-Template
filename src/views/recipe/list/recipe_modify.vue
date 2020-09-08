@@ -693,11 +693,13 @@ export default {
     async put_recipe_list(id, obj) {
       try {
         const recipe_listData = await recipe_list('put', id, obj)
+        return recipe_listData
       } catch (e) { throw new Error(e) }
     },
     async put_recipe_info_step_list(id, obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('put', id, obj)
+        return recipe_info_step_list
       } catch (e) { throw new Error(e) }
     },
     async post_recipe_info_step_list(obj) {
@@ -813,14 +815,13 @@ export default {
             'batching_details': batching_details_list
           }}
         )
+        this.dialogRubberMaterialStandard = false
+        // 调用接口，重新加载数据
+        this.carbon_tableData = []
+        this.oil_tableData = []
+        this.rubber_tableData = []
+        this.recipe_material_list(this.$route.params['id'])
       } catch (e) { e }
-
-      this.dialogRubberMaterialStandard = false
-      // 调用接口，重新加载数据
-      this.carbon_tableData = []
-      this.oil_tableData = []
-      this.rubber_tableData = []
-      this.recipe_material_list(this.$route.params['id'])
     },
     // saveMaterialClicked: async function() {
     //   // 循环整个表格

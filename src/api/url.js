@@ -84,7 +84,5 @@ export default {
   // 当前运行中的计划
   PlanStatusListUrl: '/api/v1/plan/plan-status-list/',
 
-  SynchronizationUrl: '/api/v1/system/synchronization/',
-
-  SynchronizationMesUrl: 'http://10.4.14.4:8000/api/v1/system/synchronization/'
+  SynchronizationUrl: '/api/v1/system/synchronization/'
 }

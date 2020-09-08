@@ -99,7 +99,7 @@ export default {
       this.search()
     },
     materialTypeChanged(materialType) {
-      this.params.material_type = materialType
+      this.params.material_type = materialType !== '' ? materialType : null
       this.search()
     },
     search() {

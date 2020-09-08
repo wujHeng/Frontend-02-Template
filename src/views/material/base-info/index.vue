@@ -14,7 +14,7 @@
           :value="item.id"
         />
       </el-select>
-      <el-form-item style="float: right;">
+      <el-form-item v-if="permissionObj.production.material.indexOf('add')>-1" style="float: right;">
         <el-button @click="showCreateMaterialDialog">新建</el-button>
       </el-form-item>
     </el-form>
@@ -80,11 +80,13 @@
         <template slot-scope="scope">
           <el-button-group>
             <el-button
+              v-if="permissionObj.production.material.indexOf('change')>-1"
               size="mini"
               @click="showUpdateMaterialDialog(scope.row)"
             >编辑
             </el-button>
             <el-button
+              v-if="permissionObj.production.material.indexOf('delete')>-1"
               size="mini"
               type="danger"
               @click="deleteMaterial(scope.row)"
@@ -116,6 +118,7 @@ import { getMaterials, getMaterialTypes, getPackingUnits, deleteMaterial } from 
 import page from '@/components/page'
 import CreateMaterialDialog from './CreateMaterialDialog'
 import UpdateMaterialDialog from './UpdateMaterialDialog'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { page, CreateMaterialDialog, UpdateMaterialDialog },
@@ -133,7 +136,11 @@ export default {
       currentPage: 1
     }
   },
+  computed: {
+    ...mapGetters(['permission'])
+  },
   created() {
+    this.permissionObj = this.permission
     this.getMaterialList()
     this.getMaterialTypes()
     this.getPackingUnits()
