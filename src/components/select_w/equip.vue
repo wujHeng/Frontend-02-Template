@@ -48,7 +48,7 @@ export default {
   methods: {
     getMachineList() {
       var _this = this
-      equip('get', { params: { all: 1 }})
+      equip('get', { params: { all: 1, category_name: '密炼设备' }})
         .then(function(response) {
           _this.machineList = response.results || []
         })
