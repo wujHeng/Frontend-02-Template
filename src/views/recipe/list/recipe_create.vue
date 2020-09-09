@@ -56,6 +56,25 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="段次" prop="SelectStage">
+        <el-select
+          v-model="generateRecipeForm.SelectStage"
+          size="mini"
+          style="width: 100px"
+          clearable
+          placeholder="请选择"
+          :disabled="select_recipe_component"
+          @visible-change="SelectStageDisplay"
+        >
+          <el-option
+            v-for="item in SelectStageOptions"
+            :key="item.id"
+            :label="item.global_name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="胶料编号" prop="SelectRecipeNo">
         <el-select
           v-model="generateRecipeForm.SelectRecipeNo"
@@ -71,25 +90,6 @@
             v-for="item in SelectRecipeNoOptions"
             :key="item.id"
             :label="item.product_no"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="段次" prop="SelectStage">
-        <el-select
-          v-model="generateRecipeForm.SelectStage"
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectStageDisplay"
-        >
-          <el-option
-            v-for="item in SelectStageOptions"
-            :key="item.id"
-            :label="item.global_name"
             :value="item.id"
           />
         </el-select>
