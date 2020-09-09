@@ -65,7 +65,12 @@
               :disabled="!scope.row.use_flag"
               @change="masterialChange"
             >
-              <el-option v-for="item in oilOptions" :key="item" :label="item" :value="item" />
+              <el-option
+                v-for="item in oilOptions"
+                :key="item.material_name"
+                :label="item.material_name"
+                :value="item.material_name"
+              />
             </el-select>
           </template>
         </el-table-column>
