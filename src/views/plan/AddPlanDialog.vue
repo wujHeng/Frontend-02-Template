@@ -308,18 +308,35 @@ export default {
         return
       }
       var classesdetail_set_ = workSchedule.classesdetail_set
-      var pdp_product_classes_plan = []
+      var init_class_plan = {
+        plan_trains: 0,
+        sn: 0,
+        unit: '吨',
+        time: '',
+        weight: '',
+        classes: null,
+        enable: false
+      }
+      var pdp_product_classes_plan = [init_class_plan, init_class_plan, init_class_plan]
       for (var i = 0; i < 3; i++) {
         var enable = !!planSchedule.work_schedule_plan[i]
-        pdp_product_classes_plan.push({
+        var classes = enable ? classesdetail_set_[i].classes : null
+        var class_plan = {
           plan_trains: 0,
           sn: 0,
           unit: '吨',
           time: enable ? 0 : '',
           weight: enable ? 0 : '',
-          classes: classesdetail_set_[i].classes,
+          classes,
           enable
-        })
+        }
+        if (enable && planSchedule.work_schedule_plan[i].classes_name === '早班') {
+          pdp_product_classes_plan[0] = class_plan
+        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '中班') {
+          pdp_product_classes_plan[1] = class_plan
+        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '晚班') {
+          pdp_product_classes_plan[2] = class_plan
+        }
       }
       var plan = {
         equip_: this.equipById[this.equipIdForAdd],
