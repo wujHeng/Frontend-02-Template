@@ -119,9 +119,7 @@ export default {
   methods: {
     getDisabled() {
       this.permissionObj = this.permission
-      console.log(this.permissionObj)
-      console.log(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
-      this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
+      this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > -1)
     },
     async getEquip() {
       const equipData = await equip('get')
