@@ -112,13 +112,13 @@ export default {
     ...mapGetters(['permission'])
   },
   created() {
-    this.grtDisabled()
+    this.getDisabled()
     this.getEquip()
   },
   methods: {
-    grtDisabled() {
+    getDisabled() {
       this.permissionObj = this.permission
-      this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
+      this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > -1)
     },
     async getEquip() {
       const equipData = await equip('get')
