@@ -111,14 +111,16 @@ export default {
     ...mapGetters(['permission'])
   },
   created() {
-    this.grtDisabled()
+    this.getDisabled()
     this.getEquip()
     this.getMaterialsCbList()
     this.getMaterialsOilList()
   },
   methods: {
-    grtDisabled() {
+    getDisabled() {
       this.permissionObj = this.permission
+      console.log(this.permissionObj)
+      console.log(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
       this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > 1)
     },
     async getEquip() {
