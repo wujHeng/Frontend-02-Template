@@ -198,7 +198,7 @@ export default {
     },
     async getEquipList() {
       try {
-        const equipData = await equip('get')
+        const equipData = await equip('get', { params: { all: 1, category_name: '密炼设备' }})
         this.equips = equipData.results
         this.equips.forEach(equip => {
           this.equipById[equip.id] = equip
