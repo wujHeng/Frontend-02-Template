@@ -154,10 +154,10 @@
             border
             style="width: 100%"
           >
-            <el-table-column align="center" width="50%" prop="stage_product_batch_no" label="序号" />
+            <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="product_name" label="油脂名称" />
+            <el-table-column align="center" prop="material_name" label="油脂名称" />
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
