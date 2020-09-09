@@ -39,18 +39,13 @@ export const constantRoutes = [{
   path: '/404',
   component: () => import('@/views/404'),
   hidden: true
-}
-]
-
-// 存在权限的路由
-// meta.roles  权限
-export const asyncRoutes = [{
+},
+{
   path: '/',
   component: Layout,
   redirect: '/dashboard',
   meta: {
     icon: 'dashboard'
-    // permissionName: 'basics'
   },
   children: [{
     path: 'dashboard',
@@ -58,11 +53,14 @@ export const asyncRoutes = [{
     meta: {
       title: '首页',
       icon: 'dashboard'
-      // permissionName: 'equip'
     }
   }]
-},
-{
+}
+]
+
+// 存在权限的路由
+// meta.roles  权限
+export const asyncRoutes = [{
   path: '/recipe',
   component: Layout,
   redirect: '/recipe/list',
