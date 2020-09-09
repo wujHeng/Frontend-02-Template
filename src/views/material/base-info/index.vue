@@ -108,7 +108,7 @@
               size="mini"
               type="danger"
               @click="deleteMaterial(scope.row)"
-            >删除
+            >{{ scope.row.use_flag ? '停用':'启用' }}
             </el-button>
           </el-button-group>
         </template>
@@ -171,7 +171,8 @@ export default {
       this.$refs.updateMaterialDialog.show(JSON.parse(JSON.stringify(material)))
     },
     deleteMaterial(material) {
-      this.$confirm('此操作将永久删除' + material.material_name + ', 是否继续?', '提示', {
+      var str = material.use_flag ? '停用' : '启用'
+      this.$confirm('确定' + str + material.material_name + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -179,7 +180,7 @@ export default {
         deleteMaterial(material.id).then(response => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '操作成功!'
           })
           this.getMaterialList()
         })
