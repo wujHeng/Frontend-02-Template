@@ -48,6 +48,7 @@ module.exports = {
         }
       },
       '/api': {
+        // target: 'http://10.4.10.55:80',
         // target: 'http://10.4.14.33:8000',
         target: 'http://10.4.14.6:8000/',
         // target: 'http://10.4.14.33:8000/',
