@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import API from '@/api/url'
 
-export function equip(method, data = { params: { all: 1 }}) {
+export function equip(method, data = { params: { all: 1, category_name: '密炼设备' }}) {
   const obj = {
     url: API.EquipUrl,
     method: method
