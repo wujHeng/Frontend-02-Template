@@ -10,9 +10,9 @@
       <el-form-item :error="formError.for_short" label="原材料简称">
         <el-input v-model="form.for_short" />
       </el-form-item>
-      <el-form-item :error="formError.use_flag" label="是否启用">
+      <!-- <el-form-item :error="formError.use_flag" label="是否启用">
         <el-switch v-model="form.use_flag" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item :error="formError.material_type" label="原材料类别">
         <el-select
           v-model="form.material_type"
