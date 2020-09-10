@@ -10,7 +10,7 @@
       <el-table-column
         prop="system_name"
         label="MES系统"
-        width="110"
+        width="130"
       />
       <el-table-column
         prop="link_address"
@@ -47,7 +47,7 @@
       <el-table-column
         prop="system_name"
         label="上辅机工作站"
-        width="110"
+        width="130"
       />
       <el-table-column
         prop="link_address"

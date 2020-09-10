@@ -68,13 +68,13 @@
             </el-form-item>
             <el-form-item label="是否回收">
               <template>
-                <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
-                <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
+                <el-radio v-show="reuse_flag" v-model="reuse_flag" :disabled="true" :label="true">是</el-radio>
+                <el-radio v-show="!reuse_flag" v-model="reuse_flag" :disabled="true" :label="false">否</el-radio>
               </template>
             </el-form-item>
             <el-form-item label=" ">
-              <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
-              <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
+              <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :disabled="true" :label="true">三区水温启动</el-radio>
+              <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :disabled="true" :label="false">三区水温停用</el-radio>
             </el-form-item>
             <el-form-item label="收皮">
               <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
