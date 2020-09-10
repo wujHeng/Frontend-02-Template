@@ -10,6 +10,7 @@
           placeholder="请选择"
           :disabled="select_recipe_component"
           @visible-change="SelectEquipDisplay"
+          @change="SelectEquipChange"
         >
           <el-option
             v-for="item in SelectEquipOptions"
@@ -18,6 +19,9 @@
             :value="item.id"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="机型名称">
+        <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
       </el-form-item>
       <el-form-item label="产地" prop="SelectSite">
         <el-select
@@ -138,22 +142,22 @@
               <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="进胶最低温度">
-              <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="mini_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="超温温度">
-              <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="over_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="胶料总误差">
               <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="转子水温">
-              <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="zz_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="卸料门水温">
-              <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="侧壁水温">
-              <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="cb_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
           </div>
         </el-col>
@@ -168,10 +172,10 @@
               <el-input-number v-model="over_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="进胶最高温度">
-              <el-input-number v-model="max_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="max_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item v-show="reuse_flag" label="回收时间">
-              <el-input-number v-model="reuse_time" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="是否回收">
               <template>
@@ -512,6 +516,7 @@ export default {
       SelectConditionOptions: [],
       SelectActionOptions: [],
       materialTypeOptions: [],
+      category__category_name: null,
       materialType: null,
       search_material_no: null,
       search_material_name: null,
@@ -565,13 +570,13 @@ export default {
         {
           sn: '',
           //     condition:"",
-          time: null,
-          temperature: null,
-          energy: null,
-          power: null,
+          time: undefined,
+          temperature: undefined,
+          energy: undefined,
+          power: undefined,
           //     action:"",
-          pressure: null,
-          rpm: null
+          pressure: undefined,
+          rpm: undefined
         }
       ],
       raw_material_index: null,
@@ -608,12 +613,12 @@ export default {
       use_flag: true,
       production_time_interval: undefined,
       // 密炼步序字段
-      time: null,
-      temperature: null,
-      energy: null,
-      power: null,
-      pressure: null,
-      rpm: null,
+      time: undefined,
+      temperature: undefined,
+      energy: undefined,
+      power: undefined,
+      pressure: undefined,
+      rpm: undefined,
       condition: null,
       standard_error: null,
       batching_details_list: []
@@ -630,6 +635,8 @@ export default {
         })
         if (equip_list.results.length !== 0) {
           this.SelectEquipOptions = equip_list.results
+          // console.log('=============')
+          // console.log(this.SelectEquipOptions)
         }
       } catch (e) { throw new Error(e) }
     },
@@ -783,6 +790,11 @@ export default {
     materialTypeDisplay: function(bool) {
       if (bool) {
         this.material_type_list()
+      }
+    },
+    SelectEquipChange: function() {
+      for (var i = 0; i < this.SelectEquipOptions.length; i++) {
+        if (this.generateRecipeForm['SelectEquip'] === this.SelectEquipOptions[i]['id']) { this.category__category_name = this.SelectEquipOptions[i]['category__category_name'] }
       }
     },
     pagehandleCurrentChange: function(val) {
@@ -1044,13 +1056,13 @@ export default {
       this.RecipeMaterialList.push({
         sn: '',
         //     condition:"",
-        time: null,
-        temperature: null,
-        energy: null,
-        power: null,
+        time: undefined,
+        temperature: undefined,
+        energy: undefined,
+        power: undefined,
         //     action:"",
-        pressure: null,
-        rpm: null
+        pressure: undefined,
+        rpm: undefined
       })
     },
     del_recipe_step_row: function(step_ele, index) {
@@ -1062,7 +1074,7 @@ export default {
     },
     AddRecipeInfoStep: async function() {
       if (this.equip && this.stage_product_batch_no) {
-        if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
+        if (this.sp_num) {
           var step_details_list = []
           // 循环整个表格
           if (this.RecipeMaterialList.length === 0) {
@@ -1144,7 +1156,7 @@ export default {
           } catch (e) { e }
         } else {
           this.$message({
-            message: '配方基本信息不能为空',
+            message: '收皮信息不能为空',
             type: 'error'
           })
           return

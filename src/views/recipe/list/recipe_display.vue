@@ -3,16 +3,19 @@
     <br>
     <el-form :inline="true">
       <el-form-item label="机台">
-        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
+        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 120px" />
+      </el-form-item>
+      <el-form-item label="机型名称">
+        <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
       <el-form-item label="配方编号">
-        <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
+        <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
       <el-form-item label="配方名称">
-        <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
+        <el-input v-model="product_name" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
       <el-form-item label="预计炼胶时间">
-        <el-input v-model="production_time_interval" :disabled="true" size="mini" style="width: 100%" />
+        <el-input v-model="production_time_interval" :disabled="true" size="mini" style="width: 120px" />
       </el-form-item>
 
       <el-form-item style="float: right">
@@ -175,6 +178,7 @@ export default {
     return {
       // 机台、配方编号、配方名称
       equip_name: null,
+      category__category_name: null,
       stage_product_batch_no: null,
       product_name: null,
       production_time_interval: null,
@@ -221,6 +225,7 @@ export default {
         // console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
+        this.category__category_name = this.$route.params['category__category_name']
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         this.production_time_interval = this.$route.params['production_time_interval']
@@ -262,17 +267,17 @@ export default {
           }
         }
         // 超温最短时间、进胶最低温度...
-        this.mini_time = recipe_listData['processes']['mini_time']
-        this.mini_temp = recipe_listData['processes']['mini_temp']
-        this.over_temp = recipe_listData['processes']['over_temp']
-        this.batching_error = recipe_listData['processes']['batching_error'].toFixed(3)
-        this.zz_temp = recipe_listData['processes']['zz_temp']
-        this.xlm_temp = recipe_listData['processes']['xlm_temp']
-        this.cb_temp = recipe_listData['processes']['cb_temp']
+        this.mini_time = recipe_listData['processes']['mini_time'] ? recipe_listData['processes']['mini_time'] : undefined
+        this.mini_temp = recipe_listData['processes']['mini_temp'] ? recipe_listData['processes']['mini_temp'] : undefined
+        this.over_temp = recipe_listData['processes']['over_temp'] ? recipe_listData['processes']['over_temp'] : undefined
+        this.batching_error = recipe_listData['processes']['batching_error'] ? recipe_listData['processes']['batching_error'] : undefined
+        this.zz_temp = recipe_listData['processes']['zz_temp'] ? recipe_listData['processes']['zz_temp'] : undefined
+        this.xlm_temp = recipe_listData['processes']['xlm_temp'] ? recipe_listData['processes']['xlm_temp'] : undefined
+        this.cb_temp = recipe_listData['processes']['cb_temp'] ? recipe_listData['processes']['cb_temp'] : undefined
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = recipe_listData['processes']['over_time']
-        this.max_temp = recipe_listData['processes']['max_temp']
-        this.reuse_time = recipe_listData['processes']['reuse_time']
+        this.over_time = recipe_listData['processes']['over_time'] ? recipe_listData['processes']['over_time'] : undefined
+        this.max_temp = recipe_listData['processes']['max_temp'] ? recipe_listData['processes']['max_temp'] : undefined
+        this.reuse_time = recipe_listData['processes']['reuse_time'] ? recipe_listData['processes']['reuse_time'] : undefined
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
