@@ -196,7 +196,7 @@ export default {
       findDialogVisible: false,
       beginTime: '',
       endTime: '',
-      yesterday: '',
+      // yesterday: '',
       recipe: '',
       recipeOptions: [],
       classes: '',
@@ -220,7 +220,7 @@ export default {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
       this.clearFindForm()
-      this.beginTime = this.yesterday
+      // this.beginTime = this.yesterday
       this.getPlanStatusList()
       this.getPlanList()
     },
@@ -270,7 +270,7 @@ export default {
       this.params = {}
       this.page = 1
       this.clearFindForm()
-      this.beginTime = this.yesterday
+      // this.beginTime = this.yesterday
       this.getPlanStatusList()
       this.getPlanList()
     },
@@ -304,8 +304,8 @@ export default {
       const Minute = minute < 10 ? ('0' + minute) : minute
       const second = myDate.getSeconds()
       const Second = second < 10 ? ('0' + second) : second
-      this.beginTime = Y + '-' + M + '-' + D + ' 00:00:00'
-      this.yesterday = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
+      this.beginTime = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
+      // this.yesterday = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
       this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
       this.classes = ''
       this.recipe = ''
