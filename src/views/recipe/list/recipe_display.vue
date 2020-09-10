@@ -71,13 +71,13 @@
             </el-form-item>
             <el-form-item label="是否回收">
               <template>
-                <el-radio v-show="reuse_flag" v-model="reuse_flag" :disabled="true" :label="true">是</el-radio>
-                <el-radio v-show="!reuse_flag" v-model="reuse_flag" :disabled="true" :label="false">否</el-radio>
+                <el-radio v-show="reuse_flag" v-model="reuse_flag" :label="true">是</el-radio>
+                <el-radio v-show="!reuse_flag" v-model="reuse_flag" :label="false">否</el-radio>
               </template>
             </el-form-item>
             <el-form-item label=" ">
-              <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :disabled="true" :label="true">三区水温启动</el-radio>
-              <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :disabled="true" :label="false">三区水温停用</el-radio>
+              <el-radio v-show="temp_use_flag" v-model="temp_use_flag" :label="true">三区水温启动</el-radio>
+              <el-radio v-show="!temp_use_flag" v-model="temp_use_flag" :label="false">三区水温停用</el-radio>
             </el-form-item>
             <el-form-item label="收皮">
               <el-input v-model="sp_num" size="mini" :disabled="true" style="width: 70px" />
@@ -267,17 +267,21 @@ export default {
           }
         }
         // 超温最短时间、进胶最低温度...
-        this.mini_time = recipe_listData['processes']['mini_time'] ? recipe_listData['processes']['mini_time'] : undefined
-        this.mini_temp = recipe_listData['processes']['mini_temp'] ? recipe_listData['processes']['mini_temp'] : undefined
-        this.over_temp = recipe_listData['processes']['over_temp'] ? recipe_listData['processes']['over_temp'] : undefined
-        this.batching_error = recipe_listData['processes']['batching_error'] ? recipe_listData['processes']['batching_error'] : undefined
-        this.zz_temp = recipe_listData['processes']['zz_temp'] ? recipe_listData['processes']['zz_temp'] : undefined
-        this.xlm_temp = recipe_listData['processes']['xlm_temp'] ? recipe_listData['processes']['xlm_temp'] : undefined
-        this.cb_temp = recipe_listData['processes']['cb_temp'] ? recipe_listData['processes']['cb_temp'] : undefined
+        this.mini_time = recipe_listData['processes']['mini_time']
+        this.mini_temp = recipe_listData['processes']['mini_temp']
+        this.over_temp = recipe_listData['processes']['over_temp']
+        if (recipe_listData['processes']['batching_error'] == null) {
+          this.batching_error = recipe_listData['processes']['batching_error']
+        } else {
+          this.batching_error = recipe_listData['processes']['batching_error'].toFixed(3)
+        }
+        this.zz_temp = recipe_listData['processes']['zz_temp']
+        this.xlm_temp = recipe_listData['processes']['xlm_temp']
+        this.cb_temp = recipe_listData['processes']['cb_temp']
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = recipe_listData['processes']['over_time'] ? recipe_listData['processes']['over_time'] : undefined
-        this.max_temp = recipe_listData['processes']['max_temp'] ? recipe_listData['processes']['max_temp'] : undefined
-        this.reuse_time = recipe_listData['processes']['reuse_time'] ? recipe_listData['processes']['reuse_time'] : undefined
+        this.over_time = recipe_listData['processes']['over_time']
+        this.max_temp = recipe_listData['processes']['max_temp']
+        this.reuse_time = recipe_listData['processes']['reuse_time']
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']

@@ -566,18 +566,21 @@ export default {
         console.log('----------------------get--------------------')
         console.log(recipe_listData)
         this.recipe_step_id = recipe_listData['processes']['id']
+        console.log('aaaaaaaaaaaaaaa----------------')
+        console.log(typeof (recipe_listData['processes']['mini_time']), typeof (recipe_listData['processes']['mini_temp']), typeof (recipe_listData['processes']['over_time']))
+        console.log('aaaaaaaaaaaaaaa----------------')
         // 超温最短时间、进胶最低温度...
-        this.mini_time = recipe_listData['processes']['mini_time'] ? recipe_listData['processes']['mini_time'] : undefined
-        this.mini_temp = recipe_listData['processes']['mini_temp'] ? recipe_listData['processes']['mini_temp'] : undefined
-        this.over_temp = recipe_listData['processes']['over_temp'] ? recipe_listData['processes']['over_temp'] : undefined
-        this.batching_error = recipe_listData['processes']['batching_error'] ? recipe_listData['processes']['batching_error'] : undefined
-        this.zz_temp = recipe_listData['processes']['zz_temp'] ? recipe_listData['processes']['zz_temp'] : undefined
-        this.xlm_temp = recipe_listData['processes']['xlm_temp'] ? recipe_listData['processes']['xlm_temp'] : undefined
-        this.cb_temp = recipe_listData['processes']['cb_temp'] ? recipe_listData['processes']['cb_temp'] : undefined
+        this.mini_time = (typeof (recipe_listData['processes']['mini_time']) !== 'object') ? recipe_listData['processes']['mini_time'] : undefined
+        this.mini_temp = (typeof (recipe_listData['processes']['mini_temp']) !== 'object') ? recipe_listData['processes']['mini_temp'] : undefined
+        this.over_temp = (typeof (recipe_listData['processes']['over_temp']) !== 'object') ? recipe_listData['processes']['over_temp'] : undefined
+        this.batching_error = (typeof (recipe_listData['processes']['batching_error']) !== 'object') ? recipe_listData['processes']['batching_error'].toFixed(3) : undefined
+        this.zz_temp = (typeof (recipe_listData['processes']['zz_temp']) !== 'object') ? recipe_listData['processes']['zz_temp'] : undefined
+        this.xlm_temp = (typeof (recipe_listData['processes']['xlm_temp']) !== 'object') ? recipe_listData['processes']['xlm_temp'] : undefined
+        this.cb_temp = (typeof (recipe_listData['processes']['cb_temp']) !== 'object') ? recipe_listData['processes']['cb_temp'] : undefined
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = recipe_listData['processes']['over_time'] ? recipe_listData['processes']['over_time'] : undefined
-        this.max_temp = recipe_listData['processes']['max_temp'] ? recipe_listData['processes']['max_temp'] : undefined
-        this.reuse_time = recipe_listData['processes']['reuse_time'] ? recipe_listData['processes']['reuse_time'] : undefined
+        this.over_time = (typeof (recipe_listData['processes']['over_time']) !== 'object') ? recipe_listData['processes']['over_time'] : undefined
+        this.max_temp = (typeof (recipe_listData['processes']['max_temp']) !== 'object') ? recipe_listData['processes']['max_temp'] : undefined
+        this.reuse_time = (typeof (recipe_listData['processes']['reuse_time']) !== 'object') ? recipe_listData['processes']['reuse_time'] : undefined
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
@@ -587,13 +590,13 @@ export default {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
             condition: recipe_listData['process_details'][i]['condition'],
-            time: recipe_listData['process_details'][i]['time'] ? recipe_listData['process_details'][i]['time'] : undefined,
-            temperature: recipe_listData['process_details'][i]['temperature'] ? recipe_listData['process_details'][i]['temperature'] : undefined,
-            energy: recipe_listData['process_details'][i]['energy'] ? recipe_listData['process_details'][i]['energy'] : undefined,
-            power: recipe_listData['process_details'][i]['power'] ? recipe_listData['process_details'][i]['power'] : undefined,
+            time: (typeof (recipe_listData['process_details'][i]['time']) !== 'object') ? recipe_listData['process_details'][i]['time'] : undefined,
+            temperature: (typeof (recipe_listData['process_details'][i]['temperature']) !== 'object') ? recipe_listData['process_details'][i]['temperature'] : undefined,
+            energy: (typeof (recipe_listData['process_details'][i]['energy']) !== 'object') ? recipe_listData['process_details'][i]['energy'] : undefined,
+            power: (typeof (recipe_listData['process_details'][i]['power']) !== 'object') ? recipe_listData['process_details'][i]['power'] : undefined,
             action: recipe_listData['process_details'][i]['action'],
-            pressure: recipe_listData['process_details'][i]['pressure'] ? recipe_listData['process_details'][i]['pressure'] : undefined,
-            rpm: recipe_listData['process_details'][i]['rpm'] ? recipe_listData['process_details'][i]['rpm'] : undefined
+            pressure: (typeof (recipe_listData['process_details'][i]['pressure']) !== 'object') ? recipe_listData['process_details'][i]['pressure'] : undefined,
+            rpm: (typeof (recipe_listData['process_details'][i]['rpm']) !== 'object') ? recipe_listData['process_details'][i]['rpm'] : undefined
           })
         }
         return recipe_listData
