@@ -196,6 +196,7 @@ export default {
       findDialogVisible: false,
       beginTime: '',
       endTime: '',
+      yesterday: '',
       recipe: '',
       recipeOptions: [],
       classes: '',
@@ -219,6 +220,7 @@ export default {
       const equipData = await equip('get')
       this.equip = equipData.results[0].equip_no
       this.clearFindForm()
+      this.beginTime = this.yesterday
       this.getPlanStatusList()
       this.getPlanList()
     },
@@ -232,9 +234,9 @@ export default {
       if (this.beginTime) {
         this.params['begin_time'] = this.beginTime
       }
-      if (this.endTime) {
-        this.params['end_time'] = this.endTime
-      }
+      // if (this.endTime) {
+      //   this.params['end_time'] = this.endTime
+      // }
       try {
         const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
@@ -268,6 +270,7 @@ export default {
       this.params = {}
       this.page = 1
       this.clearFindForm()
+      this.beginTime = this.yesterday
       this.getPlanStatusList()
       this.getPlanList()
     },
@@ -302,6 +305,7 @@ export default {
       const second = myDate.getSeconds()
       const Second = second < 10 ? ('0' + second) : second
       this.beginTime = Y + '-' + M + '-' + D + ' 00:00:00'
+      this.yesterday = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
       this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
       this.classes = ''
       this.recipe = ''
@@ -321,9 +325,9 @@ export default {
       // if (this.beginTime) {
       //   this.params['begin_time'] = this.beginTime
       // }
-      // if (this.endTime) {
-      //   this.params['end_time'] = this.endTime
-      // }
+      if (this.endTime) {
+        this.params['end_time'] = this.endTime
+      }
       if (this.classes) {
         this.params['classes'] = this.classes
       }
