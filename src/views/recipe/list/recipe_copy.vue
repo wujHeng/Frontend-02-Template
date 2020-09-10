@@ -21,6 +21,9 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="机型名称">
+        <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
+      </el-form-item>
       <el-form-item label="配方编号">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
@@ -48,22 +51,22 @@
               <el-input-number v-model="mini_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="进胶最低温度">
-              <el-input-number v-model="mini_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="mini_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="超温温度">
-              <el-input-number v-model="over_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="over_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="胶料总误差">
               <el-input-number v-model="batching_error" :precision="3" :step="0.1" :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="转子水温">
-              <el-input-number v-model="zz_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="zz_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="卸料门水温">
-              <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="xlm_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="侧壁水温">
-              <el-input-number v-model="cb_temp" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="cb_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
           </div>
         </el-col>
@@ -414,6 +417,7 @@ export default {
     return {
       // 机台、配方编号、配方名称
       equip_name: null,
+      category__category_name: null,
       equip_display_bool: null,
       stage_product_batch_no: null,
       product_name: null,
@@ -435,12 +439,12 @@ export default {
       use_flag: true,
       production_time_interval: undefined,
       // 密炼步序字段
-      time: null,
-      temperature: null,
-      energy: null,
-      power: null,
-      pressure: null,
-      rpm: null,
+      time: undefined,
+      temperature: undefined,
+      energy: undefined,
+      power: undefined,
+      pressure: undefined,
+      rpm: undefined,
       condition: null,
       standard_error: null,
       SelectEquipOptions: [],
@@ -523,6 +527,7 @@ export default {
         console.log(this.$route.params, recipe_listData)
         console.log('==============xxxx===========')
         this.equip_name = this.$route.params['copy_equip_id']
+        this.category__category_name = this.$route.params['category__category_name']
         if (this.equip_name == null) {
           this.equip_display_bool = false
         } else {
@@ -572,17 +577,17 @@ export default {
         console.log(recipe_listData)
         this.recipe_step_id = recipe_listData['processes']['id']
         // 超温最短时间、进胶最低温度...
-        this.mini_time = recipe_listData['processes']['mini_time']
-        this.mini_temp = recipe_listData['processes']['mini_temp']
-        this.over_temp = recipe_listData['processes']['over_temp']
-        this.batching_error = recipe_listData['processes']['batching_error']
-        this.zz_temp = recipe_listData['processes']['zz_temp']
-        this.xlm_temp = recipe_listData['processes']['xlm_temp']
-        this.cb_temp = recipe_listData['processes']['cb_temp']
+        this.mini_time = recipe_listData['processes']['mini_time'] ? recipe_listData['processes']['mini_time'] : undefined
+        this.mini_temp = recipe_listData['processes']['mini_temp'] ? recipe_listData['processes']['mini_temp'] : undefined
+        this.over_temp = recipe_listData['processes']['over_temp'] ? recipe_listData['processes']['over_temp'] : undefined
+        this.batching_error = recipe_listData['processes']['batching_error'] ? recipe_listData['processes']['batching_error'] : undefined
+        this.zz_temp = recipe_listData['processes']['zz_temp'] ? recipe_listData['processes']['zz_temp'] : undefined
+        this.xlm_temp = recipe_listData['processes']['xlm_temp'] ? recipe_listData['processes']['xlm_temp'] : undefined
+        this.cb_temp = recipe_listData['processes']['cb_temp'] ? recipe_listData['processes']['cb_temp'] : undefined
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = recipe_listData['processes']['over_time']
-        this.max_temp = recipe_listData['processes']['max_temp']
-        this.reuse_time = recipe_listData['processes']['reuse_time']
+        this.over_time = recipe_listData['processes']['over_time'] ? recipe_listData['processes']['over_time'] : undefined
+        this.max_temp = recipe_listData['processes']['max_temp'] ? recipe_listData['processes']['max_temp'] : undefined
+        this.reuse_time = recipe_listData['processes']['reuse_time'] ? recipe_listData['processes']['reuse_time'] : undefined
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
@@ -591,13 +596,13 @@ export default {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
             condition: recipe_listData['process_details'][i]['condition'],
-            time: recipe_listData['process_details'][i]['time'],
-            temperature: recipe_listData['process_details'][i]['temperature'],
-            energy: recipe_listData['process_details'][i]['energy'],
-            power: recipe_listData['process_details'][i]['power'],
+            time: recipe_listData['process_details'][i]['time'] ? recipe_listData['process_details'][i]['time'] : undefined,
+            temperature: recipe_listData['process_details'][i]['temperature'] ? recipe_listData['process_details'][i]['temperature'] : undefined,
+            energy: recipe_listData['process_details'][i]['energy'] ? recipe_listData['process_details'][i]['energy'] : undefined,
+            power: recipe_listData['process_details'][i]['power'] ? recipe_listData['process_details'][i]['power'] : undefined,
             action: recipe_listData['process_details'][i]['action'],
-            pressure: recipe_listData['process_details'][i]['pressure'],
-            rpm: recipe_listData['process_details'][i]['rpm']
+            pressure: recipe_listData['process_details'][i]['pressure'] ? recipe_listData['process_details'][i]['pressure'] : undefined,
+            rpm: recipe_listData['process_details'][i]['rpm'] ? recipe_listData['process_details'][i]['rpm'] : undefined
           })
         }
         return recipe_listData
@@ -927,13 +932,13 @@ export default {
       this.RecipeMaterialList.push({
         sn: '',
         //     condition:"",
-        time: null,
-        temperature: null,
-        energy: null,
-        power: null,
+        time: undefined,
+        temperature: undefined,
+        energy: undefined,
+        power: undefined,
         //     action:"",
-        pressure: null,
-        rpm: null
+        pressure: undefined,
+        rpm: undefined
       })
     },
     del_recipe_step_row: function(step_ele, index) {
@@ -980,7 +985,7 @@ export default {
           return
         }
       }
-      if (this.mini_temp && this.over_temp && this.zz_temp && this.xlm_temp && this.cb_temp && this.max_temp && this.sp_num) {
+      if (this.sp_num) {
         try {
           await this.post_recipe_list(
             { data: {
@@ -1061,7 +1066,7 @@ export default {
         // }
       } else {
         this.$message({
-          message: '配方基本信息不能为空',
+          message: '收皮信息不能为空',
           type: 'error'
         })
       }

@@ -179,6 +179,7 @@
             clearable
             style="width: 300px"
             placeholder="请选择"
+            @change="SelectCopyEquipChange"
           >
             <el-option
               v-for="item in SelectCopyEquipOptions"
@@ -227,6 +228,7 @@ export default {
       }],
       SelectSiteOptions: [],
       SelectStageOptions: [],
+      category__category_name: null,
       SelectEquip: null,
       CopySelectEquip: '',
       SelectRecipeStatus: null,
@@ -315,6 +317,8 @@ export default {
         const equip_copy_list = await equip_copy_url('get', {
           params: { dev_type: dev_type_param }
         })
+        // console.log('aaaaaa------------')
+        // console.log(equip_copy_list.results)
         this.SelectCopyEquipOptions = equip_copy_list.results
       } catch (e) { throw new Error(e) }
     },
@@ -351,6 +355,11 @@ export default {
     SelectStageDisplay: function(bool) {
       if (bool) {
         this.stage_list()
+      }
+    },
+    SelectCopyEquipChange: function() {
+      for (var i = 0; i < this.SelectCopyEquipOptions.length; i++) {
+        if (this.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) { this.category__category_name = this.SelectCopyEquipOptions[i]['category__category_name'] }
       }
     },
 
@@ -484,7 +493,7 @@ export default {
 
       console.log('----------------------------------------')
       // console.log(this.currentRow)
-      var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip })
+      var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip, category__category_name: this.category__category_name })
       console.log(add_currentRow)
       this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
       this.$route.params
