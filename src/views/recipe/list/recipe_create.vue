@@ -734,6 +734,8 @@ export default {
         return recipe_listData
       } catch (e) {
         this.select_recipe_component = false
+        this.equip = null
+        this.stage_product_batch_no = null
         throw new Error(e)
       }
     },
