@@ -102,7 +102,7 @@ export const asyncRoutes = [{
     }
   },
   {
-    path: 'modify',
+    path: 'modify/:id',
     component: () => import('@/views/recipe/list/recipe_modify'),
     name: 'RecipeModify',
     meta: {
