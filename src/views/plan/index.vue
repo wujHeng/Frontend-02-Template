@@ -390,6 +390,7 @@ export default {
             type: 'success',
             message: '停止成功!'
           })
+          this.getPlanStatusList()
           this.getPlanList()
         }
       )
@@ -401,6 +402,7 @@ export default {
           type: 'success',
           message: '重传成功!'
         })
+        this.getPlanStatusList()
         this.getPlanList()
       })
     },
@@ -411,6 +413,7 @@ export default {
           type: 'success',
           message: '下达成功!'
         })
+        this.getPlanStatusList()
         this.getPlanList()
       })
     },
