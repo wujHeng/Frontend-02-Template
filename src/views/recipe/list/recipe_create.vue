@@ -224,7 +224,7 @@
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column align="center" prop="material_name" label="胶料名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.01" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">炭黑称量</span>
@@ -238,7 +238,7 @@
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column align="center" prop="material_name" label="炭黑名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.01" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
           </el-table>
           <span class="font_custom">油料称量</span>
@@ -252,7 +252,7 @@
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column align="center" prop="material_name" label="油脂名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.01" prop="actual_weight" label="设定值(kg)" />
+            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
           </el-table>
         </div>
@@ -399,7 +399,7 @@
               <!-- </div> -->
             </td>
             <td style="text-align: center; height: 48px">
-              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.01" size="mini" controls-position="right" />
+              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.00" size="mini" controls-position="right" />
             </td>
             <td style="text-align: center; height: 48px">
               <el-input-number v-model.number="material_ele.standard_error" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
@@ -826,7 +826,7 @@ export default {
       this.batching_details_list = []
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
         // 只有原材料和实际重量两个必选项都填写时，才能往batching_details_list中push
-        if (this.ProductRecipe[i].material_name && this.ProductRecipe[i].actual_weight) {
+        if (this.ProductRecipe[i].material_name) {
           var now_stage_material = {
             sn: i + 1,
             // auto_flag: app.ProductRecipe[i].auto_flag,
@@ -1044,7 +1044,7 @@ export default {
         material_type: '',
         auto_flag: 0,
         material_name: '',
-        // actual_weight: '',
+        actual_weight: null,
         standard_error: null
 
       })
