@@ -12,7 +12,7 @@
         :key="index"
         class="dashboard_box"
       >
-        <div v-if="item.chartData.rows[0].actual_num||item.chartData.rows[0].plan_num">
+        <div v-if="item.chartData.rows.length>0&&(item.chartData.rows[0].actual_num||item.chartData.rows[0].plan_num)">
           <div
             class="dashboard_boxTitle"
             @click="clickBoxTitle(item,index)"
@@ -224,7 +224,7 @@ export default {
     },
     setRetVal(row, index) {
       if (!row.ret) return '--'
-      return (row.ret.split(','))[index] ? (row.ret.split(','))[index] : '--'
+      return (row.ret)[index] ? (row.ret)[index] : '--'
     },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options)
