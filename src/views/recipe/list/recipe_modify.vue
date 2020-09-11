@@ -307,7 +307,7 @@
               <!-- </div> -->
             </td>
             <td style="text-align: center; height: 48px">
-              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.01" size="mini" controls-position="right" />
+              <el-input-number v-model.number="material_ele.actual_weight" :precision="2" :step="0.1" :min="0.00" size="mini" controls-position="right" />
             </td>
             <td style="text-align: center; height: 48px">
               <el-input-number v-model.number="material_ele.standard_error" :precision="2" :step="0.1" :min="0" size="mini" controls-position="right" />
@@ -754,7 +754,7 @@ export default {
         material_type: '',
         auto_flag: 0,
         material_name: '',
-        // actual_weight: '',
+        actual_weight: null,
         standard_error: null
 
       })
@@ -800,7 +800,7 @@ export default {
       // 循环整个表格
       for (var i = 0; i < this.ProductRecipe.length; ++i) {
         // 只有原材料和实际重量两个必选项都填写时，才能往batching_details_list中push
-        if (app.ProductRecipe[i].material_name && app.ProductRecipe[i].actual_weight) {
+        if (app.ProductRecipe[i].material_name) {
           var now_stage_material = {
             sn: i + 1,
             // auto_flag: app.ProductRecipe[i].auto_flag,
