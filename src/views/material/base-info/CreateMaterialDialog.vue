@@ -92,7 +92,7 @@ export default {
         material_no: '',
         material_name: '',
         for_short: '',
-        use_flag: false,
+        use_flag: true,
         material_type: null,
         package_unit: null
       }
