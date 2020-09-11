@@ -270,11 +270,7 @@ export default {
         this.mini_time = recipe_listData['processes']['mini_time']
         this.mini_temp = recipe_listData['processes']['mini_temp']
         this.over_temp = recipe_listData['processes']['over_temp']
-        if (recipe_listData['processes']['batching_error'] == null) {
-          this.batching_error = recipe_listData['processes']['batching_error']
-        } else {
-          this.batching_error = recipe_listData['processes']['batching_error'].toFixed(3)
-        }
+        this.batching_error = (typeof (recipe_listData['processes']['batching_error']) !== 'object') ? recipe_listData['processes']['batching_error'].toFixed(3) : undefined
         this.zz_temp = recipe_listData['processes']['zz_temp']
         this.xlm_temp = recipe_listData['processes']['xlm_temp']
         this.cb_temp = recipe_listData['processes']['cb_temp']
