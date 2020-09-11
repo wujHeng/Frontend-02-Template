@@ -1091,13 +1091,13 @@ export default {
               var now_recipe_step = {
                 sn: i + 1,
                 condition: this.RecipeMaterialList[i].condition,
-                time: this.RecipeMaterialList[i].time,
-                temperature: this.RecipeMaterialList[i].temperature,
-                energy: this.RecipeMaterialList[i].energy,
-                power: this.RecipeMaterialList[i].power,
+                time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
+                temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
+                energy: (this.RecipeMaterialList[i].energy === undefined) ? 0 : this.RecipeMaterialList[i].energy,
+                power: (this.RecipeMaterialList[i].power === undefined) ? 0 : this.RecipeMaterialList[i].power,
                 action: this.RecipeMaterialList[i].action,
-                pressure: this.RecipeMaterialList[i].pressure,
-                rpm: this.RecipeMaterialList[i].rpm
+                pressure: (this.RecipeMaterialList[i].pressure === undefined) ? 0 : this.RecipeMaterialList[i].pressure,
+                rpm: (this.RecipeMaterialList[i].rpm === undefined) ? 0 : this.RecipeMaterialList[i].rpm
               }
               step_details_list.push(now_recipe_step)
             } else {
@@ -1127,17 +1127,17 @@ export default {
                 'process_details': step_details_list,
                 'processes': {
                 // 配方基础信息中第一行
-                  'mini_time': this.mini_time,
-                  'mini_temp': this.mini_temp,
-                  'over_temp': this.over_temp,
-                  'batching_error': this.batching_error,
-                  'zz_temp': this.zz_temp,
-                  'xlm_temp': this.xlm_temp,
-                  'cb_temp': this.cb_temp,
+                  'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+                  'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+                  'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+                  'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+                  'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+                  'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+                  'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
                   // 配方基础信息中第二行
-                  'over_time': this.over_time,
-                  'max_temp': this.max_temp,
-                  'reuse_time': this.reuse_time,
+                  'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+                  'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+                  'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
                   'reuse_flag': this.reuse_flag,
                   'temp_use_flag': this.temp_use_flag,
                   'sp_num': this.sp_num,

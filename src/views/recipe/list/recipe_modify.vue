@@ -570,17 +570,17 @@ export default {
         console.log(typeof (recipe_listData['processes']['mini_time']), typeof (recipe_listData['processes']['mini_temp']), typeof (recipe_listData['processes']['over_time']))
         console.log('aaaaaaaaaaaaaaa----------------')
         // 超温最短时间、进胶最低温度...
-        this.mini_time = (typeof (recipe_listData['processes']['mini_time']) !== 'object') ? recipe_listData['processes']['mini_time'] : undefined
-        this.mini_temp = (typeof (recipe_listData['processes']['mini_temp']) !== 'object') ? recipe_listData['processes']['mini_temp'] : undefined
-        this.over_temp = (typeof (recipe_listData['processes']['over_temp']) !== 'object') ? recipe_listData['processes']['over_temp'] : undefined
-        this.batching_error = (typeof (recipe_listData['processes']['batching_error']) !== 'object') ? recipe_listData['processes']['batching_error'] : undefined
-        this.zz_temp = (typeof (recipe_listData['processes']['zz_temp']) !== 'object') ? recipe_listData['processes']['zz_temp'] : undefined
-        this.xlm_temp = (typeof (recipe_listData['processes']['xlm_temp']) !== 'object') ? recipe_listData['processes']['xlm_temp'] : undefined
-        this.cb_temp = (typeof (recipe_listData['processes']['cb_temp']) !== 'object') ? recipe_listData['processes']['cb_temp'] : undefined
+        this.mini_time = this.step_type_conversion(recipe_listData['processes']['mini_time'])
+        this.mini_temp = this.step_type_conversion(recipe_listData['processes']['mini_temp'])
+        this.over_temp = this.step_type_conversion(recipe_listData['processes']['over_temp'])
+        this.batching_error = this.step_type_conversion(recipe_listData['processes']['batching_error'])
+        this.zz_temp = this.step_type_conversion(recipe_listData['processes']['zz_temp'])
+        this.xlm_temp = this.step_type_conversion(recipe_listData['processes']['xlm_temp'])
+        this.cb_temp = this.step_type_conversion(recipe_listData['processes']['cb_temp'])
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = (typeof (recipe_listData['processes']['over_time']) !== 'object') ? recipe_listData['processes']['over_time'] : undefined
-        this.max_temp = (typeof (recipe_listData['processes']['max_temp']) !== 'object') ? recipe_listData['processes']['max_temp'] : undefined
-        this.reuse_time = (typeof (recipe_listData['processes']['reuse_time']) !== 'object') ? recipe_listData['processes']['reuse_time'] : undefined
+        this.over_time = this.step_type_conversion(recipe_listData['processes']['over_time'])
+        this.max_temp = this.step_type_conversion(recipe_listData['processes']['max_temp'])
+        this.reuse_time = this.step_type_conversion(recipe_listData['processes']['reuse_time'])
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
@@ -590,17 +590,24 @@ export default {
           this.RecipeMaterialList.push({
             sn: this.RecipeMaterialList.length + 1,
             condition: recipe_listData['process_details'][i]['condition'],
-            time: (typeof (recipe_listData['process_details'][i]['time']) !== 'object') ? recipe_listData['process_details'][i]['time'] : undefined,
-            temperature: (typeof (recipe_listData['process_details'][i]['temperature']) !== 'object') ? recipe_listData['process_details'][i]['temperature'] : undefined,
-            energy: (typeof (recipe_listData['process_details'][i]['energy']) !== 'object') ? recipe_listData['process_details'][i]['energy'] : undefined,
-            power: (typeof (recipe_listData['process_details'][i]['power']) !== 'object') ? recipe_listData['process_details'][i]['power'] : undefined,
+            time: this.step_type_conversion(recipe_listData['process_details'][i]['time']),
+            temperature: this.step_type_conversion(recipe_listData['process_details'][i]['temperature']),
+            energy: this.step_type_conversion(recipe_listData['process_details'][i]['energy']),
+            power: this.step_type_conversion(recipe_listData['process_details'][i]['power']),
             action: recipe_listData['process_details'][i]['action'],
-            pressure: (typeof (recipe_listData['process_details'][i]['pressure']) !== 'object') ? recipe_listData['process_details'][i]['pressure'] : undefined,
-            rpm: (typeof (recipe_listData['process_details'][i]['rpm']) !== 'object') ? recipe_listData['process_details'][i]['rpm'] : undefined
+            pressure: this.step_type_conversion(recipe_listData['process_details'][i]['pressure']),
+            rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
           })
         }
         return recipe_listData
       } catch (e) { throw new Error(e) }
+    },
+    step_type_conversion: function(param) {
+      if (typeof (param) === 'object') {
+        return undefined
+      } else if (Number(param) === 0) {
+        return undefined
+      } else { return param }
     },
     //   原材料接口
     async raw_material_list(val = 1) {
@@ -939,13 +946,13 @@ export default {
           var now_recipe_step = {
             sn: i + 1,
             condition: this.RecipeMaterialList[i].condition,
-            time: (this.RecipeMaterialList[i].time === undefined) ? null : this.RecipeMaterialList[i].time,
-            temperature: (this.RecipeMaterialList[i].temperature === undefined) ? null : this.RecipeMaterialList[i].temperature,
-            energy: (this.RecipeMaterialList[i].energy === undefined) ? null : this.RecipeMaterialList[i].energy,
-            power: (this.RecipeMaterialList[i].power === undefined) ? null : this.RecipeMaterialList[i].power,
+            time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
+            temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
+            energy: (this.RecipeMaterialList[i].energy === undefined) ? 0 : this.RecipeMaterialList[i].energy,
+            power: (this.RecipeMaterialList[i].power === undefined) ? 0 : this.RecipeMaterialList[i].power,
             action: this.RecipeMaterialList[i].action,
-            pressure: (this.RecipeMaterialList[i].pressure === undefined) ? null : this.RecipeMaterialList[i].pressure,
-            rpm: (this.RecipeMaterialList[i].rpm === undefined) ? null : this.RecipeMaterialList[i].rpm
+            pressure: (this.RecipeMaterialList[i].pressure === undefined) ? 0 : this.RecipeMaterialList[i].pressure,
+            rpm: (this.RecipeMaterialList[i].rpm === undefined) ? 0 : this.RecipeMaterialList[i].rpm
           }
           step_details_list.push(now_recipe_step)
         } else {
@@ -965,17 +972,17 @@ export default {
               'process_details': step_details_list,
               'processes': {
               // 配方基础信息中第一行
-                'mini_time': (this.mini_time === undefined) ? null : this.mini_time,
-                'mini_temp': (this.mini_temp === undefined) ? null : this.mini_temp,
-                'over_temp': (this.over_temp === undefined) ? null : this.over_temp,
-                'batching_error': (this.batching_error === undefined) ? null : this.batching_error,
-                'zz_temp': (this.zz_temp === undefined) ? null : this.zz_temp,
-                'xlm_temp': (this.xlm_temp === undefined) ? null : this.xlm_temp,
-                'cb_temp': (this.cb_temp === undefined) ? null : this.cb_temp,
+                'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+                'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+                'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+                'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+                'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+                'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+                'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
                 // 配方基础信息中第二行
-                'over_time': (this.over_time === undefined) ? null : this.over_time,
-                'max_temp': (this.max_temp === undefined) ? null : this.max_temp,
-                'reuse_time': (this.reuse_time === undefined) ? null : this.reuse_time,
+                'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+                'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+                'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
                 'reuse_flag': this.reuse_flag,
                 'temp_use_flag': this.temp_use_flag,
                 'sp_num': this.sp_num,
