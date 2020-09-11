@@ -580,7 +580,7 @@ export default {
         this.mini_time = (typeof (recipe_listData['processes']['mini_time']) !== 'object') ? recipe_listData['processes']['mini_time'] : undefined
         this.mini_temp = (typeof (recipe_listData['processes']['mini_temp']) !== 'object') ? recipe_listData['processes']['mini_temp'] : undefined
         this.over_temp = (typeof (recipe_listData['processes']['over_temp']) !== 'object') ? recipe_listData['processes']['over_temp'] : undefined
-        this.batching_error = (typeof (recipe_listData['processes']['batching_error']) !== 'object') ? recipe_listData['processes']['batching_error'].toFixed(3) : undefined
+        this.batching_error = (typeof (recipe_listData['processes']['batching_error']) !== 'object') ? recipe_listData['processes']['batching_error'] : undefined
         this.zz_temp = (typeof (recipe_listData['processes']['zz_temp']) !== 'object') ? recipe_listData['processes']['zz_temp'] : undefined
         this.xlm_temp = (typeof (recipe_listData['processes']['xlm_temp']) !== 'object') ? recipe_listData['processes']['xlm_temp'] : undefined
         this.cb_temp = (typeof (recipe_listData['processes']['cb_temp']) !== 'object') ? recipe_listData['processes']['cb_temp'] : undefined
@@ -968,13 +968,13 @@ export default {
           var now_recipe_step = {
             sn: i + 1,
             condition: this.RecipeMaterialList[i].condition,
-            time: this.RecipeMaterialList[i].time,
-            temperature: this.RecipeMaterialList[i].temperature,
-            energy: this.RecipeMaterialList[i].energy,
-            power: this.RecipeMaterialList[i].power,
+            time: (this.RecipeMaterialList[i].time === undefined) ? null : this.RecipeMaterialList[i].time,
+            temperature: (this.RecipeMaterialList[i].temperature === undefined) ? null : this.RecipeMaterialList[i].temperature,
+            energy: (this.RecipeMaterialList[i].energy === undefined) ? null : this.RecipeMaterialList[i].energy,
+            power: (this.RecipeMaterialList[i].power === undefined) ? null : this.RecipeMaterialList[i].power,
             action: this.RecipeMaterialList[i].action,
-            pressure: this.RecipeMaterialList[i].pressure,
-            rpm: this.RecipeMaterialList[i].rpm
+            pressure: (this.RecipeMaterialList[i].pressure === undefined) ? null : this.RecipeMaterialList[i].pressure,
+            rpm: (this.RecipeMaterialList[i].rpm === undefined) ? null : this.RecipeMaterialList[i].rpm
           }
           step_details_list.push(now_recipe_step)
         } else {
@@ -1003,17 +1003,17 @@ export default {
               'process_details': step_details_list,
               'processes': {
                 // 配方基础信息中第一行
-                'mini_time': this.mini_time,
-                'mini_temp': this.mini_temp,
-                'over_temp': this.over_temp,
-                'batching_error': this.batching_error,
-                'zz_temp': this.zz_temp,
-                'xlm_temp': this.xlm_temp,
-                'cb_temp': this.cb_temp,
+                'mini_time': (this.mini_time === undefined) ? null : this.mini_time,
+                'mini_temp': (this.mini_temp === undefined) ? null : this.mini_temp,
+                'over_temp': (this.over_temp === undefined) ? null : this.over_temp,
+                'batching_error': (this.batching_error === undefined) ? null : this.batching_error,
+                'zz_temp': (this.zz_temp === undefined) ? null : this.zz_temp,
+                'xlm_temp': (this.xlm_temp === undefined) ? null : this.xlm_temp,
+                'cb_temp': (this.cb_temp === undefined) ? null : this.cb_temp,
                 // 配方基础信息中第二行
-                'over_time': this.over_time,
-                'max_temp': this.max_temp,
-                'reuse_time': this.reuse_time,
+                'over_time': (this.over_time === undefined) ? null : this.over_time,
+                'max_temp': (this.max_temp === undefined) ? null : this.max_temp,
+                'reuse_time': (this.reuse_time === undefined) ? null : this.reuse_time,
                 'reuse_flag': this.reuse_flag,
                 'temp_use_flag': this.temp_use_flag,
                 'sp_num': this.sp_num,
