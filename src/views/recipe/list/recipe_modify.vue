@@ -570,17 +570,17 @@ export default {
         console.log(typeof (recipe_listData['processes']['mini_time']), typeof (recipe_listData['processes']['mini_temp']), typeof (recipe_listData['processes']['over_time']))
         console.log('aaaaaaaaaaaaaaa----------------')
         // 超温最短时间、进胶最低温度...
-        this.mini_time = this.step_type_conversion(recipe_listData['processes']['mini_time'])
-        this.mini_temp = this.step_type_conversion(recipe_listData['processes']['mini_temp'])
-        this.over_temp = this.step_type_conversion(recipe_listData['processes']['over_temp'])
-        this.batching_error = this.step_type_conversion(recipe_listData['processes']['batching_error'])
-        this.zz_temp = this.step_type_conversion(recipe_listData['processes']['zz_temp'])
-        this.xlm_temp = this.step_type_conversion(recipe_listData['processes']['xlm_temp'])
-        this.cb_temp = this.step_type_conversion(recipe_listData['processes']['cb_temp'])
+        this.mini_time = (recipe_listData['processes']['mini_time'])
+        this.mini_temp = (recipe_listData['processes']['mini_temp'])
+        this.over_temp = (recipe_listData['processes']['over_temp'])
+        this.batching_error = (recipe_listData['processes']['batching_error'])
+        this.zz_temp = (recipe_listData['processes']['zz_temp'])
+        this.xlm_temp = (recipe_listData['processes']['xlm_temp'])
+        this.cb_temp = (recipe_listData['processes']['cb_temp'])
         // 炼胶超时时间、进胶最高温度...
-        this.over_time = this.step_type_conversion(recipe_listData['processes']['over_time'])
-        this.max_temp = this.step_type_conversion(recipe_listData['processes']['max_temp'])
-        this.reuse_time = this.step_type_conversion(recipe_listData['processes']['reuse_time'])
+        this.over_time = (recipe_listData['processes']['over_time'])
+        this.max_temp = (recipe_listData['processes']['max_temp'])
+        this.reuse_time = (recipe_listData['processes']['reuse_time'])
         this.reuse_flag = recipe_listData['processes']['reuse_flag']
         this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
         this.sp_num = recipe_listData['processes']['sp_num']
