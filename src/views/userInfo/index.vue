@@ -215,11 +215,10 @@
           label="角色"
           size="medium"
         >
-          <el-transfer
-            v-model="userForm.groups"
-            :render-content="renderFunc"
-            :titles="['可用 角色', '选中的 角色']"
-            :data="groups"
+          <transferRoles
+            :default-groups="userForm.groups"
+            :groups="groups"
+            @changeTransferGroup="changeTransferGroup"
           />
         </el-form-item>
         <el-form-item
@@ -227,12 +226,10 @@
           size="medium"
           class="permissions-transfer"
         >
-          <el-transfer
-            v-model="userForm.user_permissions"
-            :props="{key: 'id', label: 'name'}"
-            :render-content="renderFunc"
-            :titles="['可用 用户权限', '选中的 用户权限']"
-            :data="permissionsArr"
+          <transferLimit
+            :default-permissions="userForm.user_permissions"
+            :permissions-arr="permissionsArr"
+            @changeTransferPermissions="changeTransferPermissions"
           />
         </el-form-item>
       </el-form>
@@ -258,8 +255,10 @@ import { roles } from '@/api/roles-manage'
 import page from '@/components/page'
 import { mapGetters } from 'vuex'
 // import { setDate } from '@/utils/index'
+import transferLimit from '@/components/select_w/transferLimit'
+import transferRoles from '@/components/select_w/transferRoles'
 export default {
-  components: { page },
+  components: { page, transferLimit, transferRoles },
   data() {
     var validatePass = (rule, value, callback) => {
       if (!value) {
@@ -380,16 +379,18 @@ export default {
     }).catch(error => {
     })
     permissions('get', null).then(response => {
-      this.permissionsArr = response.results
+      const permissionsArr = response.results
+      permissionsArr.forEach(D => {
+        D.key = D.id
+        D.label = D.name
+      })
+      this.permissionsArr = permissionsArr
       // eslint-disable-next-line handle-callback-err
     }).catch(error => {
     })
     this.currentChange()
   },
   methods: {
-    renderFunc(h, option) {
-      return <span title={option.name}>{option.name}</span>
-    },
     changeUsername(e) {
       this.userForm.username = e.target.value
     },
@@ -440,13 +441,6 @@ export default {
       }
     },
     showEditUserDialog(row) {
-      // this.userForm = {
-      //   username: '',
-      //   num: null
-      // }
-      // this.userForm.id = row.id
-      // this.userForm.username = row.username
-      // this.userForm.num = row.num
       this.userForm = JSON.parse(JSON.stringify(row))
       this.dialogCreateUserVisible = true
     },
@@ -524,6 +518,12 @@ export default {
     },
     formatter: function(row, column) {
       return row.is_active ? 'Y' : 'N'
+    },
+    changeTransferGroup(val) {
+      this.userForm.groups = val
+    },
+    changeTransferPermissions(val) {
+      this.userForm.user_permissions = val
     }
   }
 }

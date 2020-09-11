@@ -129,12 +129,10 @@
           label="权限"
           size="medium"
         >
-          <el-transfer
-            v-model="groupForm.permissions"
-            :render-content="renderFunc"
-            :titles="['可用 权限', '选中的 权限']"
-            :props="{key: 'id', label: 'name'}"
-            :data="permissions"
+          <transferLimit
+            :default-permissions="groupForm.permissions"
+            :permissions-arr="permissions"
+            @changeTransferPermissions="changeTransferPermissions"
           />
         </el-form-item>
       </el-form>
@@ -158,9 +156,10 @@ import { roles } from '@/api/roles-manage'
 import { permissions } from '@/api/permission'
 import page from '@/components/page'
 import { mapGetters } from 'vuex'
+import transferLimit from '@/components/select_w/transferLimit'
 
 export default {
-  components: { page },
+  components: { page, transferLimit },
   data() {
     return {
       getParams: {
@@ -204,7 +203,12 @@ export default {
     this.permissionObj = this.permission
     this.currentChange()
     permissions('get', null).then(response => {
-      this.permissions = response.results
+      const permissionsArr = response.results
+      permissionsArr.forEach(D => {
+        D.key = D.id
+        D.label = D.name
+      })
+      this.permissions = permissionsArr
       // eslint-disable-next-line handle-callback-err
     }).catch(error => {
     })
@@ -303,6 +307,9 @@ export default {
           this.currentChange()
         })
       })
+    },
+    changeTransferPermissions(val) {
+      this.groupForm.permissions = val
     }
   }
 }
