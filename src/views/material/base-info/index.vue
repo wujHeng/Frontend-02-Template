@@ -31,6 +31,9 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="原材料名称">
+        <el-input v-model="params.material_name" @input="search" />
+      </el-form-item>
       <el-form-item v-if="permissionObj.production.material.indexOf('add')>-1" style="float: right;">
         <el-button @click="showCreateMaterialDialog">新建</el-button>
       </el-form-item>
@@ -148,7 +151,8 @@ export default {
       params: {
         page: 1,
         material_type_id: null,
-        use_flag: true
+        use_flag: true,
+        material_name: ''
       },
       total: 0,
       currentPage: 1
