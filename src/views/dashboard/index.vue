@@ -31,11 +31,11 @@
             :model="form"
             label-width="90px"
           >
-            <el-form-item label="当前规格:">{{ setRetVal(item.chartData.rows[0],1) }}
+            <el-form-item label="当前规格:">{{ setRetVal(item.chartData.rows,0) }}
               <!-- item.chartData.rows[0]&&item.chartData.rows[0].product_no?item.chartData.rows[0].product_no:'--'  -->
             </el-form-item>
-            <el-form-item label="收皮数量:">{{ setRetVal(item.chartData.rows[0],2) }}</el-form-item>
-            <el-form-item label="设备状态:">{{ setRetVal(item.chartData.rows[0],3) }}</el-form-item>
+            <el-form-item label="收皮数量:">{{ setRetVal(item.chartData.rows,1) }}</el-form-item>
+            <el-form-item label="设备状态:">{{ setRetVal(item.chartData.rows,2) }}</el-form-item>
             <!-- <el-form-item label="活动名称:">66666</el-form-item> -->
           </el-form>
         </div>
@@ -222,9 +222,17 @@ export default {
         this.dialogLoading = false
       }
     },
-    setRetVal(row, index) {
-      if (!row.ret) return '--'
-      return (row.ret)[index] ? (row.ret)[index] : '--'
+    setRetVal(rowArr, currentIndex) {
+      let arr = []
+      let i = -1
+      rowArr.forEach((element, index) => {
+        if (element.ret.length > 0) {
+          i = index
+        }
+      })
+      arr = i > -1 ? rowArr[i].ret : []
+      if (i === -1 || arr.length === 0) return '--'
+      return arr[currentIndex] ? arr[currentIndex] : '--'
     },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options)
