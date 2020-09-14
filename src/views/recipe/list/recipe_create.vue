@@ -1,117 +1,137 @@
 <template>
   <div class="recipe_create">
     <el-form ref="generateRecipeForm" :inline="true" :model="generateRecipeForm" :rules="rules">
-      <el-form-item label="机台" prop="SelectEquip">
-        <el-select
-          v-model="generateRecipeForm.SelectEquip"
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectEquipDisplay"
-          @change="SelectEquipChange"
-        >
-          <el-option
-            v-for="item in SelectEquipOptions"
-            :key="item.id"
-            :label="item.equip_name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="机型名称">
-        <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
-      </el-form-item>
-      <el-form-item label="产地" prop="SelectSite">
-        <el-select
-          v-model="generateRecipeForm.SelectSite"
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectSiteDisplay"
-        >
-          <el-option
-            v-for="item in SelectSiteOptions"
-            :key="item.id"
-            :label="item.global_name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="SITE" prop="SelectSITE">
-        <el-select
-          v-model="generateRecipeForm.SelectSITE"
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectGlobalSITEDisplay"
-        >
-          <el-option
-            v-for="item in SelectSITEOptions"
-            :key="item.id"
-            :label="item.global_name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="机台" prop="SelectEquip">
+            <el-select
+              v-model="generateRecipeForm.SelectEquip"
+              size="mini"
+              style="width: 100px"
+              clearable
+              placeholder="请选择"
+              :disabled="select_recipe_component"
+              @visible-change="SelectEquipDisplay"
+              @change="SelectEquipChange"
+            >
+              <el-option
+                v-for="item in SelectEquipOptions"
+                :key="item.id"
+                :label="item.equip_name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="机型名称">
+            <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="18">
+          <el-row>
+            <el-form-item>
+              <el-radio v-model="normalReceipe" :label="true">
+                常规配方
+              </el-radio>
+              </el-radio></el-form-item>
+            <el-form-item label="产地" prop="SelectSite">
+              <el-select
+                v-model="generateRecipeForm.SelectSite"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                :disabled="select_recipe_component || !normalReceipe"
+                @visible-change="SelectSiteDisplay"
+              >
+                <el-option
+                  v-for="item in SelectSiteOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="SITE" prop="SelectSITE">
+              <el-select
+                v-model="generateRecipeForm.SelectSITE"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                :disabled="select_recipe_component || !normalReceipe"
+                @visible-change="SelectGlobalSITEDisplay"
+              >
+                <el-option
+                  v-for="item in SelectSITEOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
 
-      <el-form-item label="段次" prop="SelectStage">
-        <el-select
-          v-model="generateRecipeForm.SelectStage"
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectStageDisplay"
-        >
-          <el-option
-            v-for="item in SelectStageOptions"
-            :key="item.id"
-            :label="item.global_name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
+            <el-form-item label="段次" prop="SelectStage">
+              <el-select
+                v-model="generateRecipeForm.SelectStage"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                :disabled="select_recipe_component || !normalReceipe"
+                @visible-change="SelectStageDisplay"
+              >
+                <el-option
+                  v-for="item in SelectStageOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
 
-      <el-form-item label="胶料编号" prop="SelectRecipeNo">
-        <el-select
-          v-model="generateRecipeForm.SelectRecipeNo"
-          filterable
-          size="mini"
-          style="width: 100px"
-          clearable
-          placeholder="请选择"
-          :disabled="select_recipe_component"
-          @visible-change="SelectRecipeNoDisplay"
-        >
-          <el-option
-            v-for="item in SelectRecipeNoOptions"
-            :key="item.id"
-            :label="item.product_no"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
+            <el-form-item label="胶料编号" prop="SelectRecipeNo">
+              <el-select
+                v-model="generateRecipeForm.SelectRecipeNo"
+                filterable
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                :disabled="select_recipe_component || !normalReceipe"
+                @visible-change="SelectRecipeNoDisplay"
+              >
+                <el-option
+                  v-for="item in SelectRecipeNoOptions"
+                  :key="item.id"
+                  :label="item.product_no"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
 
-      <el-form-item label="版本" prop="version">
-        <el-input v-model="generateRecipeForm.version" :disabled="select_recipe_component" style="width: 90px" size="mini" placeholder="版本" />
-      </el-form-item>
-      <el-form-item label="方案">
-        <el-input v-model="generateRecipeForm.scheme" :disabled="select_recipe_component" style="width: 90px" size="mini" placeholder="方案" />
-      </el-form-item>
+            <el-form-item label="版本" prop="version">
+              <el-input v-model="generateRecipeForm.version" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="版本" />
+            </el-form-item>
+            <el-form-item label="方案">
+              <el-input v-model="generateRecipeForm.scheme" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="方案" />
+            </el-form-item>
+            <el-form-item>
+              <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item>
+              <el-radio v-model="normalReceipe" :label="false">
+                特殊配方
+              </el-radio>
+            </el-form-item>
+            <el-form-item label="配方编号">
+              <el-input v-model="stage_product_batch_no" :disabled="normalReceipe" />
+            </el-form-item>
+          </el-row>
+        </el-col>
+      </el-row>
 
-      <!-- <el-form-item style="float: right">
-        <el-button type="primary" @click="generateRecipeButton('generateRecipeForm')">生成</el-button>
-      </el-form-item> -->
-      <el-form-item>
-        <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
-      </el-form-item>
     </el-form>
 
     <br>
@@ -621,7 +641,8 @@ export default {
       rpm: undefined,
       condition: null,
       standard_error: null,
-      batching_details_list: []
+      batching_details_list: [],
+      normalReceipe: true
     }
   },
   created() {
@@ -993,40 +1014,60 @@ export default {
         }
       })
     },
-    generateMaterialButton(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.raw_material_list()
-          this.dialogRubberMaterialStandard = true
-          for (var j = 0; j < this.SelectEquipOptions.length; ++j) {
-            if (this.SelectEquipOptions[j]['id'] === this.generateRecipeForm['SelectEquip']) {
-              this.equip = this.SelectEquipOptions[j]['equip_name']
-            }
-          }
-          var SITE_name = ''
-          var stage_name = ''
-          var product_name = ''
-          for (var i = 0; i < this.SelectSITEOptions.length; ++i) {
-            if (this.SelectSITEOptions[i]['id'] === this.generateRecipeForm['SelectSITE']) {
-              SITE_name = this.SelectSITEOptions[i]['global_name']
-            }
-          }
-          for (var m = 0; m < this.SelectStageOptions.length; ++m) {
-            if (this.SelectStageOptions[m]['id'] === this.generateRecipeForm['SelectStage']) {
-              stage_name = this.SelectStageOptions[m]['global_name']
-            }
-          }
-          for (var n = 0; n < this.SelectRecipeNoOptions.length; ++n) {
-            if (this.SelectRecipeNoOptions[n]['id'] === this.generateRecipeForm['SelectRecipeNo']) {
-              product_name = this.SelectRecipeNoOptions[n]['product_no']
-            }
-          }
-          this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
-        } else {
-          console.log('error submit!!')
-          return false
+    showRubberMaterialStandard() {
+      this.raw_material_list()
+      this.dialogRubberMaterialStandard = true
+      for (var j = 0; j < this.SelectEquipOptions.length; ++j) {
+        if (this.SelectEquipOptions[j]['id'] === this.generateRecipeForm['SelectEquip']) {
+          this.equip = this.SelectEquipOptions[j]['equip_name']
         }
-      })
+      }
+      var SITE_name = ''
+      var stage_name = ''
+      var product_name = ''
+      for (var i = 0; i < this.SelectSITEOptions.length; ++i) {
+        if (this.SelectSITEOptions[i]['id'] === this.generateRecipeForm['SelectSITE']) {
+          SITE_name = this.SelectSITEOptions[i]['global_name']
+        }
+      }
+      for (var m = 0; m < this.SelectStageOptions.length; ++m) {
+        if (this.SelectStageOptions[m]['id'] === this.generateRecipeForm['SelectStage']) {
+          stage_name = this.SelectStageOptions[m]['global_name']
+        }
+      }
+      for (var n = 0; n < this.SelectRecipeNoOptions.length; ++n) {
+        if (this.SelectRecipeNoOptions[n]['id'] === this.generateRecipeForm['SelectRecipeNo']) {
+          product_name = this.SelectRecipeNoOptions[n]['product_no']
+        }
+      }
+      this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
+    },
+    generateMaterialButton(formName) {
+      if (this.normalReceipe) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.showRubberMaterialStandard()
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      } else {
+        this.$refs[formName].validateField('SelectEquip', (error) => {
+          if (!error) {
+            this.raw_material_list()
+            this.dialogRubberMaterialStandard = true
+            for (var j = 0; j < this.SelectEquipOptions.length; ++j) {
+              if (this.SelectEquipOptions[j]['id'] === this.generateRecipeForm['SelectEquip']) {
+                this.equip = this.SelectEquipOptions[j]['equip_name']
+              }
+            }
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      }
     },
     materialTypeChange: function() {
       this.raw_material_list()

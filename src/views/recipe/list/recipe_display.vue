@@ -220,9 +220,9 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        // console.log('====================111111111')
-        // console.log(recipe_listData)
-        // console.log('====================111111111')
+        console.log('====================111111111')
+        console.log(recipe_listData)
+        console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = this.$route.params['category__category_name']
@@ -292,7 +292,9 @@ export default {
             power: this.step_type_conversion(recipe_listData['process_details'][i]['power']),
             action: recipe_listData['process_details'][i]['action'],
             pressure: this.step_type_conversion(recipe_listData['process_details'][i]['pressure']),
-            rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
+            rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm']),
+            action_name: recipe_listData['process_details'][i]['action_name'],
+            condition_name: recipe_listData['process_details'][i]['condition_name']
           })
         }
       } catch (e) { e }
