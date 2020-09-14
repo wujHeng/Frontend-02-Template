@@ -60,6 +60,7 @@
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[0].sn"
+              :precision="0"
               :min="0"
             />
           </template>
@@ -84,6 +85,7 @@
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[1].sn"
               :min="0"
+              :precision="0"
             />
           </template>
         </el-table-column>
@@ -107,6 +109,7 @@
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[2].sn"
               :min="0"
+              :precision="0"
             />
           </template>
         </el-table-column>
