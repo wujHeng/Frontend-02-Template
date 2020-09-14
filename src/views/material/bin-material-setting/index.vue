@@ -23,19 +23,19 @@
     <el-table :data="tableBinCbData" border style="width: 80%">
       <el-table-column label="炭黑称">
         <el-table-column prop="tank_name" width="150%" label="炭黑罐" />
-        <el-table-column prop="material_name" label="物料名称">
+        <el-table-column prop="material_no" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.material_name"
+              v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
               @change="masterialChange"
             >
               <el-option
                 v-for="item in cbOptions"
-                :key="item.material_name"
+                :key="item.material_no"
                 :label="item.material_name"
-                :value="item.material_name"
+                :value="item.material_no"
               />
             </el-select>
           </template>
@@ -57,19 +57,19 @@
     <el-table :data="tableBinOilData" border style="width: 80%">
       <el-table-column label="油料称">
         <el-table-column prop="tank_name" width="150%" label="油料罐" />
-        <el-table-column prop="material_name" label="物料名称">
+        <el-table-column prop="material_no" label="物料名称">
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.material_name"
+              v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
               @change="masterialChange"
             >
               <el-option
                 v-for="item in oilOptions"
-                :key="item.material_name"
+                :key="item.material_no"
                 :label="item.material_name"
-                :value="item.material_name"
+                :value="item.material_no"
               />
             </el-select>
           </template>

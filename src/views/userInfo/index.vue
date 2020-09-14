@@ -366,28 +366,31 @@ export default {
   created() {
     this.permissionObj = this.permission
     this.loading = true
-    roles('get', null, {
-      params: { all: 1 }
-    }).then(response => {
-      const groups = response.results
-      groups.forEach(D => {
-        D.key = D.id
-        D.label = D.name
+    if (this.permissionObj.system.user.indexOf('change') > -1 ||
+      this.permissionObj.system.user.indexOf('add') > -1) {
+      roles('get', null, {
+        params: { all: 1 }
+      }).then(response => {
+        const groups = response.results
+        groups.forEach(D => {
+          D.key = D.id
+          D.label = D.name
+        })
+        this.groups = groups
+        // eslint-disable-next-line handle-callback-err
+      }).catch(error => {
       })
-      this.groups = groups
-      // eslint-disable-next-line handle-callback-err
-    }).catch(error => {
-    })
-    permissions('get', null).then(response => {
-      const permissionsArr = response.results
-      permissionsArr.forEach(D => {
-        D.key = D.id
-        D.label = D.name
+      permissions('get', null).then(response => {
+        const permissionsArr = response.results
+        permissionsArr.forEach(D => {
+          D.key = D.id
+          D.label = D.name
+        })
+        this.permissionsArr = permissionsArr
+        // eslint-disable-next-line handle-callback-err
+      }).catch(error => {
       })
-      this.permissionsArr = permissionsArr
-      // eslint-disable-next-line handle-callback-err
-    }).catch(error => {
-    })
+    }
     this.currentChange()
   },
   methods: {
@@ -520,10 +523,10 @@ export default {
       return row.is_active ? 'Y' : 'N'
     },
     changeTransferGroup(val) {
-      this.userForm.groups = val
+      this.$set(this.userForm, 'groups', val)
     },
     changeTransferPermissions(val) {
-      this.userForm.user_permissions = val
+      this.$set(this.userForm, 'user_permissions', val)
     }
   }
 }

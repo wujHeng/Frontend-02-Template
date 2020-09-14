@@ -23,8 +23,8 @@
     <el-table :data="tableBinCbData" border style="width: 100%">
       <el-table-column label="炭黑称">
         <el-table-column prop="tank_name" label="炭黑罐" />
-        <el-table-column prop="material_name" label="物料名称">
-          <template slot-scope="scope">{{ scope.row.material_name }}</template>
+        <el-table-column prop="material_name1" label="物料名称">
+          <template slot-scope="scope">{{ scope.row.material_name1 }}</template>
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template slot-scope="scope">
@@ -63,8 +63,8 @@
     <el-table :data="tableBinOilData" border style="width: 75%">
       <el-table-column label="油料称">
         <el-table-column prop="tank_name" label="油料罐" />
-        <el-table-column prop="material_name" label="物料名称">
-          <template slot-scope="scope">{{ scope.row.material_name }}</template>
+        <el-table-column prop="material_name1" label="物料名称">
+          <template slot-scope="scope">{{ scope.row.material_name1 }}</template>
         </el-table-column>
         <el-table-column prop="low_value" label="慢称值">
           <template slot-scope="scope">
