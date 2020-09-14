@@ -200,16 +200,19 @@ export default {
   created() {
     this.permissionObj = this.permission
     this.currentChange()
-    permissions('get', null).then(response => {
-      const permissionsArr = response.results
-      permissionsArr.forEach(D => {
-        D.key = D.id
-        D.label = D.name
+    if (this.permissionObj.system.groupextension.indexOf('change') > -1 ||
+      this.permissionObj.system.groupextension.indexOf('add') > -1) {
+      permissions('get', null).then(response => {
+        const permissionsArr = response.results
+        permissionsArr.forEach(D => {
+          D.key = D.id
+          D.label = D.name
+        })
+        this.permissions = permissionsArr
+        // eslint-disable-next-line handle-callback-err
+      }).catch(error => {
       })
-      this.permissions = permissionsArr
-      // eslint-disable-next-line handle-callback-err
-    }).catch(error => {
-    })
+    }
   },
   methods: {
     renderFunc(h, option) {
