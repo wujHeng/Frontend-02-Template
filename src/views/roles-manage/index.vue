@@ -309,7 +309,7 @@ export default {
       })
     },
     changeTransferPermissions(val) {
-      this.groupForm.permissions = val
+      this.$set(this.groupForm, 'permissions', val)
     }
   }
 }
