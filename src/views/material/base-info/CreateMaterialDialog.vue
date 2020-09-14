@@ -1,10 +1,10 @@
 <template>
   <el-dialog title="添加原材料基本信息" :visible.sync="dialogVisible">
-    <el-form v-model="form">
-      <el-form-item :error="formError.material_no" label="原材料编码">
+    <el-form ref="form" :model="form" :rules="rules">
+      <el-form-item prop="material_no" :error="formError.material_no" label="原材料编码">
         <el-input v-model="form.material_no" />
       </el-form-item>
-      <el-form-item :error="formError.material_name" label="原材料名称">
+      <el-form-item prop="material_name" :error="formError.material_name" label="原材料名称">
         <el-input v-model="form.material_name" />
       </el-form-item>
       <el-form-item :error="formError.for_short" label="原材料简称">
@@ -13,7 +13,7 @@
       <el-form-item :error="formError.use_flag" label="是否启用">
         <el-switch v-model="form.use_flag" />
       </el-form-item>
-      <el-form-item :error="formError.material_type" label="原材料类别">
+      <el-form-item prop="material_type" :error="formError.material_type" label="原材料类别">
         <el-select
           v-model="form.material_type"
           placeholder="请选择"
@@ -39,7 +39,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="handleAddMaterialBaseInfo">确 定</el-button>
+      <el-button type="primary" @click="handleAddMaterialBaseInfo('form')">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -82,6 +82,17 @@ export default {
         use_flag: '',
         material_type: '',
         package_unit: ''
+      },
+      rules: {
+        material_no: [
+          { required: true, message: '该字段不能为空', trigger: 'blur' }
+        ],
+        material_name: [
+          { required: true, message: '该字段不能为空', trigger: 'blur' }
+        ],
+        material_type: [
+          { required: true, message: '该字段不能为空', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -113,15 +124,21 @@ export default {
       this.clearFormError()
       this.dialogVisible = true
     },
-    handleAddMaterialBaseInfo() {
-      this.clearFormError()
-      createMaterial(this.form).then(response => {
-        this.$message('创建成功')
-        this.dialogVisible = false
-        this.$emit('handleSuccessed')
-      }).catch(response => {
-        for (const key in this.formError) {
-          if (response[key]) { this.formError[key] = response[key].join(',') }
+    handleAddMaterialBaseInfo(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.clearFormError()
+          createMaterial(this.form).then(response => {
+            this.$message('创建成功')
+            this.dialogVisible = false
+            this.$emit('handleSuccessed')
+          }).catch(response => {
+            for (const key in this.formError) {
+              if (response[key]) { this.formError[key] = response[key].join(',') }
+            }
+          })
+        } else {
+          return false
         }
       })
     }
