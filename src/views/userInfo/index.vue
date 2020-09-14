@@ -519,10 +519,10 @@ export default {
       return row.is_active ? 'Y' : 'N'
     },
     changeTransferGroup(val) {
-      this.userForm.groups = val
+      this.$set(this.userForm, 'groups', val)
     },
     changeTransferPermissions(val) {
-      this.userForm.user_permissions = val
+      this.$set(this.userForm, 'user_permissions', val)
     }
   }
 }
