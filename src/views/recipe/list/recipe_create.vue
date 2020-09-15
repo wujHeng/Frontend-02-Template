@@ -121,7 +121,7 @@
           </el-row>
           <el-row>
             <el-form-item>
-              <el-radio v-model="normalReceipe" :label="false">
+              <el-radio @change="receipeTypeChange" v-model="normalReceipe" :label="false">
                 特殊配方
               </el-radio>
             </el-form-item>
@@ -1041,6 +1041,22 @@ export default {
         }
       }
       this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
+    },
+    receipeTypeChange() {
+      if (!this.normalReceipe) {
+        // this.generateRecipeForm = {
+        //   SelectEquip: this.generateRecipeForm.SelectEquip,
+        //   SelectSite: '',
+        //   SelectSITE: '',
+        //   SelectRecipeNo: '',
+        //   SelectStage: '',
+        //   version: '',
+        //   scheme: ''
+        // }
+        var equip = this.generateRecipeForm.SelectEquip
+        this.$refs['generateRecipeForm'].resetFields()
+        this.generateRecipeForm.SelectEquip = equip
+      }
     },
     generateMaterialButton(formName) {
       if (this.normalReceipe) {

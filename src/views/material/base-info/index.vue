@@ -107,7 +107,7 @@
             >编辑
             </el-button>
             <el-button
-              v-if="permissionObj.production.material.indexOf('delete')>-1"
+              v-if="permissionObj.production.material.indexOf('change')>-1"
               size="mini"
               type="danger"
               @click="deleteMaterial(scope.row)"

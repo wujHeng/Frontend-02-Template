@@ -9,7 +9,7 @@
         <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
       <el-form-item label="配方编号">
-        <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 120px" />
+        <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 160px" />
       </el-form-item>
       <el-form-item label="配方名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 120px" />
