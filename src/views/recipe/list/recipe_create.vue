@@ -121,7 +121,7 @@
           </el-row>
           <el-row>
             <el-form-item>
-              <el-radio @change="receipeTypeChange" v-model="normalReceipe" :label="false">
+              <el-radio v-model="normalReceipe" :label="false" @change="receipeTypeChange">
                 特殊配方
               </el-radio>
             </el-form-item>
@@ -433,7 +433,7 @@
 
       </table>
       <el-form>
-        <el-form-item style="text-align: center">
+        <el-form-item style="text-align: center; margin-top: 10px">
           <el-button @click="insert_material_changed">插入一行</el-button>
         </el-form-item>
       </el-form>
