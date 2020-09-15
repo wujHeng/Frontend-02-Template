@@ -99,22 +99,22 @@
       />
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button-group>
-            <el-button
+          <!-- <el-button-group> -->
+          <!-- <el-button
               v-if="permissionObj.production.material.indexOf('change')>-1"
               size="mini"
               @click="showUpdateMaterialDialog(scope.row)"
             >编辑
-            </el-button>
-            <el-button
-              v-if="permissionObj.production.material.indexOf('change')>-1"
-              size="mini"
-              type="danger"
-              @click="deleteMaterial(scope.row)"
-            >{{ scope.row.use_flag ? '停用':'启用' }}
-            </el-button>
-          </el-button-group>
-        </template>
+            </el-button> -->
+          <el-button
+            v-if="permissionObj.production.material.indexOf('change')>-1"
+            size="mini"
+            type="danger"
+            @click="deleteMaterial(scope.row)"
+          >{{ scope.row.use_flag ? '停用':'启用' }}
+            <!-- </el-button> -->
+            </el-button-group>
+          </el-button></template>
       </el-table-column>
     </el-table>
     <page :total="total" @currentChange="currentChange" />
