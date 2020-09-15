@@ -18,7 +18,8 @@
       </el-row>
       <el-row>
         <el-form-item label="完成车次: ">
-          <el-input v-model="currentRow.actual_trains" type="text" :disabled="true" />
+          <el-input v-if="currentRow.actual_trains" v-model="currentRow.actual_trains" type="text" :disabled="true" />
+          <el-input v-else value="0" type="text" :disabled="true" />
         </el-form-item>
       </el-row>
       <el-row>
@@ -55,7 +56,12 @@ export default {
     },
     alterTrainNumberSubmit() {
       if (this.trains >= 0) {
-        this.putUpdateTrains()
+        if (this.trains - this.currentRow.actual_trains >= 2) {
+          this.putUpdateTrains()
+        } else {
+          this.formError = []
+          this.formError.push('*修改车次必须大于完成车次+2')
+        }
       } else {
         this.formError = []
         this.formError.push('*不能为空')
