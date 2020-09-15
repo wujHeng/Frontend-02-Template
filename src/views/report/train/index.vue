@@ -818,10 +818,10 @@ export default {
       }
     },
     ChangePageWeighing(page) {
-      this.weighInformationList = this.getWeighInformation(this.$route.params.id, page) || []
+      this.weighInformationList = this.getWeighInformation(this.currentRowId, page) || []
     },
     ChangePageMixer(page) {
-      this.mixerInformationList = this.getMixerInformation(this.$route.params.id, page) || []
+      this.mixerInformationList = this.getMixerInformation(this.currentRowId, page) || []
     },
     handleClose(done) {
       done()
