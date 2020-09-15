@@ -732,7 +732,6 @@ export default {
         // ]
         // return test
         this.totalMixer = data.count
-        console.log(data.results, 66666)
         return data.results || []
         // eslint-disable-next-line no-empty
       } catch (e) { }
