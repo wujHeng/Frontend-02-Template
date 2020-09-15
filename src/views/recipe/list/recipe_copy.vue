@@ -193,7 +193,7 @@
             </thead>
             <tbody style="color: #606266;">
               <tr v-for="(step_ele, index) in RecipeMaterialList" :key="index">
-                <td style="text-align: center; height: 48px">{{ index + 1 }}</td>
+                <td style="text-align: center; height: 48px">{{ step_ele.sn }}</td>
                 <td style="text-align: center; height: 48px">
                   <el-select v-model="step_ele.condition" size="mini" style="width: 100px" clearable placeholder="请选择">
                     <el-option
@@ -321,7 +321,7 @@
 
       </table>
       <el-form>
-        <el-form-item style="text-align: center">
+        <el-form-item style="text-align: cchaenter">
           <el-button @click="insert_material_changed">插入一行</el-button>
         </el-form-item>
       </el-form>
@@ -594,7 +594,8 @@ export default {
         this.use_flag = recipe_listData['processes']['use_flag']
         for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.RecipeMaterialList.push({
-            sn: this.RecipeMaterialList.length + 1,
+            // sn: this.RecipeMaterialList.length + 1,
+            sn: recipe_listData['process_details'][i]['sn'],
             condition: recipe_listData['process_details'][i]['condition'],
             time: this.step_type_conversion(recipe_listData['process_details'][i]['time']),
             temperature: this.step_type_conversion(recipe_listData['process_details'][i]['temperature']),
@@ -605,8 +606,12 @@ export default {
             rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
           })
         }
+        this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
         return recipe_listData
       } catch (e) { throw new Error(e) }
+    },
+    compareSn(o1, o2) {
+      return Number(o1.sn) - Number(o2.sn)
     },
     step_type_conversion: function(param) {
       if (typeof (param) === 'object') {
@@ -936,8 +941,10 @@ export default {
     //   }
     // },
     insert_recipe_step: function() {
+      var sn = this.RecipeMaterialList[this.RecipeMaterialList.length - 1]
+        ? this.RecipeMaterialList[this.RecipeMaterialList.length - 1].sn + 1 : 1
       this.RecipeMaterialList.push({
-        sn: '',
+        sn,
         //     condition:"",
         time: undefined,
         temperature: undefined,
@@ -972,8 +979,16 @@ export default {
         // 只有步序的所有字段都填时，才能往step_details_list中push
         // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
         if (this.RecipeMaterialList[i].action) {
+          var sn = i + 1
+          if (this.RecipeMaterialList[i].sn !== '') {
+            sn = this.RecipeMaterialList[i].sn
+          } else if (this.RecipeMaterialList[i - 1] && this.RecipeMaterialList[i - 1] !== '') {
+            sn = this.RecipeMaterialList[i - 1].sn + 1
+          }
+          // var sn = this.RecipeMaterialList[i].sn !== ''
+          //   ? this.RecipeMaterialList[i].sn :
           var now_recipe_step = {
-            sn: i + 1,
+            sn,
             condition: this.RecipeMaterialList[i].condition,
             time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
             temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
