@@ -93,7 +93,12 @@
       <el-table-column prop="equip_name" label="机台" width="100" />
       <el-table-column prop="classes" label="班次" width="80" />
       <el-table-column prop="plan_trains" label="设定" width="80" />
-      <el-table-column prop="actual_trains" label="完成" width="80" />
+      <el-table-column prop="actual_trains" label="完成" width="80">
+        <template slot-scope="scope">
+          <div v-if="scope.row.actual_trains">{{ scope.row.actual_trains }}</div>
+          <div v-else>{{ 0 }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="created_username" label="操作员" width="120" />
       <el-table-column prop="status" label="状态" />
     </el-table>
