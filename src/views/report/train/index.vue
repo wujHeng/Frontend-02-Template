@@ -732,6 +732,7 @@ export default {
         // ]
         // return test
         this.totalMixer = data.count
+        console.log(data.results, 66666)
         return data.results || []
         // eslint-disable-next-line no-empty
       } catch (e) { }
@@ -817,11 +818,11 @@ export default {
         this.loaddingExal = false
       }
     },
-    ChangePageWeighing(page) {
-      this.weighInformationList = this.getWeighInformation(this.currentRowId, page) || []
+    async ChangePageWeighing(page) {
+      this.weighInformationList = await this.getWeighInformation(this.currentRowId, page)
     },
-    ChangePageMixer(page) {
-      this.mixerInformationList = this.getMixerInformation(this.currentRowId, page) || []
+    async ChangePageMixer(page) {
+      this.mixerInformationList = await this.getMixerInformation(this.currentRowId, page)
     },
     handleClose(done) {
       done()
