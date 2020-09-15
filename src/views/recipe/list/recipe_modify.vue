@@ -193,7 +193,7 @@
             </thead>
             <tbody style="color: #606266;">
               <tr v-for="(step_ele, index) in RecipeMaterialList" :key="index">
-                <td style="text-align: center; height: 48px">{{ index + 1 }}</td>
+                <td style="text-align: center; height: 48px">{{ step_ele.sn }}</td>
                 <td style="text-align: center; height: 48px">
                   <el-select v-model="step_ele.condition" size="mini" style="width: 100px" clearable placeholder="请选择">
                     <el-option
@@ -588,7 +588,8 @@ export default {
         this.RecipeMaterialList = []
         for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
           this.RecipeMaterialList.push({
-            sn: this.RecipeMaterialList.length + 1,
+            // sn: this.RecipeMaterialList.length + 1,
+            sn: recipe_listData['process_details'][i].sn,
             condition: recipe_listData['process_details'][i]['condition'],
             time: this.step_type_conversion(recipe_listData['process_details'][i]['time']),
             temperature: this.step_type_conversion(recipe_listData['process_details'][i]['temperature']),
@@ -599,8 +600,12 @@ export default {
             rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
           })
         }
+        this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
         return recipe_listData
       } catch (e) { throw new Error(e) }
+    },
+    compareSn(o1, o2) {
+      return Number(o1.sn) - Number(o2.sn)
     },
     step_type_conversion: function(param) {
       if (typeof (param) === 'object') {
@@ -907,8 +912,10 @@ export default {
     //   }
     // },
     insert_recipe_step: function() {
+      var sn = this.RecipeMaterialList[this.RecipeMaterialList.length - 1]
+        ? this.RecipeMaterialList[this.RecipeMaterialList.length - 1].sn + 1 : 1
       this.RecipeMaterialList.push({
-        sn: '',
+        sn,
         //     condition:"",
         time: undefined,
         temperature: undefined,
@@ -944,7 +951,7 @@ export default {
         // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
         if (this.RecipeMaterialList[i].action) {
           var now_recipe_step = {
-            sn: i + 1,
+            sn: this.RecipeMaterialList[i].sn,
             condition: this.RecipeMaterialList[i].condition,
             time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
             temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
