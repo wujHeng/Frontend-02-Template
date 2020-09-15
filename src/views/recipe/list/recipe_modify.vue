@@ -136,6 +136,11 @@
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini">插入一行</el-button>
+            </el-form-item>
+          </el-form>
           <span class="font_custom">炭黑称量</span>
           <el-table
             highlight-current-row
@@ -150,6 +155,11 @@
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini">插入一行</el-button>
+            </el-form-item>
+          </el-form>
           <span class="font_custom">油料称量</span>
           <el-table
             highlight-current-row
@@ -164,7 +174,13 @@
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini">插入一行</el-button>
+            </el-form-item>
+          </el-form>
         </div>
+
       </el-col>
 
       <el-col :span="15">
@@ -409,8 +425,8 @@
 
 <script>
 import { recipe_list, equip_url, rubber_process_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 
 export default {
   data: function() {
@@ -514,9 +530,9 @@ export default {
           params: { }
         })
         // 机台、配方编号、配方名称
-        console.log('===============xxxx=========')
-        console.log(this.$route.params)
-        console.log('==============xxxx===========')
+        // console.log('===============xxxx=========')
+        // console.log(this.$route.params)
+        // console.log('==============xxxx===========')
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = this.$route.params['category__category_name']
         if (this.equip_name == null) {
@@ -793,7 +809,6 @@ export default {
     handleMaterialSelect(row) {
       var app = this
       // 胶料配料post
-      console.log(row, '==================')
       app.ProductRecipe[app.raw_material_index].material_name = row.material_name
       app.ProductRecipe[app.raw_material_index].material = row.id
       app.ProductRecipe[app.raw_material_index].material_type = row.material_type_name
