@@ -817,11 +817,11 @@ export default {
         this.loaddingExal = false
       }
     },
-    ChangePageWeighing(page) {
-      this.weighInformationList = this.getWeighInformation(this.$route.params.id, page) || []
+    async ChangePageWeighing(page) {
+      this.weighInformationList = await this.getWeighInformation(this.currentRowId, page)
     },
-    ChangePageMixer(page) {
-      this.mixerInformationList = this.getMixerInformation(this.$route.params.id, page) || []
+    async ChangePageMixer(page) {
+      this.mixerInformationList = await this.getMixerInformation(this.currentRowId, page)
     },
     handleClose(done) {
       done()
