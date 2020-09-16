@@ -50,8 +50,9 @@ module.exports = {
       '/api': {
         // target: 'http://10.4.10.55:80',
         // target: 'http://10.4.14.33:8000',
-        target: 'http://10.4.14.6:8000/',
+        // target: 'http://10.4.14.42:9000',
         // target: 'http://10.4.14.33:8000/',
+        target: 'http://139.9.119.16:3389/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

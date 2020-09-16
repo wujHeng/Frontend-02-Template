@@ -220,9 +220,9 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        // console.log('====================111111111')
-        // console.log(recipe_listData)
-        // console.log('====================111111111')
+        console.log('====================111111111')
+        console.log(recipe_listData)
+        console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = this.$route.params['category__category_name']
@@ -238,7 +238,7 @@ export default {
           } else {
             v_auto_falg = '其他'
           }
-          if (recipe_listData['batching_details'][j]['material_type'] == '炭黑') {
+          if (recipe_listData['batching_details'][j]['type'] === 2) {
             this.carbon_tableData.push({
               sn: this.carbon_tableData.length + 1,
               auto_flag: v_auto_falg,
@@ -246,7 +246,7 @@ export default {
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
               standard_error: recipe_listData['batching_details'][j]['standard_error']
             })
-          } else if (recipe_listData['batching_details'][j]['material_type'] == '油料') {
+          } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             this.oil_tableData.push({
               sn: this.oil_tableData.length + 1,
               action_name: '投料',
