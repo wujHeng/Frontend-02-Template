@@ -621,25 +621,36 @@ export default {
       this.oil_tableData.splice(this.oil_tableData.indexOf(row), 1)
     },
     insertOneRubber() {
-      // console.log(this.rubber_tableData, 'this.rubber_tableData')
+      var sn = this.rubber_tableData.length + 1
+      if (this.rubber_tableData[this.rubber_tableData.length - 1]) {
+        sn = this.rubber_tableData[this.rubber_tableData.length - 1].sn + 1
+      }
       this.rubber_tableData.push({
-        sn: this.rubber_tableData.length + 1,
+        sn,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
       })
     },
     insertOnecarbon() {
+      var sn = this.carbon_tableData.length + 1
+      if (this.carbon_tableData[this.carbon_tableData.length - 1]) {
+        sn = this.carbon_tableData[this.carbon_tableData.length - 1].sn + 1
+      }
       this.carbon_tableData.push({
-        sn: this.carbon_tableData.length + 1,
+        sn,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
       })
     },
     insertOneOil() {
+      var sn = this.oil_tableData.length + 1
+      if (this.oil_tableData[this.oil_tableData.length - 1]) {
+        sn = this.oil_tableData[this.oil_tableData.length - 1].sn + 1
+      }
       this.oil_tableData.push({
-        sn: this.oil_tableData.length + 1,
+        sn,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
@@ -697,6 +708,9 @@ export default {
             })
           }
         }
+        this.carbon_tableData = this.carbon_tableData.sort(this.compareSn)
+        this.oil_tableData = this.oil_tableData.sort(this.compareSn)
+        this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
         console.log('----------------------get--------------------')
         console.log(recipe_listData)
         this.recipe_step_id = recipe_listData['processes']['id']
@@ -737,9 +751,10 @@ export default {
         this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
         this.loading = false
         return recipe_listData
-      } catch (e) { 
+      } catch (e) {
         this.loading = false
-        throw new Error(e) }
+        throw new Error(e)
+      }
     },
     compareSn(o1, o2) {
       return Number(o1.sn) - Number(o2.sn)
