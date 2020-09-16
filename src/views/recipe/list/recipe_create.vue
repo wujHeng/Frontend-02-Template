@@ -29,7 +29,7 @@
         <el-col :span="18">
           <el-row>
             <el-form-item>
-              <el-radio v-model="normalReceipe" :label="true">
+              <el-radio v-model="normalReceipe" :label="true" @change="receipeTypeChange">
                 常规配方
               </el-radio>
               </el-radio></el-form-item>
@@ -59,6 +59,7 @@
                 clearable
                 placeholder="请选择"
                 :disabled="select_recipe_component || !normalReceipe"
+                @change="generateRecipeName"
                 @visible-change="SelectGlobalSITEDisplay"
               >
                 <el-option
@@ -78,6 +79,7 @@
                 clearable
                 placeholder="请选择"
                 :disabled="select_recipe_component || !normalReceipe"
+                @change="generateRecipeName"
                 @visible-change="SelectStageDisplay"
               >
                 <el-option
@@ -98,6 +100,7 @@
                 clearable
                 placeholder="请选择"
                 :disabled="select_recipe_component || !normalReceipe"
+                @change="generateRecipeName"
                 @visible-change="SelectRecipeNoDisplay"
               >
                 <el-option
@@ -110,14 +113,17 @@
             </el-form-item>
 
             <el-form-item label="版本" prop="version">
-              <el-input v-model="generateRecipeForm.version" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="版本" />
+              <el-input v-model="generateRecipeForm.version" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="版本" @change="generateRecipeName" />
             </el-form-item>
             <el-form-item label="方案">
               <el-input v-model="generateRecipeForm.scheme" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="方案" />
             </el-form-item>
-            <el-form-item>
-              <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
+            <el-form-item label="预计炼胶时间">
+              <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 90px"/>
             </el-form-item>
+            <!-- <el-form-item>
+              <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>
+            </el-form-item> -->
           </el-row>
           <el-row>
             <el-form-item>
@@ -125,8 +131,11 @@
                 特殊配方
               </el-radio>
             </el-form-item>
-            <el-form-item label="配方编号">
-              <el-input v-model="stage_product_batch_no" :disabled="normalReceipe" />
+            <el-form-item v-show="!normalReceipe" label="配方编号" prop="stage_product_batch_no">
+              <el-input v-model="generateRecipeForm.stage_product_batch_no" size="mini" :disabled="normalReceipe" @input="recipeNameChange" />
+            </el-form-item>
+            <el-form-item v-show="normalReceipe" label="配方编号" required>
+              <el-input :disabled="true" size="mini" />
             </el-form-item>
           </el-row>
         </el-col>
@@ -243,10 +252,39 @@
           >
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="胶料名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
+            <el-table-column align="center" width="230" prop="material_name" label="胶料名称">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.material_name" size="mini" class="input-with-select" :disabled="true">
+                  <el-button slot="append" icon="el-icon-search" @click="selectMaterial(scope.row)" />
+                </el-input>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="设定值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.actual_weight" style="width: 70px" :precision="2" :step="0.1" :min="0.00" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="误差值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.standard_error" style="width: 70px" :precision="2" :step="0.1" :min="0" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="removeRubberRow(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column align="center" width="50%" prop="sn" label="序号" /> -->
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
+            <!-- <el-table-column align="center" prop="material_name" label="胶料名称" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" /> -->
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini" @click="insertOneRubber">插入一行</el-button>
+            </el-form-item>
+          </el-form>
           <span class="font_custom">炭黑称量</span>
           <el-table
             highlight-current-row
@@ -254,13 +292,48 @@
             border
             style="width: 100%"
           >
-            <el-table-column align="center" width="50%" prop="sn" label="序号" />
-            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="40" prop="sn" label="序号" />
+            <el-table-column align="center" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="炭黑名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
+            <el-table-column width="250" align="center" label="炭黑名称">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.material" style="width: 220px">
+                  <el-option
+                    v-for="item in tankCarbons"
+                    :key="item.id"
+                    :label="item.material_name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="设定值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.actual_weight" :precision="2" :step="0.1" :min="0.00" style="width: 70px" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="误差值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.standard_error" :precision="2" :step="0.1" :min="0" style="width: 70px" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="removeCarbonRow(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column align="center" width="50%" prop="sn" label="序号" /> -->
+            <!-- <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column> -->
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
+            <!-- <el-table-column align="center" prop="material_name" label="炭黑名称" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" /> -->
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini" @click="insertOnecarbon">插入一行</el-button>
+            </el-form-item>
+          </el-form>
           <span class="font_custom">油料称量</span>
           <el-table
             highlight-current-row
@@ -268,13 +341,48 @@
             border
             style="width: 100%"
           >
-            <el-table-column align="center" width="50%" prop="sn" label="序号" />
-            <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
+            <el-table-column align="center" width="40" prop="sn" label="序号" />
+            <el-table-column align="center" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="油脂名称" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" />
-            <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" />
+            <el-table-column width="250" align="center" label="油脂名称">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.material" style="width: 220px">
+                  <el-option
+                    v-for="item in tankOils"
+                    :key="item.id"
+                    :label="item.material_name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="设定值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.actual_weight" :precision="2" :step="0.1" :min="0.00" style="width: 70px" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="误差值(kg)">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.standard_error" :precision="2" :step="0.1" :min="0" style="width: 70px" size="mini" :controls="false" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="removeOilRow(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column align="center" width="50%" prop="sn" label="序号" /> -->
+            <!-- <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column> -->
+            <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
+            <!-- <el-table-column align="center" prop="material_name" label="油脂名称" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0.00" prop="actual_weight" label="设定值(kg)" /> -->
+            <!-- <el-table-column align="center" width="90%" :precision="2" :step="0.1" :min="0" prop="standard_error" label="误差值(kg)" /> -->
           </el-table>
+          <el-form>
+            <el-form-item style="text-align: center">
+              <el-button size="mini" @click="insertOneOil">插入一行</el-button>
+            </el-form-item>
+          </el-form>
         </div>
       </el-col>
 
@@ -521,7 +629,7 @@
 </template>
 
 <script>
-import { recipe_list, rubber_process_url, equip_url, site_url, recipe_no_url, stage_url, dev_type_url, global_SITE_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
+import { tank_materials, recipe_list, rubber_process_url, equip_url, site_url, recipe_no_url, stage_url, dev_type_url, global_SITE_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 
@@ -564,7 +672,8 @@ export default {
         SelectRecipeNo: '',
         SelectStage: '',
         version: '',
-        scheme: ''
+        scheme: '',
+        stage_product_batch_no: ''
       },
       rules: {
         SelectEquip: [{ required: true, message: '请选择机台', trigger: 'change' }],
@@ -572,7 +681,8 @@ export default {
         SelectSITE: [{ required: true, message: '请选择SITE', trigger: 'change' }],
         SelectRecipeNo: [{ required: true, message: '请选择胶料编码', trigger: 'change' }],
         SelectStage: [{ required: true, message: '请选择段次', trigger: 'change' }],
-        version: [{ required: true, message: '请输入版本', blur: 'change' }]
+        version: [{ required: true, message: '请输入版本', blur: 'change' }],
+        stage_product_batch_no: [{ required: true, message: '请输入配方编号', blur: 'change' }]
       },
       generateRecipeFormError: {
         SelectEquip: '',
@@ -642,12 +752,67 @@ export default {
       condition: null,
       standard_error: null,
       batching_details_list: [],
-      normalReceipe: true
+      normalReceipe: true,
+      tankOils: [],
+      tankCarbons: []
     }
   },
   created() {
   },
   methods: {
+    recipeNameChange() {
+      this.stage_product_batch_no = this.generateRecipeForm.stage_product_batch_no
+    },
+    removeOilRow(row) {
+      this.oil_tableData.splice(this.oil_tableData.indexOf(row), 1)
+    },
+    removeCarbonRow(row) {
+      this.carbon_tableData.splice(this.carbon_tableData.indexOf(row), 1)
+    },
+    insertOneRubber() {
+      var sn = this.rubber_tableData.length + 1
+      if (this.rubber_tableData[this.rubber_tableData.length - 1]) {
+        sn = this.rubber_tableData[this.rubber_tableData.length - 1].sn + 1
+      }
+      this.rubber_tableData.push({
+        sn,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
+    insertOnecarbon() {
+      var sn = this.carbon_tableData.length + 1
+      if (this.carbon_tableData[this.carbon_tableData.length - 1]) {
+        sn = this.carbon_tableData[this.carbon_tableData.length - 1].sn + 1
+      }
+      this.carbon_tableData.push({
+        sn,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
+    insertOneOil() {
+      var sn = this.oil_tableData.length + 1
+      if (this.oil_tableData[this.oil_tableData.length - 1]) {
+        sn = this.oil_tableData[this.oil_tableData.length - 1].sn + 1
+      }
+      this.oil_tableData.push({
+        sn,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
+    removeRubberRow(row) {
+      this.rubber_tableData.splice(this.rubber_tableData.indexOf(row), 1)
+    },
+    selectMaterial(rubberRow) {
+      this.rubberRow = rubberRow
+      this.dialogRawMaterialSync = true
+      this.raw_material_list()
+    },
     //   以下6个函数用于初始化下拉框的接口(密炼机类型暂时不用)
     async equip_list() {
       try {
@@ -814,8 +979,24 @@ export default {
       }
     },
     SelectEquipChange: function() {
+      this.rubber_tableData = []
+      this.carbon_tableData = []
+      this.oil_tableData = []
       for (var i = 0; i < this.SelectEquipOptions.length; i++) {
-        if (this.generateRecipeForm['SelectEquip'] === this.SelectEquipOptions[i]['id']) { this.category__category_name = this.SelectEquipOptions[i]['category__category_name'] }
+        if (this.generateRecipeForm['SelectEquip'] === this.SelectEquipOptions[i]['id']) {
+          this.category__category_name = this.SelectEquipOptions[i]['category__category_name']
+          tank_materials(this.SelectEquipOptions[i].equip_no, 1).then(response => {
+            this.tankCarbons = response.results
+          })
+          tank_materials(this.SelectEquipOptions[i].equip_no, 2).then(response => {
+            this.tankOils = response.results
+          })
+        }
+      }
+      for (var j = 0; j < this.SelectEquipOptions.length; ++j) {
+        if (this.SelectEquipOptions[j]['id'] === this.generateRecipeForm['SelectEquip']) {
+          this.equip = this.SelectEquipOptions[j]['equip_name']
+        }
       }
     },
     pagehandleCurrentChange: function(val) {
@@ -823,13 +1004,22 @@ export default {
       this.raw_material_list(val)
     },
     handleMaterialSelect(row) {
-      var app = this
-      // 胶料配料post
-      console.log(row, '==================')
-      app.ProductRecipe[app.raw_material_index].material_name = row.material_name
-      app.ProductRecipe[app.raw_material_index].material = row.id
-      app.ProductRecipe[app.raw_material_index].material_type = row.material_type_name
-      app.dialogRawMaterialSync = false
+      if (this.rubberRow) {
+        if (row.material_type_name === '炭黑' || row.material_type_name === '油料') {
+          this.$message('非法选择')
+          return
+        }
+        this.$set(this.rubberRow, 'material_name', row.material_name)
+        this.rubberRow.material = row.id
+        this.dialogRawMaterialSync = false
+      } else {
+        var app = this
+        // 胶料配料post
+        app.ProductRecipe[app.raw_material_index].material_name = row.material_name
+        app.ProductRecipe[app.raw_material_index].material = row.id
+        app.ProductRecipe[app.raw_material_index].material_type = row.material_type_name
+        app.dialogRawMaterialSync = false
+      }
     },
 
     saveMaterialClicked: async function() {
@@ -978,7 +1168,28 @@ export default {
       //   }
       // }
     },
-
+    generateRecipeName() {
+      var SITE_name = ''
+      var stage_name = ''
+      var product_name = ''
+      for (var i = 0; i < this.SelectSITEOptions.length; ++i) {
+        if (this.SelectSITEOptions[i]['id'] === this.generateRecipeForm['SelectSITE']) {
+          SITE_name = this.SelectSITEOptions[i]['global_name']
+        }
+      }
+      for (var m = 0; m < this.SelectStageOptions.length; ++m) {
+        if (this.SelectStageOptions[m]['id'] === this.generateRecipeForm['SelectStage']) {
+          stage_name = this.SelectStageOptions[m]['global_name']
+        }
+      }
+      for (var n = 0; n < this.SelectRecipeNoOptions.length; ++n) {
+        if (this.SelectRecipeNoOptions[n]['id'] === this.generateRecipeForm['SelectRecipeNo']) {
+          product_name = this.SelectRecipeNoOptions[n]['product_no']
+        }
+      }
+      this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
+      this.generateRecipeForm.stage_product_batch_no = this.stage_product_batch_no
+    },
     generateRecipeButton(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -1057,8 +1268,10 @@ export default {
         this.$refs['generateRecipeForm'].resetFields()
         this.generateRecipeForm.SelectEquip = equip
       }
+      this.stage_product_batch_no = ''
     },
     generateMaterialButton(formName) {
+      // generateRecipeForm
       if (this.normalReceipe) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -1129,102 +1342,253 @@ export default {
       this.raw_material_index = index
       this.dialogRawMaterialSync = true
     },
-    AddRecipeInfoStep: async function() {
-      if (this.equip && this.stage_product_batch_no) {
-        if (this.sp_num) {
-          var step_details_list = []
-          // 循环整个表格
-          if (this.RecipeMaterialList.length === 0) {
-            this.$message({
-              message: '密炼步序不能为空',
-              type: 'error'
-            })
-            return
-          }
-          for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
-            // 只有步序的所有字段都填时，才能往step_details_list中push
-            // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
-            if (this.RecipeMaterialList[i].action) {
-              var now_recipe_step = {
-                sn: i + 1,
-                condition: this.RecipeMaterialList[i].condition,
-                time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
-                temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
-                energy: (this.RecipeMaterialList[i].energy === undefined) ? 0 : this.RecipeMaterialList[i].energy,
-                power: (this.RecipeMaterialList[i].power === undefined) ? 0 : this.RecipeMaterialList[i].power,
-                action: this.RecipeMaterialList[i].action,
-                pressure: (this.RecipeMaterialList[i].pressure === undefined) ? 0 : this.RecipeMaterialList[i].pressure,
-                rpm: (this.RecipeMaterialList[i].rpm === undefined) ? 0 : this.RecipeMaterialList[i].rpm
-              }
-              step_details_list.push(now_recipe_step)
-            } else {
-              this.$message({
-                message: '密炼步序动作字段不能为空',
-                type: 'error'
-              })
-              return
+    postRecipeList() {
+      if (this.sp_num) {
+        var batching_details_list = []
+        for (var j = 0; j < this.rubber_tableData.length; ++j) {
+          if (this.rubber_tableData[j].material) {
+            var now_stage_material = {
+              sn: this.rubber_tableData[j].sn,
+              auto_flag: 0,
+              material: this.rubber_tableData[j].material,
+              actual_weight: this.rubber_tableData[j].actual_weight ? this.rubber_tableData[j].actual_weight : 0,
+              standard_error: this.rubber_tableData[j].standard_error,
+              type: 1
             }
+            batching_details_list.push(now_stage_material)
           }
-          try {
-            // console.log('------------------d--------')
-            // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
-            await this.post_recipe_list(
-              { data: {
-                'factory': this.generateRecipeForm['SelectSite'],
-                'site': this.generateRecipeForm['SelectSITE'],
-                'product_info': this.generateRecipeForm['SelectRecipeNo'],
-                'precept': this.generateRecipeForm['scheme'],
-                'stage_product_batch_no': this.stage_product_batch_no,
-                'stage': this.generateRecipeForm['SelectStage'],
-                'versions': this.generateRecipeForm['version'],
-                'production_time_interval': this.production_time_interval,
-                'batching_details': this.batching_details_list,
-                'equip': this.generateRecipeForm['SelectEquip'],
-                // 密炼步序list
-                'process_details': step_details_list,
-                'processes': {
-                // 配方基础信息中第一行
-                  'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
-                  'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
-                  'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
-                  'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
-                  'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
-                  'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
-                  'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
-                  // 配方基础信息中第二行
-                  'over_time': (this.over_time === undefined) ? 0 : this.over_time,
-                  'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
-                  'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
-                  'reuse_flag': this.reuse_flag,
-                  'temp_use_flag': this.temp_use_flag,
-                  'sp_num': this.sp_num,
-                  'use_flag': this.use_flag,
-                  // 设备id与配方id
-                  'equip': this.generateRecipeForm['SelectEquip'],
-                  'product_batching': this.product_batching
-                }
-              }}
-            )
-            this.$message({
-              message: this.stage_product_batch_no + '配方步序添加成功',
-              type: 'success'
-            })
-            this.$router.push({ name: 'RecipeList' })
-          } catch (e) { e }
-        } else {
+        }
+        for (j = 0; j < this.carbon_tableData.length; ++j) {
+          if (!this.carbon_tableData[j].material) {
+            continue
+          }
+          var now_stage_material_ = {
+            sn: this.carbon_tableData[j].sn,
+            auto_flag: 0,
+            material: this.carbon_tableData[j].material,
+            actual_weight: this.carbon_tableData[j].actual_weight ? this.carbon_tableData[j].actual_weight : 0,
+            standard_error: this.carbon_tableData[j].standard_error,
+            type: 2
+          }
+          batching_details_list.push(now_stage_material_)
+        }
+        for (j = 0; j < this.oil_tableData.length; ++j) {
+          if (!this.oil_tableData[j].material) {
+            continue
+          }
+          var now_stage_material__ = {
+            sn: this.oil_tableData[j].sn,
+            auto_flag: 0,
+            material: this.oil_tableData[j].material,
+            actual_weight: this.oil_tableData[j].actual_weight ? this.oil_tableData[j].actual_weight : 0,
+            standard_error: this.oil_tableData[j].standard_error,
+            type: 3
+          }
+          batching_details_list.push(now_stage_material__)
+        }
+        var step_details_list = []
+        // 循环整个表格
+        if (this.RecipeMaterialList.length === 0) {
           this.$message({
-            message: '收皮信息不能为空',
+            message: '密炼步序不能为空',
             type: 'error'
           })
           return
         }
+        for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
+          // 只有步序的所有字段都填时，才能往step_details_list中push
+          // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+          if (this.RecipeMaterialList[i].action) {
+            var now_recipe_step = {
+              sn: i + 1,
+              condition: this.RecipeMaterialList[i].condition,
+              time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
+              temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
+              energy: (this.RecipeMaterialList[i].energy === undefined) ? 0 : this.RecipeMaterialList[i].energy,
+              power: (this.RecipeMaterialList[i].power === undefined) ? 0 : this.RecipeMaterialList[i].power,
+              action: this.RecipeMaterialList[i].action,
+              pressure: (this.RecipeMaterialList[i].pressure === undefined) ? 0 : this.RecipeMaterialList[i].pressure,
+              rpm: (this.RecipeMaterialList[i].rpm === undefined) ? 0 : this.RecipeMaterialList[i].rpm
+            }
+            step_details_list.push(now_recipe_step)
+          } else {
+            this.$message({
+              message: '密炼步序动作字段不能为空',
+              type: 'error'
+            })
+            return
+          }
+        }
+        try {
+          // console.log('------------------d--------')
+          // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
+          this.post_recipe_list(
+            { data: {
+              'factory': this.generateRecipeForm['SelectSite'],
+              'site': this.generateRecipeForm['SelectSITE'],
+              'product_info': this.generateRecipeForm['SelectRecipeNo'],
+              'precept': this.generateRecipeForm['scheme'],
+              'stage_product_batch_no': this.stage_product_batch_no,
+              'stage': this.generateRecipeForm['SelectStage'],
+              'versions': this.generateRecipeForm['version'],
+              'production_time_interval': this.production_time_interval,
+              'batching_details': batching_details_list,
+              'equip': this.generateRecipeForm['SelectEquip'],
+              // 密炼步序list
+              'process_details': step_details_list,
+              'processes': {
+              // 配方基础信息中第一行
+                'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+                'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+                'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+                'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+                'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+                'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+                'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
+                // 配方基础信息中第二行
+                'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+                'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+                'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
+                'reuse_flag': this.reuse_flag,
+                'temp_use_flag': this.temp_use_flag,
+                'sp_num': this.sp_num,
+                'use_flag': this.use_flag,
+                // 设备id与配方id
+                'equip': this.generateRecipeForm['SelectEquip'],
+                'product_batching': this.product_batching
+              }
+            }}
+          )
+          this.$message({
+            message: this.stage_product_batch_no + '配方步序添加成功',
+            type: 'success'
+          })
+          this.$router.push({ name: 'RecipeList' })
+        } catch (e) { e }
       } else {
         this.$message({
-          message: '请先进行配料',
+          message: '收皮信息不能为空',
           type: 'error'
         })
-        return
       }
+    },
+    AddRecipeInfoStep: async function() {
+      if (this.normalReceipe) {
+        this.$refs['generateRecipeForm'].validate(valid => {
+          if (valid) {
+            this.postRecipeList()
+          } else {
+            return false
+          }
+        })
+      } else {
+        var validateTimes = 0
+        this.$refs['generateRecipeForm'].validateField(['SelectEquip', 'stage_product_batch_no'], error => {
+          if (!error) {
+            validateTimes++
+            if (validateTimes === 2) {
+              this.postRecipeList()
+            }
+          } else {
+            return false
+          }
+        })
+      }
+      // if (this.equip && this.stage_product_batch_no) {
+      //   if (this.sp_num) {
+      //     var step_details_list = []
+      //     // 循环整个表格
+      //     if (this.RecipeMaterialList.length === 0) {
+      //       this.$message({
+      //         message: '密炼步序不能为空',
+      //         type: 'error'
+      //       })
+      //       return
+      //     }
+      //     for (var i = 0; i < this.RecipeMaterialList.length; ++i) {
+      //       // 只有步序的所有字段都填时，才能往step_details_list中push
+      //       // if (this.RecipeMaterialList[i].temperature && this.RecipeMaterialList[i].energy && this.RecipeMaterialList[i].power && this.RecipeMaterialList[i].action && this.RecipeMaterialList[i].pressure && this.RecipeMaterialList[i].rpm) {
+      //       if (this.RecipeMaterialList[i].action) {
+      //         var now_recipe_step = {
+      //           sn: i + 1,
+      //           condition: this.RecipeMaterialList[i].condition,
+      //           time: (this.RecipeMaterialList[i].time === undefined) ? 0 : this.RecipeMaterialList[i].time,
+      //           temperature: (this.RecipeMaterialList[i].temperature === undefined) ? 0 : this.RecipeMaterialList[i].temperature,
+      //           energy: (this.RecipeMaterialList[i].energy === undefined) ? 0 : this.RecipeMaterialList[i].energy,
+      //           power: (this.RecipeMaterialList[i].power === undefined) ? 0 : this.RecipeMaterialList[i].power,
+      //           action: this.RecipeMaterialList[i].action,
+      //           pressure: (this.RecipeMaterialList[i].pressure === undefined) ? 0 : this.RecipeMaterialList[i].pressure,
+      //           rpm: (this.RecipeMaterialList[i].rpm === undefined) ? 0 : this.RecipeMaterialList[i].rpm
+      //         }
+      //         step_details_list.push(now_recipe_step)
+      //       } else {
+      //         this.$message({
+      //           message: '密炼步序动作字段不能为空',
+      //           type: 'error'
+      //         })
+      //         return
+      //       }
+      //     }
+      //     try {
+      //       // console.log('------------------d--------')
+      //       // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
+      //       await this.post_recipe_list(
+      //         { data: {
+      //           'factory': this.generateRecipeForm['SelectSite'],
+      //           'site': this.generateRecipeForm['SelectSITE'],
+      //           'product_info': this.generateRecipeForm['SelectRecipeNo'],
+      //           'precept': this.generateRecipeForm['scheme'],
+      //           'stage_product_batch_no': this.stage_product_batch_no,
+      //           'stage': this.generateRecipeForm['SelectStage'],
+      //           'versions': this.generateRecipeForm['version'],
+      //           'production_time_interval': this.production_time_interval,
+      //           'batching_details': this.batching_details_list,
+      //           'equip': this.generateRecipeForm['SelectEquip'],
+      //           // 密炼步序list
+      //           'process_details': step_details_list,
+      //           'processes': {
+      //           // 配方基础信息中第一行
+      //             'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+      //             'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+      //             'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+      //             'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+      //             'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+      //             'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+      //             'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
+      //             // 配方基础信息中第二行
+      //             'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+      //             'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+      //             'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
+      //             'reuse_flag': this.reuse_flag,
+      //             'temp_use_flag': this.temp_use_flag,
+      //             'sp_num': this.sp_num,
+      //             'use_flag': this.use_flag,
+      //             // 设备id与配方id
+      //             'equip': this.generateRecipeForm['SelectEquip'],
+      //             'product_batching': this.product_batching
+      //           }
+      //         }}
+      //       )
+      //       this.$message({
+      //         message: this.stage_product_batch_no + '配方步序添加成功',
+      //         type: 'success'
+      //       })
+      //       this.$router.push({ name: 'RecipeList' })
+      //     } catch (e) { e }
+      //   } else {
+      //     this.$message({
+      //       message: '收皮信息不能为空',
+      //       type: 'error'
+      //     })
+      //     return
+      //   }
+      // } else {
+      //   this.$message({
+      //     message: '请先进行配料',
+      //     type: 'error'
+      //   })
+      //   return
+      // }
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })

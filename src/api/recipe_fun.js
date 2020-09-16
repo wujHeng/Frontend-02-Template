@@ -2,6 +2,17 @@ import request from '@/utils/request'
 import API from '@/api/url'
 import url from '@/api/url'
 
+export function tank_materials(equip_no, tank_type) {
+  return request({
+    url: API.TankMaterialsUrl,
+    method: 'get',
+    params: {
+      equip_no,
+      tank_type
+    }
+  })
+}
+
 export function recipe_list(method, id = null, data = {}) {
   if (id) {
     var v_url = API.RubberMaterialUrl + id + '/'
