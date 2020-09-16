@@ -26,6 +26,16 @@ export function personnelsUrl(method, id, data = {}) {
   return request(obj)
 }
 
+// 修改密码
+export function changePassword(method, data = {}) {
+  const obj = {
+    url: API.ChangePasswordUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',

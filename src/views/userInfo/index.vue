@@ -132,23 +132,6 @@
           label="用户名"
           prop="username"
         >
-          <!-- :class="[{'is-error':isError?true:false}]" -->
-          <!-- <div class="el-input">
-            <input
-              :value="userForm.username"
-              type="text"
-              autocomplete="off"
-              class="el-input__inner"
-              @input="changeUsername"
-              @blur="blurUsername"
-            >
-            <div
-              v-show="isError"
-              class="el-form-item__error"
-            >
-              请填写用户名
-            </div>
-          </div> -->
           <el-input v-model="userForm.username" />
         </el-form-item>
         <el-form-item
@@ -167,23 +150,6 @@
           label="密码"
           prop="password"
         >
-          <!-- <div class="el-input">
-            <input
-              type="password"
-              autocomplete="off"
-              class="el-input__inner"
-              @input="changePassword"
-              @blur="blurPassword"
-            >
-            <transition name="show">
-              <div
-                v-show="isErrorPassword"
-                class="el-form-item__error"
-              >
-                {{ titleNewPassword }}
-              </div>
-            </transition>
-          </div> -->
           <el-input
             v-model="userForm.password"
             type="password"
