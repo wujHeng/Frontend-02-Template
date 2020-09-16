@@ -501,8 +501,8 @@ import { tank_materials, recipe_list, equip_url, rubber_process_url, raw_materia
 export default {
   data: function() {
     return {
-      // 机台、配方编号、配方名称
       equip_no: null,
+      // 机台、配方编号、配方名称
       equip_name: null,
       category__category_name: null,
       equip_display_bool: null,
