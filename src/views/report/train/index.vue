@@ -498,9 +498,9 @@ export default {
           itemGap: 30,
           right: 0,
           feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
+            // dataZoom: {
+            //   yAxisIndex: 'none'
+            // },
             // dataView: {show:true},
             saveAsImage: {
               name: '',

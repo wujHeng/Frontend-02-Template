@@ -1,5 +1,6 @@
 export default {
   LoginUrl: '/api/v1/system/login/',
+  ChangePasswordUrl: '/api/v1/system/update-password/',
 
   GlobalTypesUrl: '/api/v1/basics/global-types/', // 公共代码类别
   GlobalCodesUrl: '/api/v1/basics/global-codes/', // 公共代码
@@ -86,5 +87,9 @@ export default {
 
   SynchronizationUrl: '/api/v1/system/synchronization/',
 
-  TankMaterialsUrl: '/api/v1/recipe/tank_materials/'
+  // 新增计划的展示
+  ProductClassesPlanUrl: '/api/v1/plan/product-classes-plan-list/',
+
+  TankMaterialsUrl: '/api/v1/recipe/tank_materials/',
+  OperationsUrl: 'api/v1/system/operations/'
 }

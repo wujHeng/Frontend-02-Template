@@ -26,6 +26,7 @@
           <router-link to="/">
             <el-dropdown-item>首 页</el-dropdown-item>
           </router-link>
+          <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
           <el-dropdown-item
             divided
             @click.native="logout"
@@ -35,6 +36,10 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <password-dialog
+      :table-visible="tableVisible"
+      @dialogTableVisible="tableVisible = false"
+    />
   </div>
 </template>
 
@@ -42,11 +47,18 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import PasswordDialog from '@/components/select_w/changePassword'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    PasswordDialog
+  },
+  data() {
+    return {
+      tableVisible: false
+    }
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar', 'name'])
@@ -58,6 +70,9 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login`)
+    },
+    changePassword() {
+      this.tableVisible = true
     }
   }
 }
@@ -122,6 +137,7 @@ export default {
 
     .avatar-container {
       margin-right: 30px;
+      cursor: pointer;
 
       .avatar-wrapper {
         margin-top: 5px;
