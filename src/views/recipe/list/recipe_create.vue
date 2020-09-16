@@ -1348,7 +1348,7 @@ export default {
         for (var j = 0; j < this.rubber_tableData.length; ++j) {
           if (this.rubber_tableData[j].material) {
             var now_stage_material = {
-              sn: j + 1,
+              sn: this.rubber_tableData[j].sn,
               auto_flag: 0,
               material: this.rubber_tableData[j].material,
               actual_weight: this.rubber_tableData[j].actual_weight ? this.rubber_tableData[j].actual_weight : 0,
@@ -1363,7 +1363,7 @@ export default {
             continue
           }
           var now_stage_material_ = {
-            sn: j + 1,
+            sn: this.carbon_tableData[j].sn,
             auto_flag: 0,
             material: this.carbon_tableData[j].material,
             actual_weight: this.carbon_tableData[j].actual_weight ? this.carbon_tableData[j].actual_weight : 0,
@@ -1377,7 +1377,7 @@ export default {
             continue
           }
           var now_stage_material__ = {
-            sn: j + 1,
+            sn: this.oil_tableData[j].sn,
             auto_flag: 0,
             material: this.oil_tableData[j].material,
             actual_weight: this.oil_tableData[j].actual_weight ? this.oil_tableData[j].actual_weight : 0,
