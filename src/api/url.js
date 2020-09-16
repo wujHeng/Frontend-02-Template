@@ -84,5 +84,7 @@ export default {
   // 当前运行中的计划
   PlanStatusListUrl: '/api/v1/plan/plan-status-list/',
 
-  SynchronizationUrl: '/api/v1/system/synchronization/'
+  SynchronizationUrl: '/api/v1/system/synchronization/',
+
+  TankMaterialsUrl: '/api/v1/recipe/tank_materials/'
 }
