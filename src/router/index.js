@@ -283,17 +283,17 @@ export const asyncRoutes = [{
     title: '操作履历',
     icon: 'el-icon-notebook-2'
     // permissionName: 'system'
-  },
-  children: [{
-    path: 'index',
-    name: 'Operations',
-    component: () => import('@/views/operations/index'),
-    meta: {
-      title: '操作履历',
-      icon: 'el-icon-notebook-2'
-      // permissionName: 'childsysteminfo'
-    }
-  }]
+  }
+  // children: [{
+  //   path: 'index',
+  //   name: 'Operations',
+  //   component: () => import('@/views/operations/index'),
+  //   meta: {
+  //     title: '操作履历',
+  //     icon: 'el-icon-notebook-2'
+  //     // permissionName: 'childsysteminfo'
+  //   }
+  // }]
 },
 {
   path: '*',
