@@ -86,5 +86,7 @@ export default {
 
   SynchronizationUrl: '/api/v1/system/synchronization/',
 
-  TankMaterialsUrl: '/api/v1/recipe/tank_materials/'
+  TankMaterialsUrl: '/api/v1/recipe/tank_materials/',
+
+  OperationsUrl: 'api/v1/system/operations/'
 }
