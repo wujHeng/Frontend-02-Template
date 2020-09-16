@@ -148,3 +148,12 @@ export function getPlanStatusList(params) {
   })
 }
 
+export function productClassesPlan(method, data = {}) {
+  const obj = {
+    url: API.ProductClassesPlanUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+

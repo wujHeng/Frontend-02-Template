@@ -1,5 +1,6 @@
 export default {
   LoginUrl: '/api/v1/system/login/',
+  ChangePasswordUrl: '/api/v1/system/update-password/',
 
   GlobalTypesUrl: '/api/v1/basics/global-types/', // 公共代码类别
   GlobalCodesUrl: '/api/v1/basics/global-codes/', // 公共代码
@@ -84,5 +85,8 @@ export default {
   // 当前运行中的计划
   PlanStatusListUrl: '/api/v1/plan/plan-status-list/',
 
-  SynchronizationUrl: '/api/v1/system/synchronization/'
+  SynchronizationUrl: '/api/v1/system/synchronization/',
+
+  // 新增计划的展示
+  ProductClassesPlanUrl: '/api/v1/plan/product-classes-plan-list/'
 }

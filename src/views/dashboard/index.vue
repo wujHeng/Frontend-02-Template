@@ -50,20 +50,20 @@
       :title="chartDataList.length>0?chartDataList[currentIndex].equip_no+'#机台 生产信息统计':''"
       center
       :visible.sync="dialogVisible"
-      width="700px"
+      style="min-width:900px"
+      width="70%"
     >
       <div v-loading="dialogLoading">
         <div v-if="!dialogLoading&&JSON.stringify(infoData)!=='{}'">
-          <!-- <div>{{chartDataList[currentIndex].equip_no}}#机台：在线</div> -->
           <span
             class="visibleTitle"
             style="padding-left:0;"
-          >当前规格：{{ infoData.product_no || '' }}</span>
-          <span class="visibleTitle">班次：{{ infoData.classes_name }}</span>
-          <span class="visibleTitle">收皮数量：{{ infoData.current_trains }}</span>
+          >当前规格：{{ setRetVal(currentEquipInfo,0) }}</span>
+          <span class="visibleTitle">班次：{{ infoData.classes_name || '--' }}</span>
+          <span class="visibleTitle">收皮数量：{{ setRetVal(currentEquipInfo,1) }}</span>
           <span class="visibleTitle">
             设备状态：
-            <span>{{ infoData.status }}</span>
+            <span>{{ setRetVal(currentEquipInfo,2) }}</span>
           </span>
         </div>
         <div style="height:390px;display:flex">
@@ -118,8 +118,8 @@ export default {
     this.chartSettingsLeft = {
       labelMap: {
         product_no: '班次',
-        plan_num: '计划车次',
-        actual_num: '实际车次'
+        sum_plan_trains: '计划车次',
+        actual_trains: '实际车次'
       }
     }
     return {
@@ -137,8 +137,8 @@ export default {
       chartDataLeft: {
         columns: [
           'product_no',
-          'plan_num',
-          'actual_num'
+          'sum_plan_trains',
+          'actual_trains'
         ],
         rows: []
       },
@@ -174,7 +174,8 @@ export default {
       current_equip_no: '',
       currentIndex: 0,
       loading: true,
-      dialogLoading: true
+      dialogLoading: true,
+      currentEquipInfo: {}
     }
   },
   async created() {
@@ -205,13 +206,13 @@ export default {
         this.loading = false
       }
     },
-    async getEquipDetailedList(id) {
+    async getEquipDetailedList(id, product_no) {
       try {
         this.chartDataLeft.rows = []
         this.chartDataRight.rows = []
         this.dialogLoading = true
         // eslint-disable-next-line object-curly-spacing
-        const data = await equipDetailedList('get', { params: { equip_no: id } })
+        const data = await equipDetailedList('get', { params: { equip_no: id, product_no: product_no } })
         this.infoData = data || {}
 
         this.chartDataLeft.rows = this.infoData.product_list || []
@@ -223,16 +224,22 @@ export default {
       }
     },
     setRetVal(rowArr, currentIndex) {
-      let arr = []
-      let i = -1
-      rowArr.forEach((element, index) => {
-        if (element.ret.length > 0) {
-          i = index
-        }
-      })
-      arr = i > -1 ? rowArr[i].ret : []
-      if (i === -1 || arr.length === 0) return '--'
-      return arr[currentIndex] ? arr[currentIndex] : '--'
+      let a = ''
+      for (let i = 0; i < rowArr.length; i++) {
+        a = rowArr[i].ret[currentIndex]
+        if (a && a !== '--') break
+      }
+      return a || '--'
+      // let arr = []
+      // let i = -1
+      // rowArr.forEach((element, index) => {
+      //   // if (element.ret.length > 0) {
+      //   //   i = index
+      //   // }
+      // })
+      // arr = i > -1 ? rowArr[i].ret : []
+      // if (i === -1 || arr.length === 0) return '--'
+      // return arr[currentIndex] ? arr[currentIndex] : '--'
     },
     afterSetOption(chartObj) {
       chartObj.setOption(this.options)
@@ -240,7 +247,10 @@ export default {
     clickBoxTitle(row, index) {
       this.dialogVisible = true
       this.currentIndex = index
-      this.getEquipDetailedList(row.equip_no)
+      this.currentEquipInfo = row.chartData.rows
+      let product_no = this.setRetVal(row.chartData.rows, 0)
+      product_no = !product_no || product_no === '--' ? '' : product_no
+      this.getEquipDetailedList(row.equip_no, product_no)
     },
     afterSetOptionLeft(chartObj) {
       chartObj.setOption(this.optionsLeft)
