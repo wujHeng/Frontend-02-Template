@@ -220,9 +220,9 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        console.log('====================111111111')
-        console.log(recipe_listData)
-        console.log('====================111111111')
+        // console.log('====================111111111')
+        // console.log(recipe_listData)
+        // console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = this.$route.params['category__category_name']
@@ -231,16 +231,16 @@ export default {
         this.production_time_interval = this.$route.params['production_time_interval']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           var v_auto_falg = ''
-          if (recipe_listData['batching_details'][j]['auto_flag'] == 1) {
+          if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
             v_auto_falg = '自动'
-          } else if (recipe_listData['batching_details'][j]['auto_flag'] == 2) {
+          } else if (recipe_listData['batching_details'][j]['auto_flag'] === 2) {
             v_auto_falg = '手动'
           } else {
             v_auto_falg = '其他'
           }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
             this.carbon_tableData.push({
-              sn: this.carbon_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
@@ -248,7 +248,7 @@ export default {
             })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             this.oil_tableData.push({
-              sn: this.oil_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               action_name: '投料',
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
@@ -257,7 +257,7 @@ export default {
             })
           } else {
             this.rubber_tableData.push({
-              sn: this.rubber_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               action_name: '投料',
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
@@ -266,6 +266,9 @@ export default {
             })
           }
         }
+        this.carbon_tableData = this.carbon_tableData.sort(this.compareSn)
+        this.oil_tableData = this.oil_tableData.sort(this.compareSn)
+        this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
         // 超温最短时间、进胶最低温度...
         this.mini_time = (recipe_listData['processes']['mini_time'])
         this.mini_temp = (recipe_listData['processes']['mini_temp'])

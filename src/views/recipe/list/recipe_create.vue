@@ -766,20 +766,40 @@ export default {
     removeOilRow(row) {
       this.oil_tableData.splice(this.oil_tableData.indexOf(row), 1)
     },
-    insertOneOil() {
-      this.oil_tableData.push({
-        sn: this.oil_tableData.length + 1,
+    removeCarbonRow(row) {
+      this.carbon_tableData.splice(this.carbon_tableData.indexOf(row), 1)
+    },
+    insertOneRubber() {
+      var sn = this.rubber_tableData.length + 1
+      if (this.rubber_tableData[this.rubber_tableData.length - 1]) {
+        sn = this.rubber_tableData[this.rubber_tableData.length - 1].sn + 1
+      }
+      this.rubber_tableData.push({
+        sn,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
       })
     },
-    removeCarbonRow(row) {
-      this.carbon_tableData.splice(this.carbon_tableData.indexOf(row), 1)
-    },
     insertOnecarbon() {
+      var sn = this.carbon_tableData.length + 1
+      if (this.carbon_tableData[this.carbon_tableData.length - 1]) {
+        sn = this.carbon_tableData[this.carbon_tableData.length - 1].sn + 1
+      }
       this.carbon_tableData.push({
-        sn: this.carbon_tableData.length + 1,
+        sn,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
+    insertOneOil() {
+      var sn = this.oil_tableData.length + 1
+      if (this.oil_tableData[this.oil_tableData.length - 1]) {
+        sn = this.oil_tableData[this.oil_tableData.length - 1].sn + 1
+      }
+      this.oil_tableData.push({
+        sn,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
@@ -792,15 +812,6 @@ export default {
       this.rubberRow = rubberRow
       this.dialogRawMaterialSync = true
       this.raw_material_list()
-    },
-    insertOneRubber() {
-      // console.log(this.rubber_tableData, 'this.rubber_tableData')
-      this.rubber_tableData.push({
-        sn: this.rubber_tableData.length + 1,
-        actual_weight: 0,
-        standard_error: 0,
-        material_name: ''
-      })
     },
     //   以下6个函数用于初始化下拉框的接口(密炼机类型暂时不用)
     async equip_list() {
@@ -1471,12 +1482,12 @@ export default {
           }
         })
       } else {
-        var posted = false
+        var validateTimes = 0
         this.$refs['generateRecipeForm'].validateField(['SelectEquip', 'stage_product_batch_no'], error => {
           if (!error) {
-            if (!posted) {
+            validateTimes++
+            if (validateTimes === 2) {
               this.postRecipeList()
-              posted = true
             }
           } else {
             return false
