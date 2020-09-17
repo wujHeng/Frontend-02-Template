@@ -159,7 +159,7 @@ export function productClassesPlan(method, data = {}) {
 
 export function productClassesPlanPanycreateUrl(method, data = {}) {
   const obj = {
-    url: API.ProductClassesPlanUrl,
+    url: API.ProductClassesPlanPanycreateUrl,
     method: method
   }
   Object.assign(obj, data)
