@@ -89,6 +89,8 @@ export default {
 
   // 新增计划的展示
   ProductClassesPlanUrl: '/api/v1/plan/product-classes-plan-list/',
+  // 新增计划保存
+  ProductClassesPlanPanycreateUrl: '/api/v1/plan/product-classes-plan-manycreate/',
 
   TankMaterialsUrl: '/api/v1/recipe/tank_materials/',
   OperationsUrl: 'api/v1/system/operations/'
