@@ -2,6 +2,14 @@ import request from '@/utils/request'
 import API from '@/api/url'
 import url from '@/api/url'
 
+export function validate_versions(params) {
+  return request({
+    url: API.ValidateVersionsUrl,
+    method: 'get',
+    params
+  })
+}
+
 export function tank_materials(equip_no, tank_type) {
   return request({
     url: API.TankMaterialsUrl,

@@ -339,12 +339,12 @@ export default {
         this.temp_use_flag = process_step_listData.results[0]['temp_use_flag']
         this.sp_num = process_step_listData.results[0]['sp_num']
         this.use_flag = process_step_listData.results[0]['use_flag']
-        console.log('====================2222')
-        console.log(process_step_listData.results)
-        console.log('====================2222')
+        // console.log('====================2222')
+        // console.log(process_step_listData.results)
+        // console.log('====================2222')
         for (var i = 0; i < process_step_listData.results[0]['process_details'].length; ++i) {
-          console.log('====================333333')
-          console.log(process_step_listData.results[0]['process_details'][i])
+          // console.log('====================333333')
+          // console.log(process_step_listData.results[0]['process_details'][i])
           this.process_step_tableData.push({
             sn: this.process_step_tableData.length + 1,
             condition_name: process_step_listData.results[0]['process_details'][i]['condition_name'],

@@ -93,5 +93,7 @@ export default {
   ProductClassesPlanPanycreateUrl: '/api/v1/plan/product-classes-plan-manycreate/',
 
   TankMaterialsUrl: '/api/v1/recipe/tank_materials/',
-  OperationsUrl: 'api/v1/system/operations/'
+  OperationsUrl: '/api/v1/system/operations/',
+
+  ValidateVersionsUrl: '/api/v1/recipe/validate-versions/'
 }
