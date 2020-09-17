@@ -170,15 +170,14 @@
     <el-dialog
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="30%"
       title="复制新增配方"
       :visible.sync="dialogCopyRecipeSync"
     >
 
-      <el-form :inline="true">
-        <el-form-item label="选择机台">
+      <el-form ref="copyForm" :model="copyForm" :inline="true" :rules="rules">
+        <el-form-item label="选择机台" prop="CopySelectEquip">
           <el-select
-            v-model="CopySelectEquip"
+            v-model="copyForm.CopySelectEquip"
             size="mini"
             clearable
             style="width: 300px"
@@ -193,10 +192,86 @@
             />
           </el-select>
         </el-form-item>
+        <br>
+        <el-form-item label="产地" prop="site">
+          <el-select
+            v-model="copyForm.site"
+            size="mini"
+            style="width: 150px"
+            clearable
+            placeholder="请选择"
+            @visible-change="SelectSiteDisplay"
+          >
+            <el-option
+              v-for="item in SelectSiteOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="SITE" prop="SITE">
+          <el-select
+            v-model="copyForm.SITE"
+            size="mini"
+            style="width: 100px"
+            clearable
+            placeholder="请选择"
+            @visible-change="SelectGlobalSITEDisplay"
+          >
+            <el-option
+              v-for="item in SelectSITEOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="段次" prop="selectStage">
+          <el-select
+            v-model="copyForm.selectStage"
+            size="mini"
+            style="width: 150px"
+            clearable
+            placeholder="请选择"
+            @visible-change="SelectStageDisplay"
+          >
+            <el-option
+              v-for="item in SelectStageOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="胶料编号" prop="selectRecipeNo">
+          <el-select
+            v-model="copyForm.selectRecipeNo"
+            filterable
+            size="mini"
+            style="width: 100px"
+            clearable
+            placeholder="请选择"
+            @visible-change="SelectRecipeNoDisplay"
+          >
+            <el-option
+              v-for="item in SelectRecipeNoOptions"
+              :key="item.id"
+              :label="item.product_no"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="版本" prop="version">
+          <el-input v-model="copyForm.version" style="width: 90px" size="mini" placeholder="版本" />
+        </el-form-item>
+        <el-form-item label="方案">
+          <el-input v-model="copyForm.scheme" style="width: 90px" size="mini" placeholder="方案" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogCopyRecipeSync = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="CopyRecipeConfirm">确 定</el-button>
+        <el-button size="mini" type="primary" @click="CopyRecipeConfirm('copyForm')">确 定</el-button>
       </div>
 
     </el-dialog>
@@ -205,7 +280,7 @@
 </template>
 
 <script>
-import { recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
+import { validate_versions, recipe_no_url, global_SITE_url, recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 import { mapGetters } from 'vuex'
@@ -230,11 +305,13 @@ export default {
       }, {
         value: 6, label: '废弃'
       }],
+      SelectSITEOptions: [],
       SelectSiteOptions: [],
       SelectStageOptions: [],
+      SelectRecipeNoOptions: [],
       category__category_name: null,
       SelectEquip: null,
-      CopySelectEquip: '',
+
       SelectRecipeStatus: null,
       SelectSite: null,
       SelectStage: null,
@@ -248,14 +325,66 @@ export default {
       pageSize: 10,
       tableDataTotal: 0,
 
-      dialogCopyRecipeSync: false
+      dialogCopyRecipeSync: false,
+
+      copyForm: {
+        CopySelectEquip: '',
+        site: '',
+        SITE: '',
+        selectStage: '',
+        selectRecipeNo: '',
+        version: '',
+        scheme: ''
+      },
+      rules: {
+        CopySelectEquip: [{ required: true, message: '请选择机台', trigger: 'change' }],
+        site: [{ required: true, message: '请选择产地', trigger: 'change' }],
+        SITE: [{ required: true, message: '请选择SITE', trigger: 'change' }],
+        selectStage: [{ required: true, message: '请选择段次', trigger: 'change' }],
+        selectRecipeNo: [{ required: true, message: '请选择胶料编号', trigger: 'change' }],
+        version: [{ required: true, message: '请填写版本', trigger: 'change' }]
+      }
     }
   },
   created() {
     this.permissionObj = this.permission
     this.get_recipe_list()
+    this.site_list()
+    this.global_SITE_list()
+    this.stage_list()
+    this.recipe_no_list()
   },
   methods: {
+    async recipe_no_list() {
+      try {
+        const recipe_no_list = await recipe_no_url('get', {
+          params: { }
+        })
+        if (recipe_no_list.results.length !== 0) {
+          this.SelectRecipeNoOptions = recipe_no_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectRecipeNoDisplay: function(bool) {
+      if (bool) {
+        this.recipe_no_list()
+      }
+    },
+    async global_SITE_list() {
+      try {
+        const global_SITE_list = await global_SITE_url('get', {
+          params: { }
+        })
+        if (global_SITE_list.results.length !== 0) {
+          this.SelectSITEOptions = global_SITE_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectGlobalSITEDisplay: function(bool) {
+      if (bool) {
+        this.global_SITE_list()
+      }
+    },
     async get_recipe_list(val = 1) {
       try {
         var v_SelectEquip = this.SelectEquip ? this.SelectEquip : ''
@@ -365,7 +494,7 @@ export default {
     },
     SelectCopyEquipChange: function() {
       for (var i = 0; i < this.SelectCopyEquipOptions.length; i++) {
-        if (this.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) { this.category__category_name = this.SelectCopyEquipOptions[i]['category__category_name'] }
+        if (this.copyForm.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) { this.category__category_name = this.SelectCopyEquipOptions[i]['category__category_name'] }
       }
     },
 
@@ -442,13 +571,13 @@ export default {
       this.$route.params
     },
     ModifyRecipeButton: function(modify_row) {
-      console.log(modify_row)
+      // console.log(modify_row)
       this.$router.push({ name: 'RecipeModify', params: modify_row })
       this.$route.params
     },
     handleRecipeDelete: function(delete_row) {
-      console.log('--------------------------')
-      console.log(delete_row)
+      // console.log('--------------------------')
+      // console.log(delete_row)
       this.$confirm('此操作将永久删除' + delete_row['stage_product_batch_no'] + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -465,24 +594,33 @@ export default {
       })
     },
     CopyRecipeButton: async function() {
+      if (this.$refs['copyForm']) {
+        this.$refs['copyForm'].resetFields()
+      }
+      this.copyForm.site = this.currentRow.factory_id
+      this.copyForm.SITE = this.currentRow.site_id
+      this.copyForm.selectStage = this.currentRow.stage_id
+      this.copyForm.selectRecipeNo = this.currentRow.product_info_id
+      this.copyForm.version = this.currentRow.versions
+      this.copyForm.scheme = this.currentRow.precept
       this.dialogCopyRecipeSync = true
       await this.equip_copy_list(this.currentRow['dev_type'])
     },
-    CopyRecipeConfirm: async function() {
-      if (this.CopySelectEquip === '') {
-        this.$message({
-          message: '机台不能为空',
-          type: 'error'
-        })
-        return
-      }
-      if (this.CopySelectEquip === this.currentRow['equip']) {
-        this.$message({
-          message: '该机台配方已存在',
-          type: 'error'
-        })
-        return
-      }
+    CopyRecipeConfirm: async function(formName) {
+      // if (this.copyForm.CopySelectEquip === '') {
+      //   this.$message({
+      //     message: '机台不能为空',
+      //     type: 'error'
+      //   })
+      //   return
+      // }
+      // if (this.copyForm.CopySelectEquip === this.currentRow['equip']) {
+      //   this.$message({
+      //     message: '该机台配方已存在',
+      //     type: 'error'
+      //   })
+      //   return
+      // }
       // var copy_recipe_return = await this.copy_recipe_list(
       // { data: {
       // 'product_batching': this.currentRow['id'],
@@ -498,12 +636,30 @@ export default {
       // }
       // this.get_recipe_list()
 
-      console.log('----------------------------------------')
+      // console.log('----------------------------------------')
       // console.log(this.currentRow)
-      var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip, category__category_name: this.category__category_name })
-      console.log(add_currentRow)
-      this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
-      this.$route.params
+      this.$refs[formName].validate(valide => {
+        if (valide) {
+          validate_versions({
+            site: this.copyForm.SITE,
+            product_info: this.copyForm.selectRecipeNo,
+            versions: this.copyForm.version,
+            equip: this.copyForm.CopySelectEquip,
+            stage: this.copyForm.selectStage
+          }).then(response => {
+            this.dialogCopyRecipeSync = false
+            var add_currentRow = Object.assign(this.currentRow, { ...this.copyForm, copy_equip_id: this.copyForm.CopySelectEquip, category__category_name: this.category__category_name })
+            // console.log(add_currentRow)
+            this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
+            this.$route.params
+          // eslint-disable-next-line handle-callback-err
+          }).catch(error => {
+            // this.$message.error('配方已存在, 不可复制')
+          })
+        } else {
+          return false
+        }
+      })
     }
   }
 }

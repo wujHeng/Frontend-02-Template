@@ -662,11 +662,11 @@ export default {
           params: { }
         })
         this.production_time_interval = recipe_listData['production_time_interval']
-        console.log(recipe_listData, 'recipe_listData')
+        // console.log(recipe_listData, 'recipe_listData')
         // 机台、配方编号、配方名称
-        console.log('===============xxxx=========')
-        console.log(this.$route.params)
-        console.log('==============xxxx===========')
+        // console.log('===============xxxx=========')
+        // console.log(this.$route.params)
+        // console.log('==============xxxx===========')
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = this.$route.params['category__category_name']
         if (this.equip_name == null) {
@@ -711,12 +711,12 @@ export default {
         this.carbon_tableData = this.carbon_tableData.sort(this.compareSn)
         this.oil_tableData = this.oil_tableData.sort(this.compareSn)
         this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
-        console.log('----------------------get--------------------')
-        console.log(recipe_listData)
+        // console.log('----------------------get--------------------')
+        // console.log(recipe_listData)
         this.recipe_step_id = recipe_listData['processes']['id']
-        console.log('aaaaaaaaaaaaaaa----------------')
-        console.log(typeof (recipe_listData['processes']['mini_time']), typeof (recipe_listData['processes']['mini_temp']), typeof (recipe_listData['processes']['over_time']))
-        console.log('aaaaaaaaaaaaaaa----------------')
+        // console.log('aaaaaaaaaaaaaaa----------------')
+        // console.log(typeof (recipe_listData['processes']['mini_time']), typeof (recipe_listData['processes']['mini_temp']), typeof (recipe_listData['processes']['over_time']))
+        // console.log('aaaaaaaaaaaaaaa----------------')
         // 超温最短时间、进胶最低温度...
         this.mini_time = (recipe_listData['processes']['mini_time'])
         this.mini_temp = (recipe_listData['processes']['mini_temp'])
@@ -877,7 +877,7 @@ export default {
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        console.log(recipe_info_step_list)
+        // console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
 
