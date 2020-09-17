@@ -25,6 +25,9 @@
           <el-form-item label="机型名称">
             <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
           </el-form-item>
+          <el-form-item label="预计炼胶时间">
+            <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 90px" />
+          </el-form-item>
         </el-col>
         <el-col :span="18">
           <el-row>
@@ -117,9 +120,6 @@
             </el-form-item>
             <el-form-item label="方案">
               <el-input v-model="generateRecipeForm.scheme" :disabled="select_recipe_component || !normalReceipe" style="width: 90px" size="mini" placeholder="方案" />
-            </el-form-item>
-            <el-form-item label="预计炼胶时间">
-              <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 90px"/>
             </el-form-item>
             <!-- <el-form-item>
               <el-button :disabled="select_recipe_component" size="mini" type="primary" @click="generateMaterialButton('generateRecipeForm')">配料</el-button>

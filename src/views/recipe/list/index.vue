@@ -85,7 +85,7 @@
       </el-form-item>
       <br>
       <el-form-item style="float: right">
-        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.stage_product_batch_no === null" @click="CopyRecipeButton">复制新增</el-button>
+        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.stage_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
 <el-button>删除</el-button>
@@ -145,10 +145,10 @@
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
-      <el-table-column align="center" prop="submit_username" label="提交人"/>
-      <el-table-column align="center" prop="reject_username" label="驳回人"/>
-      <el-table-column align="center" prop="used_username" label="启用人"/>
-      <el-table-column align="center" prop="obsolete_username" label="废弃人"/>
+      <el-table-column align="center" prop="submit_username" label="提交人" />
+      <el-table-column align="center" prop="reject_username" label="驳回人" />
+      <el-table-column align="center" prop="used_username" label="启用人" />
+      <el-table-column align="center" prop="obsolete_username" label="废弃人" />
       <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
       <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
@@ -241,7 +241,8 @@ export default {
       input_rubber_no: null,
       tableData: [],
       currentRow: {
-        product_name: null
+        product_name: null,
+        stage_name: null
       },
       currentPage: 1,
       pageSize: 10,
@@ -277,7 +278,8 @@ export default {
         this.tableDataTotal = recipe_listData.count
         this.loading = false
         this.currentRow = {
-          product_name: null
+          product_name: null,
+          stage_name: null
         }
       } catch (e) {
         this.loading = false
@@ -374,7 +376,8 @@ export default {
       this.currentRow = val
       this.get_recipe_list(val)
       this.currentRow = {
-        product_name: null
+        product_name: null,
+        stage_name: null
       }
     },
 

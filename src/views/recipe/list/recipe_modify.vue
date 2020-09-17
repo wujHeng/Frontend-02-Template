@@ -8,6 +8,9 @@
       <el-form-item label="机型名称">
         <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
       </el-form-item>
+      <el-form-item label="预计炼胶时间">
+        <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 100%" />
+      </el-form-item>
       <!-- <el-form-item label="机台">
         <el-select
           v-model="equip_name"
@@ -29,9 +32,6 @@
       </el-form-item>
       <el-form-item label="配方名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item>
-      <el-form-item label="预计炼胶时间">
-        <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 100%" />
       </el-form-item>
       <el-form-item style="float: right">
         <el-button @click="recipe_return_list">返回</el-button>
@@ -501,8 +501,8 @@ import { tank_materials, recipe_list, equip_url, rubber_process_url, raw_materia
 export default {
   data: function() {
     return {
-      // 机台、配方编号、配方名称
       equip_no: null,
+      // 机台、配方编号、配方名称
       equip_name: null,
       category__category_name: null,
       equip_display_bool: null,
