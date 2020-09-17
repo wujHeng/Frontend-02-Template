@@ -582,7 +582,7 @@ export default {
     this.equip_no = this.$route.params['equip_no']
     this.getTankCarbons()
     this.getTankOils()
-    //   rubber_process_url
+    //   rubber_process_urlcreated
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
     // 配方详情界面的配方信息和密炼步序信息接口访问（已废弃）
@@ -700,30 +700,27 @@ export default {
             v_auto_falg = '其他'
           }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
-            this.carbon_tableData.push({
-              sn: recipe_listData['batching_details'][j].sn,
-              auto_flag: v_auto_falg,
-              material_name: recipe_listData['batching_details'][j]['material_name'],
-              actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
-            })
+            // this.carbon_tableData.push({
+            //   sn: recipe_listData['batching_details'][j].sn,
+            //   auto_flag: v_auto_falg,
+            //   material_name: recipe_listData['batching_details'][j]['material_name'],
+            //   actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
+            //   standard_error: recipe_listData['batching_details'][j]['standard_error']
+            // })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
-            this.oil_tableData.push({
-              sn: recipe_listData['batching_details'][j].sn,
-              action_name: '投料',
-              auto_flag: v_auto_falg,
-              material_name: recipe_listData['batching_details'][j]['material_name'],
-              actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
-            })
+            // this.oil_tableData.push({
+            //   sn: recipe_listData['batching_details'][j].sn,
+            //   action_name: '投料',
+            //   auto_flag: v_auto_falg,
+            //   material_name: recipe_listData['batching_details'][j]['material_name'],
+            //   actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
+            //   standard_error: recipe_listData['batching_details'][j]['standard_error']
+            // })
           } else {
             this.rubber_tableData.push({
-              sn: recipe_listData['batching_details'][j].sn,
               action_name: '投料',
               auto_flag: v_auto_falg,
-              material_name: recipe_listData['batching_details'][j]['material_name'],
-              actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
+              ...recipe_listData['batching_details'][j]
             })
           }
         }
