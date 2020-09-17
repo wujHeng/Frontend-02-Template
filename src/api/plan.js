@@ -157,3 +157,12 @@ export function productClassesPlan(method, data = {}) {
   return request(obj)
 }
 
+export function productClassesPlanPanycreateUrl(method, data = {}) {
+  const obj = {
+    url: API.ProductClassesPlanUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
