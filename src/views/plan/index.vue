@@ -16,7 +16,7 @@
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="showFindDialog">查询</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1" type="info" @click="showAddPlanDialog">新增</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
-          <!-- <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button> -->
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
         </el-form-item>
       </el-form>
@@ -346,7 +346,7 @@ export default {
 
     delPlan() {
       this.$confirm(
-        '此操作将永久删除' + this.currentRow.plan_classes_uid + ', 是否继续?',
+        '此操作将永久删除' + this.currentRow.plan_classes_uid + '计划, 是否继续?',
         '提示',
         {
           confirmButtonText: '确定',
@@ -361,9 +361,13 @@ export default {
           })
           this.getPlanList()
         })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
-
     upPlan() {
       upRegulation(this.params, this.currentRow.id).then((response) => {
         this.$message({
@@ -413,16 +417,29 @@ export default {
     },
 
     issuedPlan() {
-      issuedPlan(this.currentRow).then((response) => {
-        this.$message({
-          type: 'success',
-          message: '下达成功!'
+      this.$alert('机台： ' + this.equip + '<br>计划编号： ' + this.currentRow.plan_classes_uid + '<br>配方名称： ' + this.currentRow.stage_product_batch_no,
+        '提示', {
+          showCancelButton: true,
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }
+      ).then(() => {
+        issuedPlan(this.currentRow).then((response) => {
+          this.$message({
+            type: 'success',
+            message: '下达成功!'
+          })
+          this.getPlanStatusList()
+          this.getPlanList()
         })
-        this.getPlanStatusList()
-        this.getPlanList()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消下达'
+        })
       })
     },
-
     showAlterTrainNumberDialog() {
       this.$refs.alterTrainNumberDialog.show(this.currentRow)
     },
