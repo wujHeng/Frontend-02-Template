@@ -1,38 +1,126 @@
 <template>
   <div class="recipe_modify">
-    <br>
+    <el-form ref="generateRecipeForm" :inline="true" :model="generateRecipeForm" :rules="rules">
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="机台">
+            <el-select
+              v-model="generateRecipeForm.SelectEquip"
+              size="mini"
+              style="width: 100px"
+              clearable
+              :disabled="equip_display_bool"
+            >
+              <el-option
+                v-for="item in SelectEquipOptions"
+                :key="item.id"
+                :label="item.equip_name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="机型名称">
+            <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
+          </el-form-item>
+          <el-form-item label="预计炼胶时间">
+            <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 90px" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="18">
+          <el-row>
+            <el-form-item label="产地" prop="SelectSite">
+              <el-select
+                v-model="generateRecipeForm.SelectSite"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                @visible-change="SelectSiteDisplay"
+              >
+                <el-option
+                  v-for="item in SelectSiteOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="SITE" prop="SelectSITE">
+              <el-select
+                v-model="generateRecipeForm.SelectSITE"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                @change="generateRecipeName"
+                @visible-change="SelectGlobalSITEDisplay"
+              >
+                <el-option
+                  v-for="item in SelectSITEOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="段次" prop="SelectStage">
+              <el-select
+                v-model="generateRecipeForm.SelectStage"
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                @change="generateRecipeName"
+                @visible-change="SelectStageDisplay"
+              >
+                <el-option
+                  v-for="item in SelectStageOptions"
+                  :key="item.id"
+                  :label="item.global_name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="胶料编号" prop="SelectRecipeNo">
+              <el-select
+                v-model="generateRecipeForm.SelectRecipeNo"
+                filterable
+                size="mini"
+                style="width: 100px"
+                clearable
+                placeholder="请选择"
+                @change="generateRecipeName"
+                @visible-change="SelectRecipeNoDisplay"
+              >
+                <el-option
+                  v-for="item in SelectRecipeNoOptions"
+                  :key="item.id"
+                  :label="item.product_no"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="版本" prop="version">
+              <el-input v-model="generateRecipeForm.version" style="width: 90px" size="mini" placeholder="版本" @change="generateRecipeName" />
+            </el-form-item>
+            <el-form-item label="方案">
+              <el-input v-model="generateRecipeForm.scheme" style="width: 90px" size="mini" placeholder="方案" />
+            </el-form-item>
+          </el-row>
+        </el-col>
+      </el-row>
+    </el-form>
     <el-form :inline="true">
-      <!-- <el-form-item v-show="!!equip_name" label="机台">
-        <el-input v-model="equip_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item> -->
-      <el-form-item label="机台">
-        <el-select
-          v-model="equip_name"
-          size="mini"
-          style="width: 100%"
-          clearable
-          :disabled="equip_display_bool"
-        >
-          <el-option
-            v-for="item in SelectEquipOptions"
-            :key="item.id"
-            :label="item.equip_name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="机型名称">
-        <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 100px" />
-      </el-form-item>
       <el-form-item label="配方编号">
+        <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
+      </el-form-item>
+      <!-- <el-form-item label="配方编号">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
       <el-form-item label="配方名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
-      </el-form-item>
-      <el-form-item label="预计炼胶时间">
-        <el-input-number v-model="production_time_interval" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 100%" />
-      </el-form-item>
+      </el-form-item> -->
+
       <el-form-item style="float: right">
         <el-button @click="recipe_return_list">返回</el-button>
       </el-form-item>
@@ -494,16 +582,19 @@
 </template>
 
 <script>
-import { tank_materials, recipe_list, equip_url, rubber_process_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
+import { recipe_no_url, stage_url, global_SITE_url, site_url, tank_materials, recipe_list, equip_url, rubber_process_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 
 export default {
   data: function() {
     return {
+      SelectSiteOptions: [],
+      SelectSITEOptions: [],
+      SelectStageOptions: [],
+      SelectRecipeNoOptions: [],
       equip_no: null,
       // 机台、配方编号、配方名称
-      equip_name: null,
       category__category_name: null,
       equip_display_bool: null,
       stage_product_batch_no: null,
@@ -575,17 +666,41 @@ export default {
       confirm_recipe_list: [],
       rubberRow: null,
       tankOils: [],
-      tankCarbons: []
+      tankCarbons: [],
+      generateRecipeForm: {
+        SelectEquip: '',
+        SelectSite: '',
+        SelectSITE: '',
+        SelectRecipeNo: '',
+        SelectStage: '',
+        version: '',
+        scheme: '',
+        stage_product_batch_no: ''
+      },
+      rules: {
+        SelectEquip: [{ required: true, message: '请选择机台', trigger: 'change' }],
+        SelectSite: [{ required: true, message: '请选择产地', trigger: 'change' }],
+        SelectSITE: [{ required: true, message: '请选择SITE', trigger: 'change' }],
+        SelectRecipeNo: [{ required: true, message: '请选择胶料编码', trigger: 'change' }],
+        SelectStage: [{ required: true, message: '请选择段次', trigger: 'change' }],
+        version: [{ required: true, message: '请输入版本', blur: 'change' }],
+        stage_product_batch_no: [{ required: true, message: '请输入配方编号', blur: 'change' }]
+      }
     }
   },
   created() {
+    this.recipe_no_list()
+    this.stage_list()
+    this.global_SITE_list()
+    this.site_list()
     this.equip_no = this.$route.params['equip_no']
+    // this.$route.params['site']
     this.getTankCarbons()
     this.getTankOils()
     //   rubber_process_urlcreated
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
-    // 配方详情界面的配方信息和密炼步序信息接口访问（已废弃）
+    // 配方详情界面的配方信息和created密炼步序信息接口访问（已废弃）
     // this.recipe_process_step_list(this.$route.params['id'], this.$route.params['equip'])
     this.condition_list()
     this.action_list()
@@ -593,6 +708,88 @@ export default {
     this.equip_list()
   },
   methods: {
+    generateRecipeName() {
+      var SITE_name = ''
+      var stage_name = ''
+      var product_name = ''
+      for (var i = 0; i < this.SelectSITEOptions.length; ++i) {
+        if (this.SelectSITEOptions[i]['id'] === this.generateRecipeForm['SelectSITE']) {
+          SITE_name = this.SelectSITEOptions[i]['global_name']
+        }
+      }
+      for (var m = 0; m < this.SelectStageOptions.length; ++m) {
+        if (this.SelectStageOptions[m]['id'] === this.generateRecipeForm['SelectStage']) {
+          stage_name = this.SelectStageOptions[m]['global_name']
+        }
+      }
+      for (var n = 0; n < this.SelectRecipeNoOptions.length; ++n) {
+        if (this.SelectRecipeNoOptions[n]['id'] === this.generateRecipeForm['SelectRecipeNo']) {
+          product_name = this.SelectRecipeNoOptions[n]['product_no']
+        }
+      }
+      this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
+      this.generateRecipeForm.stage_product_batch_no = this.stage_product_batch_no
+    },
+    async recipe_no_list() {
+      try {
+        const recipe_no_list = await recipe_no_url('get', {
+          params: { }
+        })
+        if (recipe_no_list.results.length !== 0) {
+          this.SelectRecipeNoOptions = recipe_no_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectRecipeNoDisplay: function(bool) {
+      if (bool) {
+        this.recipe_no_list()
+      }
+    },
+    async stage_list() {
+      try {
+        const stage_list = await stage_url('get', {
+          params: { }
+        })
+        if (stage_list.results.length !== 0) {
+          this.SelectStageOptions = stage_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectStageDisplay: function(bool) {
+      if (bool) {
+        this.stage_list()
+      }
+    },
+    async global_SITE_list() {
+      try {
+        const global_SITE_list = await global_SITE_url('get', {
+          params: { }
+        })
+        if (global_SITE_list.results.length !== 0) {
+          this.SelectSITEOptions = global_SITE_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectGlobalSITEDisplay: function(bool) {
+      if (bool) {
+        this.global_SITE_list()
+      }
+    },
+    async site_list() {
+      try {
+        const site_list = await site_url('get', {
+          params: { }
+        })
+        if (site_list.results.length !== 0) {
+          this.SelectSiteOptions = site_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectSiteDisplay: function(bool) {
+      if (bool) {
+        this.site_list()
+      }
+    },
     selectMaterial(rubberRow) {
       this.rubberRow = rubberRow
       this.dialogRawMaterialSync = true
@@ -677,17 +874,17 @@ export default {
         })
         this.production_time_interval = recipe_listData['production_time_interval']
         // 机台、配方编号、配方名称
-        console.log('===============xxxx=========')
-        console.log(this.$route.params, recipe_listData)
-        console.log('==============xxxx===========')
-        this.equip_name = this.$route.params['copy_equip_id']
+        // console.log('===============xxxx=========')
+        // console.log(this.$route.params, recipe_listData)
+        // console.log('==============xxxx===========')
+        this.generateRecipeForm.SelectEquip = this.$route.params['copy_equip_id']
         this.category__category_name = this.$route.params['category__category_name']
-        if (this.equip_name == null) {
+        if (this.generateRecipeForm.SelectEquip == null) {
           this.equip_display_bool = false
         } else {
           this.equip_display_bool = true
         }
-        this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
+        // this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         this.confirm_recipe_list = recipe_listData
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
@@ -727,8 +924,8 @@ export default {
         this.carbon_tableData = this.carbon_tableData.sort(this.compareSn)
         this.oil_tableData = this.oil_tableData.sort(this.compareSn)
         this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
-        console.log('----------------------get--------------------')
-        console.log(recipe_listData)
+        // console.log('----------------------get--------------------')
+        // console.log(recipe_listData)
         this.recipe_step_id = recipe_listData['processes']['id']
         // 超温最短时间、进胶最低温度...
         this.mini_time = (recipe_listData['processes']['mini_time'])
@@ -761,6 +958,13 @@ export default {
           })
         }
         this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
+        this.generateRecipeForm.SelectSite = this.$route.params['site']
+        this.generateRecipeForm.SelectSITE = this.$route.params['SITE']
+        this.generateRecipeForm.SelectStage = this.$route.params['selectStage']
+        this.generateRecipeForm.SelectRecipeNo = this.$route.params['selectRecipeNo']
+        this.generateRecipeForm.version = this.$route.params['version']
+        this.generateRecipeForm.scheme = this.$route.params['scheme']
+        this.generateRecipeName()
         return recipe_listData
       } catch (e) { throw new Error(e) }
     },
@@ -885,7 +1089,7 @@ export default {
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        console.log(recipe_info_step_list)
+        // console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
 
@@ -1121,14 +1325,8 @@ export default {
     del_recipe_step_row: function(step_ele, index) {
       this.RecipeMaterialList.splice(index, 1)
     },
-    recipe_save_return: async function() {
-      if (this.equip_name == null) {
-        this.$message({
-          message: '机台不能不能为空',
-          type: 'error'
-        })
-        return
-      }
+    postRecipeList() {
+
       if (this.RecipeMaterialList.length === 0) {
         this.$message({
           message: '密炼步序不能为空',
@@ -1218,18 +1416,18 @@ export default {
           v_production_time_interval = this.production_time_interval
         }
         try {
-          await this.post_recipe_list(
+          this.post_recipe_list(
             { data: {
-              'factory': this.confirm_recipe_list['factory'],
-              'site': this.confirm_recipe_list['site'],
-              'product_info': this.confirm_recipe_list['product_info'],
-              'precept': this.confirm_recipe_list['precept'],
-              'stage_product_batch_no': this.confirm_recipe_list['stage_product_batch_no'],
-              'stage': this.confirm_recipe_list['stage'],
-              'versions': this.confirm_recipe_list['versions'],
-              'production_time_interval': v_production_time_interval,
+              'factory': this.generateRecipeForm['SelectSite'],
+              'site': this.generateRecipeForm['SelectSITE'],
+              'product_info': this.generateRecipeForm['SelectRecipeNo'],
+              'precept': this.generateRecipeForm['scheme'],
+              'stage_product_batch_no': this.stage_product_batch_no,
+              'stage': this.generateRecipeForm['SelectStage'],
+              'versions': this.generateRecipeForm['version'],
+              'production_time_interval': this.production_time_interval,
               'batching_details': batching_details_list,
-              'equip': this.$route.params['copy_equip_id'],
+              'equip': this.generateRecipeForm['SelectEquip'],
               // 密炼步序list
               'process_details': step_details_list,
               'processes': {
@@ -1251,7 +1449,7 @@ export default {
                 'use_flag': this.use_flag,
                 // 设备id与配方id
                 'equip': this.$route.params['copy_equip_id'],
-                'product_batching': this.$route.params['id']
+                'product_batching': null
               }
             }}
           )
@@ -1261,46 +1459,21 @@ export default {
           })
           this.$router.push({ name: 'RecipeList' })
         } catch (e) { e }
-
-        // else {
-        //   await this.post_recipe_info_step_list(
-        //     { data: {
-        //       // 配方基础信息中第一行
-        //       'mini_time': this.mini_time,
-        //       'mini_temp': this.mini_temp,
-        //       'over_temp': this.over_temp,
-        //       'batching_error': this.batching_error,
-        //       'zz_temp': this.zz_temp,
-        //       'xlm_temp': this.xlm_temp,
-        //       'cb_temp': this.cb_temp,
-        //       // 配方基础信息中第二行
-        //       'over_time': this.over_time,
-        //       'max_temp': this.max_temp,
-        //       'reuse_time': this.reuse_time,
-        //       'reuse_flag': this.reuse_flag,
-        //       'temp_use_flag': this.temp_use_flag,
-        //       'sp_num': this.sp_num,
-        //       'use_flag': this.use_flag,
-        //       // 密炼步序list
-        //       'process_details': step_details_list,
-        //       // 设备id与配方id
-        //       'equip': this.equip_name,
-        //       'product_batching': this.$route.params['id']
-
-        //     }},
-        //     this.$message({
-        //       message: this.stage_product_batch_no + '配方步序修改成功',
-        //       type: 'success'
-        //     }),
-        //     this.$router.push({ name: 'RecipeList' })
-        //   )
-        // }
       } else {
         this.$message({
           message: '收皮信息不能为空',
           type: 'error'
         })
       }
+    },
+    recipe_save_return: async function() {
+      this.$refs['generateRecipeForm'].validate(valid => {
+          if (valid) {
+            this.postRecipeList()
+          } else {
+            return false
+          }
+        })
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })

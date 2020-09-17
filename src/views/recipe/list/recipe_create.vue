@@ -35,7 +35,7 @@
               <el-radio v-model="normalReceipe" :label="true" @change="receipeTypeChange">
                 常规配方
               </el-radio>
-              </el-radio></el-form-item>
+            </el-form-item>
             <el-form-item label="产地" prop="SelectSite">
               <el-select
                 v-model="generateRecipeForm.SelectSite"
@@ -1195,7 +1195,7 @@ export default {
         if (valid) {
           // 点击生成之后要显示的信息
           for (var j = 0; j < this.SelectEquipOptions.length; ++j) {
-            console.log(this.SelectEquipOptions[j]['id'], this.generateRecipeForm['SelectEquip'])
+            // console.log(this.SelectEquipOptions[j]['id'], this.generateRecipeForm['SelectEquip'])
             if (this.SelectEquipOptions[j]['id'] === this.generateRecipeForm['SelectEquip']) {
               this.equip = this.SelectEquipOptions[j]['equip_name']
             }
@@ -1277,7 +1277,7 @@ export default {
           if (valid) {
             this.showRubberMaterialStandard()
           } else {
-            console.log('error submit!!')
+            // console.log('error submit!!')
             return false
           }
         })
