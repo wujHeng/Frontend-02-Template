@@ -132,7 +132,7 @@
               </el-radio>
             </el-form-item>
             <el-form-item v-show="!normalReceipe" label="配方编号" prop="stage_product_batch_no">
-              <el-input v-model="generateRecipeForm.stage_product_batch_no" size="mini" :disabled="normalReceipe" @input="recipeNameChange" />
+              <el-input v-model="generateRecipeForm.stage_product_batch_no" maxlength="19" size="mini" :disabled="normalReceipe" @input="recipeNameChange" />
             </el-form-item>
             <el-form-item v-show="normalReceipe" label="配方编号" required>
               <el-input :disabled="true" size="mini" />
