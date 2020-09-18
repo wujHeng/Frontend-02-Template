@@ -608,6 +608,7 @@ export default {
       this.copyForm.scheme = this.currentRow.precept
       this.dialogCopyRecipeSync = true
       await this.equip_copy_list(this.currentRow['dev_type'])
+
     },
     CopyRecipeConfirm: async function(formName) {
       // if (this.copyForm.CopySelectEquip === '') {
