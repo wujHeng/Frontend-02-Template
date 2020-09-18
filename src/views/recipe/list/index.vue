@@ -607,7 +607,7 @@ export default {
       this.copyForm.version = this.currentRow.versions
       this.copyForm.scheme = this.currentRow.precept
       this.dialogCopyRecipeSync = true
-      await this.equip_copy_list(this.currentRow['equip_id'])
+      await this.equip_copy_list(this.currentRow['dev_type'])
 
     },
     CopyRecipeConfirm: async function(formName) {
