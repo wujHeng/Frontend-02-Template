@@ -125,7 +125,7 @@
         <el-button @click="recipe_return_list">返回</el-button>
       </el-form-item>
       <el-form-item style="float: right">
-        <el-button @click="recipe_save_return">确定复制</el-button>
+        <el-button @click="recipe_save_return">确定保存</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
         <el-button @click="modify_material_button">修改配料</el-button>
