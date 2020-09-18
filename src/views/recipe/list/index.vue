@@ -451,7 +451,6 @@ export default {
     },
     async equip_copy_list(dev_type_param) {
       try {
-
         const equip_list = await equip_url('get', {
           params: { category_name: '密炼设备' }
         })
@@ -611,7 +610,6 @@ export default {
       this.copyForm.scheme = this.currentRow.precept
       this.dialogCopyRecipeSync = true
       await this.equip_copy_list(this.currentRow['dev_type'])
-
     },
     CopyRecipeConfirm: async function(formName) {
       // if (this.copyForm.CopySelectEquip === '') {
@@ -656,6 +654,11 @@ export default {
           }).then(response => {
             this.dialogCopyRecipeSync = false
             var add_currentRow = Object.assign(this.currentRow, { ...this.copyForm, copy_equip_id: this.copyForm.CopySelectEquip, category__category_name: this.category__category_name })
+            for (var i = 0; i < this.SelectCopyEquipOptions.length; i++) {
+              if (this.copyForm.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) {
+                add_currentRow.equip_no = this.SelectCopyEquipOptions[i]['equip_no']
+              }
+            }
             // console.log(add_currentRow)
             this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
             this.$route.params
