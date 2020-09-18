@@ -83,7 +83,6 @@
           @input="input_rubber_noChanged"
         />
       </el-form-item>
-      <!-- <br> -->
       <el-form-item style="float: right">
         <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.stage_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
@@ -452,12 +451,16 @@ export default {
     },
     async equip_copy_list(dev_type_param) {
       try {
-        const equip_copy_list = await equip_copy_url('get', {
-          params: { dev_type: dev_type_param }
+
+        const equip_list = await equip_url('get', {
+          params: { category_name: '密炼设备' }
         })
+        // const equip_copy_list = await equip_copy_url('get', {
+        //   params: { dev_type: dev_type_param }
+        // })
         // console.log('aaaaaa------------')
         // console.log(equip_copy_list.results)
-        this.SelectCopyEquipOptions = equip_copy_list.results
+        this.SelectCopyEquipOptions = equip_list.results
       } catch (e) { throw new Error(e) }
     },
     async site_list() {
