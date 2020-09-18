@@ -70,7 +70,6 @@ export default {
   methods: {
     async getTableList() {
       this.params['page'] = this.page
-      console.log(this.params)
       try {
         const Data = await GetOperations(this.params)
         this.tableData = Data.results
