@@ -131,11 +131,11 @@
             <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
-            <el-button v-if="(scope.row.used_type === 4 || scope.row.used_type === 5)&& (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
-              废弃
-            </el-button>
             <el-button v-if="scope.row.used_type === 5 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_true(scope.row)">
               编辑
+            </el-button>
+            <el-button v-if="(scope.row.used_type === 4 || scope.row.used_type === 5)&& (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
+              废弃
             </el-button>
           </el-button-group>
         </template>
@@ -146,11 +146,11 @@
       <el-table-column align="center" prop="stage_name" label="段次" />
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
-      <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
       <el-table-column align="center" prop="submit_username" label="提交人" />
-      <el-table-column align="center" prop="reject_username" label="驳回人" />
       <el-table-column align="center" prop="used_username" label="启用人" />
-      <el-table-column align="center" prop="obsolete_username" label="废弃人" />
+      <el-table-column align="center" prop="reject_username" label="驳回人" />
+      <!-- <el-table-column align="center" prop="obsolete_username" label="废弃人" /> -->
+      <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
       <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
       <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
@@ -304,9 +304,12 @@ export default {
         value: 4, label: '启用'
       }, {
         value: 5, label: '驳回'
-      }, {
-        value: 6, label: '废弃'
-      }],
+      }
+      ],
+      // }, {
+      //   value: 6, label: '废弃'
+      // }
+
       SelectSITEOptions: [],
       SelectSiteOptions: [],
       SelectStageOptions: [],
