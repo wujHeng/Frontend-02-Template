@@ -291,6 +291,9 @@
         :data="chartData"
         :settings="chartSettings"
         :after-set-option="afterSetOption"
+        :extend="extend"
+        :colors="colors"
+        :toolbox="toolbox"
       />
     </el-dialog>
   </div>
@@ -310,25 +313,13 @@ import {
   productionTrainsFeedbacks
 } from '@/api/reportBatch'
 import { mapGetters } from 'vuex'
+import chartMixin from '../chartMixin'
+
 export default {
   components: { page, selectEquip, ProductNoSelect },
+  mixins: [chartMixin],
   data() {
-    this.chartSettings = {
-      labelMap: {
-        created_date_date: '时间',
-        power: '功率',
-        temperature: '温度',
-        energy: '能量',
-        pressure: '压力',
-        rpm: '转速'
-      },
-      axisSite: {
-        right: ['temperature', 'rpm', 'energy', 'pressure']
-      }
-      // yAxisName: ['功率']
-    }
     return {
-      // tableDataUrl: "InternalMixerUrl",
       loading: true,
       loadingTable: false,
       tableData: [],
@@ -357,53 +348,7 @@ export default {
       BATObj: {},
       BATList: [],
       dialogVisibleGraph: false,
-      chartData: {
-        columns: [
-          'created_date_date',
-          'power',
-          'temperature',
-          'energy',
-          'pressure',
-          'rpm'
-        ],
-        rows: []
-      },
-      total: 0,
-      options: {
-        title: {
-          show: true,
-          text: '主标题',
-          textAlign: 'left'
-        },
-        yAxis: [
-          {
-            min: 0,
-            max: 2500,
-            splitNumber: 5,
-            interval: (2500 - 0) / 5
-          },
-          {
-            min: 0,
-            max: 200,
-            splitNumber: 5,
-            interval: (200 - 0) / 5
-          }
-        ],
-        toolbox: {
-          itemSize: 20,
-          itemGap: 30,
-          right: 50,
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            saveAsImage: {
-              name: '',
-              pixelRatio: 2
-            }
-          }
-        }
-      }
+      total: 0
     }
   },
   computed: {
@@ -572,6 +517,7 @@ export default {
             _this.chartData.rows[0].hasOwnProperty('product_time')
             ? _this.chartData.rows[0].product_time.split(' ')[0] : ''
           _this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + (row.equip_no || '') + '-' + (row.product_no || '') + '-' + (row.begin_time || '')
+          _this.options.toolbox.feature.myTool1.show = false
         })
         // eslint-disable-next-line handle-callback-err
         .catch(() => { })
