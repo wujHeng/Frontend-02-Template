@@ -24,6 +24,7 @@
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
         <el-form-item style="float: right">
+          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="refreshPlan">刷新</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="upPlan">上调</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="downPlan">下调</el-button>
           <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="showAlterTrainNumberDialog">修改车次</el-button>
@@ -255,6 +256,10 @@ export default {
         this.equipOptions = equipData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
+    },
+    refreshPlan() {
+      this.getPlanStatusList()
+      this.getPlanList()
     },
     classesVisibleChange(bool) {
       if (bool) {
