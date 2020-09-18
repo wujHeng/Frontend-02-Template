@@ -83,7 +83,7 @@
           @input="input_rubber_noChanged"
         />
       </el-form-item>
-      <br>
+      <!-- <br> -->
       <el-form-item style="float: right">
         <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.stage_name === null" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
