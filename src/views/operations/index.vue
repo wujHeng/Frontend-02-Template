@@ -35,8 +35,8 @@
       <el-table-column type="index" label="No" width="55" />
       <el-table-column prop="username" label="用户名" />
       <el-table-column prop="operation" label="操作" />
-      <el-table-column prop="results" label="结果" />
-      <el-table-column prop="reasons" label="原因" />
+      <el-table-column :formatter="formatter" prop="results" label="结果" />
+      <!-- <el-table-column prop="reasons" label="原因" /> -->
       <el-table-column prop="create_time" label="存入时间" />
     </el-table>
     <page :total="total" @currentChange="currentChange" />
@@ -84,6 +84,9 @@ export default {
       this.params['et'] = this.search_date ? this.search_date[1] : ''
       this.params['operation'] = this.operation
       this.getTableList()
+    },
+    formatter: function(row, column) {
+      return row.results ? '成功' : '失败'
     },
     currentChange(page) {
       this.page = page
