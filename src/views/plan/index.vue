@@ -52,7 +52,7 @@
             <el-input v-model="currentAlive.begin_time" type="text" style="float: left" disabled />
           </el-form-item>
           <el-form-item label="配方">
-            <span style="float: right; margin-left: 30px" />
+            <span style="float: right; margin-left: 60px" />
             <el-input v-model="currentAlive.product_no" type="text" style="float: right" disabled />
           </el-form-item>
           <el-form-item label="设定车次">
@@ -69,6 +69,7 @@
             <el-input v-model="currentAlive.end_time" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前计划">
+            <span style="float: right; margin-left: 30px" />
             <el-input v-model="currentAlive.plan_classes_uid" type="text" disabled />
           </el-form-item>
           <el-form-item label="当前车次">

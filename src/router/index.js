@@ -186,26 +186,26 @@ export const asyncRoutes = [{
   }
   ]
 },
-{
-  path: '/run-mode',
-  component: Layout,
-  redirect: '/run-mode/index',
-  meta: {
-    title: '运行模式切换',
-    icon: 'operationMode',
-    permissionName: 'system'
-  },
-  children: [{
-    path: 'index',
-    name: 'RunMode',
-    component: () => import('@/views/run-mode/index'),
-    meta: {
-      title: '运行模式切换',
-      icon: 'operationMode',
-      permissionName: 'childsysteminfo'
-    }
-  }]
-},
+// {
+//   path: '/run-mode',
+//   component: Layout,
+//   redirect: '/run-mode/index',
+//   meta: {
+//     title: '运行模式切换',
+//     icon: 'operationMode',
+//     permissionName: 'system'
+//   },
+//   children: [{
+//     path: 'index',
+//     name: 'RunMode',
+//     component: () => import('@/views/run-mode/index'),
+//     meta: {
+//       title: '运行模式切换',
+//       icon: 'operationMode',
+//       permissionName: 'childsysteminfo'
+//     }
+//   }]
+// },
 {
   path: '/report',
   component: Layout,
@@ -276,16 +276,16 @@ export const asyncRoutes = [{
   ]
 },
 {
-  path: '/operations',
+  path: '/system',
   component: Layout,
-  redirect: '/operations/index',
+  redirect: '/system/operations',
   meta: {
-    title: '操作履历',
-    icon: 'el-icon-notebook-2'
-    // permissionName: 'system'
+    title: '系统管理',
+    icon: 'el-icon-notebook-2',
+    permissionName: 'system'
   },
   children: [{
-    path: 'index',
+    path: 'operations',
     name: 'Operations',
     component: () => import('@/views/operations/index'),
     meta: {
@@ -293,7 +293,18 @@ export const asyncRoutes = [{
       icon: 'el-icon-notebook-2'
       // permissionName: 'childsysteminfo'
     }
-  }]
+  },
+  {
+    path: 'index',
+    name: 'RunMode',
+    component: () => import('@/views/run-mode/index'),
+    meta: {
+      title: '运行模式切换',
+      icon: 'operationMode',
+      permissionName: 'childsysteminfo'
+    }
+  }
+]
 },
 {
   path: '*',

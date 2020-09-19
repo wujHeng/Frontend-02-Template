@@ -2,9 +2,6 @@
   <div style="margin-top: 25px">
     <el-row>
       <el-form style="margin-left: 10px" :inline="true">
-        <el-form-item label="用户">
-          <el-input v-model="username" type="text" style="float: left" clearable @input="changeSearch" />
-        </el-form-item>
         <el-form-item label="日期">
           <el-date-picker
             v-model="search_date"
@@ -18,10 +15,9 @@
             @change="changeSearch"
           />
         </el-form-item>
-      </el-form>
-    </el-row>
-    <el-row>
-      <el-form style="margin-left: 10px" :inline="true">
+        <el-form-item label="用户">
+          <el-input v-model="username" type="text" style="float: left" clearable @input="changeSearch" />
+        </el-form-item>
         <el-form-item label="操作">
           <el-input v-model="operation" type="text" style="float: left" clearable @input="changeSearch" />
         </el-form-item>
@@ -70,7 +66,6 @@ export default {
   methods: {
     async getTableList() {
       this.params['page'] = this.page
-      console.log(this.params)
       try {
         const Data = await GetOperations(this.params)
         this.tableData = Data.results
