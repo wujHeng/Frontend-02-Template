@@ -22,8 +22,8 @@ export function validUsername(str) {
 export function validPassword(rule, value, callback, _this) {
   if (!value) {
     callback(new Error('请输入密码'))
-  } else if (value && (value.length < 6 || value.length > 16)) {
-    callback(new Error('请输入6~16位长度的密码'))
+  } else if (value && (value.length < 3 || value.length > 16)) {
+    callback(new Error('请输入3~16位长度的密码'))
   } else {
     callback()
   }

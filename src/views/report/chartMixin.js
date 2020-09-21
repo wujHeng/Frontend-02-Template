@@ -4,7 +4,8 @@ export default {
       feature: {
         dataZoom: {
           show: true
-        }
+        },
+        restore: {}
       }
     }
     this.extend = {
