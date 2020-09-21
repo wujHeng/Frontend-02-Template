@@ -229,8 +229,8 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入密码'))
-      } else if (value && (value.length < 6 || value.length > 16)) {
-        callback(new Error('请输入6~16位长度的密码'))
+      } else if (value && (value.length < 3 || value.length > 16)) {
+        callback(new Error('请输入3~16位长度的密码'))
       } else {
         if (this.userForm.checkPass !== '') {
           this.$refs.userForm.validateField('checkPass')
@@ -266,8 +266,8 @@ export default {
       }
     }
     var validatePass4 = (rule, value, callback) => {
-      if (value && (value.length < 6 || value.length > 16)) {
-        callback(new Error('请输入6~16位长度的密码'))
+      if (value && (value.length < 3 || value.length > 16)) {
+        callback(new Error('请输入3~16位长度的密码'))
       } else {
         callback()
       }

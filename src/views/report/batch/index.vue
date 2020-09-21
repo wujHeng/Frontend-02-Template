@@ -1,5 +1,3 @@
-/* eslint-disable handle-callback-err */
-/* eslint-disable handle-callback-err */
 <template>
   <div
     v-loading="loading"
