@@ -155,7 +155,7 @@
       <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type !== 1 && scope.row.used_type !== 4" @click="ModifyRecipeButton(scope.row)">修改</el-button>
             <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
           </el-button-group>
         </template>
