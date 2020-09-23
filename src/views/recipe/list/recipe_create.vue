@@ -1419,52 +1419,96 @@ export default {
             return
           }
         }
-        try {
-          // console.log('------------------d--------')
-          // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
-          this.post_recipe_list(
-            { data: {
-              'factory': this.generateRecipeForm['SelectSite'],
-              'site': this.generateRecipeForm['SelectSITE'],
-              'product_info': this.generateRecipeForm['SelectRecipeNo'],
-              'precept': this.generateRecipeForm['scheme'],
-              'stage_product_batch_no': this.stage_product_batch_no,
-              'stage': this.generateRecipeForm['SelectStage'],
-              'versions': this.generateRecipeForm['version'],
-              'production_time_interval': this.production_time_interval,
-              'batching_details': batching_details_list,
-              'equip': this.generateRecipeForm['SelectEquip'],
-              // 密炼步序list
-              'process_details': step_details_list,
-              'processes': {
-              // 配方基础信息中第一行
-                'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
-                'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
-                'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
-                'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
-                'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
-                'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
-                'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
-                // 配方基础信息中第二行
-                'over_time': (this.over_time === undefined) ? 0 : this.over_time,
-                'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
-                'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
-                'reuse_flag': this.reuse_flag,
-                'temp_use_flag': this.temp_use_flag,
-                'sp_num': this.sp_num,
-                'use_flag': this.use_flag,
-                // 设备id与配方id
-                'equip': this.generateRecipeForm['SelectEquip'],
-                'product_batching': this.product_batching
-              }
-            }}
-          )
+
+        recipe_list('post', null, { data: {
+          'factory': this.generateRecipeForm['SelectSite'],
+          'site': this.generateRecipeForm['SelectSITE'],
+          'product_info': this.generateRecipeForm['SelectRecipeNo'],
+          'precept': this.generateRecipeForm['scheme'],
+          'stage_product_batch_no': this.stage_product_batch_no,
+          'stage': this.generateRecipeForm['SelectStage'],
+          'versions': this.generateRecipeForm['version'],
+          'production_time_interval': this.production_time_interval,
+          'batching_details': batching_details_list,
+          'equip': this.generateRecipeForm['SelectEquip'],
+          // 密炼步序list
+          'process_details': step_details_list,
+          'processes': {
+            // 配方基础信息中第一行
+            'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+            'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+            'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+            'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+            'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+            'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+            'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
+            // 配方基础信息中第二行
+            'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+            'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+            'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
+            'reuse_flag': this.reuse_flag,
+            'temp_use_flag': this.temp_use_flag,
+            'sp_num': this.sp_num,
+            'use_flag': this.use_flag,
+            // 设备id与配方id
+            'equip': this.generateRecipeForm['SelectEquip'],
+            'product_batching': this.product_batching
+          }
+        }}).then(response => {
           this.$message({
             message: this.stage_product_batch_no + '配方步序添加成功',
             type: 'success'
           })
           this.$router.push({ name: 'RecipeList' })
-        } catch (e) { e }
+        })
+        // try {
+        //   // console.log('------------------d--------')
+        //   // console.log(this.generateRecipeForm['SelectEquip'], this.generateRecipeForm['SelectSite'], this.generateRecipeForm['SelectRecipeNo'], this.generateRecipeForm['SelectStage'], this.generateRecipeForm['version'])
+        //   this.post_recipe_list(
+        //     { data: {
+        //       'factory': this.generateRecipeForm['SelectSite'],
+        //       'site': this.generateRecipeForm['SelectSITE'],
+        //       'product_info': this.generateRecipeForm['SelectRecipeNo'],
+        //       'precept': this.generateRecipeForm['scheme'],
+        //       'stage_product_batch_no': this.stage_product_batch_no,
+        //       'stage': this.generateRecipeForm['SelectStage'],
+        //       'versions': this.generateRecipeForm['version'],
+        //       'production_time_interval': this.production_time_interval,
+        //       'batching_details': batching_details_list,
+        //       'equip': this.generateRecipeForm['SelectEquip'],
+        //       // 密炼步序list
+        //       'process_details': step_details_list,
+        //       'processes': {
+        //       // 配方基础信息中第一行
+        //         'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
+        //         'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
+        //         'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
+        //         'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
+        //         'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
+        //         'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
+        //         'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
+        //         // 配方基础信息中第二行
+        //         'over_time': (this.over_time === undefined) ? 0 : this.over_time,
+        //         'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
+        //         'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
+        //         'reuse_flag': this.reuse_flag,
+        //         'temp_use_flag': this.temp_use_flag,
+        //         'sp_num': this.sp_num,
+        //         'use_flag': this.use_flag,
+        //         // 设备id与配方id
+        //         'equip': this.generateRecipeForm['SelectEquip'],
+        //         'product_batching': this.product_batching
+        //       }
+        //     }}
+        //   )
+        //   this.$message({
+        //     message: this.stage_product_batch_no + '配方步序添加成功',
+        //     type: 'success'
+        //   })
+        //   this.$router.push({ name: 'RecipeList' })
+        // } catch (e) {
+        //   console.log(e, 'e')
+        // }
       } else {
         this.$message({
           message: '收皮信息不能为空',
