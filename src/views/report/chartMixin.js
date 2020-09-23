@@ -65,7 +65,6 @@ export default {
           }
         ],
         toolbox: {
-          // show: true,
           itemSize: 20,
           itemGap: 30,
           right: 0,
