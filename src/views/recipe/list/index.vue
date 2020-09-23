@@ -128,10 +128,10 @@
             <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_true(scope.row)">
               启用
             </el-button>
-            <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('refuse')>-1)" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
-            <el-button v-if="scope.row.used_type === 5 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_true(scope.row)">
+            <el-button v-if="scope.row.used_type === 5 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_true(scope.row)">
               编辑
             </el-button>
             <el-button v-if="(scope.row.used_type === 4 || scope.row.used_type === 5)&& (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
@@ -353,11 +353,20 @@ export default {
   },
   created() {
     this.permissionObj = this.permission
-    this.get_recipe_list()
     this.site_list()
     this.global_SITE_list()
     this.stage_list()
     this.recipe_no_list()
+    this.equip_list()
+    var recipeGetParams = JSON.parse(localStorage.getItem('recipeGetParams'))
+    if (recipeGetParams) {
+      this.SelectEquip = recipeGetParams.equip_id
+      this.SelectRecipeStatus = recipeGetParams.used_type
+      this.SelectSite = recipeGetParams.factory_id
+      this.SelectStage = recipeGetParams.stage_id
+      this.input_rubber_no = recipeGetParams.stage_product_batch_no
+    }
+    this.get_recipe_list()
   },
   methods: {
     async recipe_no_list() {
@@ -398,15 +407,18 @@ export default {
         var v_SelectStage = this.SelectStage ? this.SelectStage : ''
         var v_input_rubber_no = this.input_rubber_no ? this.input_rubber_no : ''
         this.loading = true
+        var params = {
+          page: val,
+          equip_id: v_SelectEquip,
+          used_type: v_SelectRecipeStatus,
+          factory_id: v_SelectSite,
+          stage_id: v_SelectStage,
+          stage_product_batch_no: v_input_rubber_no
+        }
+        var str = JSON.stringify(params)
+        localStorage.setItem('recipeGetParams', str)
         const recipe_listData = await recipe_list('get', null, {
-          params: {
-            page: val,
-            equip_id: v_SelectEquip,
-            used_type: v_SelectRecipeStatus,
-            factory_id: v_SelectSite,
-            stage_id: v_SelectStage,
-            stage_product_batch_no: v_input_rubber_no
-          }
+          params
         })
         this.tableData = recipe_listData.results
         this.tableDataTotal = recipe_listData.count
