@@ -163,7 +163,7 @@ export default {
   data() {
     return {
       getParams: {
-        use_flag: 1
+        use_flag: null
       },
       tableData: [],
       count: 0,
