@@ -61,6 +61,7 @@ const actions = {
       username,
       password
     } = userInfo
+    console.log("login")
     return new Promise((resolve, reject) => {
       login({
         username: username.trim(),
@@ -70,6 +71,7 @@ const actions = {
         commit('SET_NAME', response.username)
         commit('SET_PERMISSION', JSON.stringify(response.results))
 
+        console.log(response.results)
         // 登录获取token,存到全局中
         setToken(response.token)
         resolve()

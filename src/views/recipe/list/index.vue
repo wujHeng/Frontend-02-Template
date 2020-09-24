@@ -8,6 +8,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectEquipDisplay"
           @change="SelectEquipChange"
@@ -26,6 +27,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @change="SelectRecipeStatusChange"
         >
@@ -43,6 +45,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectSiteDisplay"
           @change="SelectSiteChange"
@@ -62,6 +65,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectStageDisplay"
           @change="SelectStageChange"
