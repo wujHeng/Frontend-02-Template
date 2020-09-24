@@ -1,5 +1,5 @@
 <template>
-  <div class="recipe_modify">
+  <div v-loading="loading" element-loading-text="加载中..." class="recipe_modify">
     <el-form ref="generateRecipeForm" :inline="true" :model="generateRecipeForm" :rules="rules">
       <el-row>
         <el-col :span="6">
@@ -589,6 +589,7 @@ import { dataTool } from 'echarts/lib/echarts'
 export default {
   data: function() {
     return {
+      loading: null,
       SelectSiteOptions: [],
       SelectSITEOptions: [],
       SelectStageOptions: [],
@@ -689,6 +690,7 @@ export default {
     }
   },
   created() {
+    this.loading = true
     this.recipe_no_list()
     this.stage_list()
     this.global_SITE_list()
@@ -706,6 +708,12 @@ export default {
     this.action_list()
     this.material_type_list()
     this.equip_list()
+    var app = this
+    var timer = setInterval(function() {
+      app.generateRecipeName()
+      clearInterval(timer)
+      app.loading = false
+    }, 3000)
   },
   methods: {
     generateRecipeName() {
