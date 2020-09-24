@@ -58,7 +58,8 @@ module.exports = {
         // target: 'http://10.4.14.8:8000/',
         // target: 'http://127.0.0.1:8000/',
         // target: 'http://10.20.181.179:8000/',
-        target: 'http://127.0.0.1:8000/',
+        // target: 'http://127.0.0.1:8000/',
+        target: 'http://47.116.133.224:15009',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

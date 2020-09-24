@@ -1422,12 +1422,12 @@ export default {
 
         recipe_list('post', null, { data: {
           'factory': this.generateRecipeForm['SelectSite'],
-          'site': this.generateRecipeForm['SelectSITE'],
-          'product_info': this.generateRecipeForm['SelectRecipeNo'],
+          'site': this.normalReceipe ? this.generateRecipeForm['SelectSITE'] : null,
+          'product_info': this.normalReceipe ? this.generateRecipeForm['SelectRecipeNo'] : null,
           'precept': this.generateRecipeForm['scheme'],
-          'stage_product_batch_no': this.stage_product_batch_no,
-          'stage': this.generateRecipeForm['SelectStage'],
-          'versions': this.generateRecipeForm['version'],
+          'stage_product_batch_no': this.normalReceipe ? null : this.stage_product_batch_no,
+          'stage': this.normalReceipe ? this.generateRecipeForm['SelectStage'] : null,
+          'versions': this.normalReceipe ? this.generateRecipeForm['version'] : null,
           'production_time_interval': this.production_time_interval,
           'batching_details': batching_details_list,
           'equip': this.generateRecipeForm['SelectEquip'],
