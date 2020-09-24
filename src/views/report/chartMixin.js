@@ -46,9 +46,14 @@ export default {
           show: true,
           text: '主标题',
           textAlign: 'left'
+          // left: 'center',
+          // align: 'right'
         },
         grid: {
           y: 50
+        },
+        legend: {
+          left: 120
         },
         yAxis: [
           {

@@ -730,15 +730,16 @@ export default {
           return
         }
       }
-
       this.currentRowId = id
       this.currentIndex = index
       // 整条行详情
       this.rowInfo = JSON.parse(JSON.stringify(row))
+
       // eslint-disable-next-line no-prototype-builtins
       if (!this.rowInfo.hasOwnProperty('production_details') || !this.rowInfo.production_details) {
         this.rowInfo.production_details = {}
       }
+
       this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + this.rowInfo.equip_no + '-' + this.rowInfo.product_no + '-' + this.rowInfo.begin_time
       try {
         const arr = await Promise.all([
@@ -749,9 +750,9 @@ export default {
         this.weighInformationList = arr[0] || []
         this.mixerInformationList = arr[1] || []
         this.curveInformationList = arr[2] || []
-
         this.chartData.rows = this.curveInformationList
-        this.options.title.text = this.curveInformationList[0].product_time.split(' ')[0]
+
+        this.options.title.text = this.curveInformationList.length > 0 ? this.curveInformationList[0].product_time.split(' ')[0] : '暂无数据'
         this.loaddingExal = false
         this.showRowTable = await true
       } catch (e) {
