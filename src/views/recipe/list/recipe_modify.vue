@@ -292,16 +292,16 @@
 
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
 
@@ -316,10 +316,10 @@
 
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
