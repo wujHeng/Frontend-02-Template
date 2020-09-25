@@ -954,15 +954,12 @@ export default {
     },
 
     async recipe_material_list(id) {
+      var canAddCarbonOil = this.$route.params.CopySelectEquip === this.$route.params.equip_id
       try {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
         this.production_time_interval = recipe_listData['production_time_interval']
-        // 机台、配方编号、配方名称
-        // console.log('===============xxxx=========')
-        // console.log(this.$route.params, recipe_listData)
-        // console.log('==============xxxx===========')
         this.generateRecipeForm.SelectEquip = this.$route.params['copy_equip_id']
         this.category__category_name = this.$route.params['category__category_name']
         if (this.generateRecipeForm.SelectEquip == null) {
@@ -970,39 +967,33 @@ export default {
         } else {
           this.equip_display_bool = true
         }
-        // this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         this.confirm_recipe_list = recipe_listData
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
-          var v_auto_falg = ''
-          if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
-            v_auto_falg = '自动'
-          } else if (recipe_listData['batching_details'][j]['auto_flag'] === 2) {
-            v_auto_falg = '手动'
-          } else {
-            v_auto_falg = '其他'
-          }
+          // var v_auto_falg = ''
+          // if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
+          //   v_auto_falg = '自动'
+          // } else if (recipe_listData['batching_details'][j]['auto_flag'] === 2) {
+          //   v_auto_falg = '手动'
+          // } else {
+          //   v_auto_falg = '其他'
+          // }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
-            // this.carbon_tableData.push({
-            //   sn: recipe_listData['batching_details'][j].sn,
-            //   auto_flag: v_auto_falg,
-            //   material_name: recipe_listData['batching_details'][j]['material_name'],
-            //   actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-            //   standard_error: recipe_listData['batching_details'][j]['standard_error']
-            // })
+            if (canAddCarbonOil) {
+              this.carbon_tableData.push({
+                ...recipe_listData['batching_details'][j]
+              })
+            }
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
-            // this.oil_tableData.push({
-            //   sn: recipe_listData['batching_details'][j].sn,
-            //   action_name: '投料',
-            //   auto_flag: v_auto_falg,
-            //   material_name: recipe_listData['batching_details'][j]['material_name'],
-            //   actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-            //   standard_error: recipe_listData['batching_details'][j]['standard_error']
-            // })
+            if (canAddCarbonOil) {
+              this.oil_tableData.push({
+                action_name: '投料',
+                ...recipe_listData['batching_details'][j]
+              })
+            }
           } else {
             this.rubber_tableData.push({
               action_name: '投料',
-              auto_flag: v_auto_falg,
               ...recipe_listData['batching_details'][j]
             })
           }

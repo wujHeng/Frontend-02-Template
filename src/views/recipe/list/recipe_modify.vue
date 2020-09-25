@@ -762,7 +762,7 @@ export default {
           // }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
             this.carbon_tableData.push({
-              sn: this.carbon_tableData.length + 1,
+              // sn: this.carbon_tableData.length + 1,
               ...recipe_listData['batching_details'][j]
               // auto_flag: v_auto_falg,
               // material_name: recipe_listData['batching_details'][j]['material_name'],
@@ -771,13 +771,13 @@ export default {
             })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             this.oil_tableData.push({
-              sn: this.oil_tableData.length + 1,
+              // sn: this.oil_tableData.length + 1,
               action_name: '投料',
               ...recipe_listData['batching_details'][j]
             })
           } else {
             this.rubber_tableData.push({
-              sn: this.rubber_tableData.length + 1,
+              // sn: this.rubber_tableData.length + 1,
               action_name: '投料',
               ...recipe_listData['batching_details'][j]
             })
