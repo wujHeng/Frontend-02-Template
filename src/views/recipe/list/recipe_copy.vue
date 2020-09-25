@@ -380,16 +380,16 @@
 
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.time" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.temperature" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.energy" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.power" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
 
@@ -404,10 +404,10 @@
 
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.pressure" :precision="1" :step="0.1" :min="0.0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
-                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" controls-position="right" />
+                  <el-input-number v-model="step_ele.rpm" :step="1" step-strictly :min="0" style="width: 60px" size="mini" :controls="false" />
                 </td>
                 <td style="text-align: center; height: 48px">
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
@@ -586,6 +586,7 @@ import { recipe_no_url, stage_url, global_SITE_url, site_url, tank_materials, re
 import { constantRoutes } from '@/router'
 import { dataTool } from 'echarts/lib/echarts'
 
+var timer = null
 export default {
   data: function() {
     return {
@@ -709,17 +710,18 @@ export default {
     this.material_type_list()
     this.equip_list()
     var app = this
-    var timer = setInterval(function() {
+    timer = setInterval(function() {
       app.generateRecipeName()
-      clearInterval(timer)
-      app.loading = false
     }, 3000)
+  },
+  destroyed() {
+    clearInterval(timer)
   },
   methods: {
     generateRecipeName() {
-      var SITE_name = ''
-      var stage_name = ''
-      var product_name = ''
+      var SITE_name = null
+      var stage_name = null
+      var product_name = null
       for (var i = 0; i < this.SelectSITEOptions.length; ++i) {
         if (this.SelectSITEOptions[i]['id'] === this.generateRecipeForm['SelectSITE']) {
           SITE_name = this.SelectSITEOptions[i]['global_name']
@@ -734,6 +736,9 @@ export default {
         if (this.SelectRecipeNoOptions[n]['id'] === this.generateRecipeForm['SelectRecipeNo']) {
           product_name = this.SelectRecipeNoOptions[n]['product_no']
         }
+      }
+      if (SITE_name && stage_name && product_name && this.generateRecipeForm['version']) {
+        clearInterval(timer)
       }
       this.stage_product_batch_no = SITE_name + '-' + stage_name + '-' + product_name + '-' + this.generateRecipeForm['version']
       this.generateRecipeForm.stage_product_batch_no = this.stage_product_batch_no
@@ -934,36 +939,38 @@ export default {
         this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
         // console.log('----------------------get--------------------')
         // console.log(recipe_listData)
-        this.recipe_step_id = recipe_listData['processes']['id']
-        // 超温最短时间、进胶最低温度...
-        this.mini_time = (recipe_listData['processes']['mini_time'])
-        this.mini_temp = (recipe_listData['processes']['mini_temp'])
-        this.over_temp = (recipe_listData['processes']['over_temp'])
-        this.batching_error = (recipe_listData['processes']['batching_error'])
-        this.zz_temp = (recipe_listData['processes']['zz_temp'])
-        this.xlm_temp = (recipe_listData['processes']['xlm_temp'])
-        this.cb_temp = (recipe_listData['processes']['cb_temp'])
-        // 炼胶超时时间、进胶最高温度...
-        this.over_time = (recipe_listData['processes']['over_time'])
-        this.max_temp = (recipe_listData['processes']['max_temp'])
-        this.reuse_time = (recipe_listData['processes']['reuse_time'])
-        this.reuse_flag = recipe_listData['processes']['reuse_flag']
-        this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
-        this.sp_num = recipe_listData['processes']['sp_num']
-        this.use_flag = recipe_listData['processes']['use_flag']
-        for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
-          this.RecipeMaterialList.push({
+        if (recipe_listData['processes']) {
+          this.recipe_step_id = recipe_listData['processes']['id']
+          // 超温最短时间、进胶最低温度...
+          this.mini_time = (recipe_listData['processes']['mini_time'])
+          this.mini_temp = (recipe_listData['processes']['mini_temp'])
+          this.over_temp = (recipe_listData['processes']['over_temp'])
+          this.batching_error = (recipe_listData['processes']['batching_error'])
+          this.zz_temp = (recipe_listData['processes']['zz_temp'])
+          this.xlm_temp = (recipe_listData['processes']['xlm_temp'])
+          this.cb_temp = (recipe_listData['processes']['cb_temp'])
+          // 炼胶超时时间、进胶最高温度...
+          this.over_time = (recipe_listData['processes']['over_time'])
+          this.max_temp = (recipe_listData['processes']['max_temp'])
+          this.reuse_time = (recipe_listData['processes']['reuse_time'])
+          this.reuse_flag = recipe_listData['processes']['reuse_flag']
+          this.temp_use_flag = recipe_listData['processes']['temp_use_flag']
+          this.sp_num = recipe_listData['processes']['sp_num']
+          this.use_flag = recipe_listData['processes']['use_flag']
+          for (var i = 0; i < recipe_listData['process_details'].length; ++i) {
+            this.RecipeMaterialList.push({
             // sn: this.RecipeMaterialList.length + 1,
-            sn: recipe_listData['process_details'][i]['sn'],
-            condition: recipe_listData['process_details'][i]['condition'],
-            time: this.step_type_conversion(recipe_listData['process_details'][i]['time']),
-            temperature: this.step_type_conversion(recipe_listData['process_details'][i]['temperature']),
-            energy: this.step_type_conversion(recipe_listData['process_details'][i]['energy']),
-            power: this.step_type_conversion(recipe_listData['process_details'][i]['power']),
-            action: recipe_listData['process_details'][i]['action'],
-            pressure: this.step_type_conversion(recipe_listData['process_details'][i]['pressure']),
-            rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
-          })
+              sn: recipe_listData['process_details'][i]['sn'],
+              condition: recipe_listData['process_details'][i]['condition'],
+              time: this.step_type_conversion(recipe_listData['process_details'][i]['time']),
+              temperature: this.step_type_conversion(recipe_listData['process_details'][i]['temperature']),
+              energy: this.step_type_conversion(recipe_listData['process_details'][i]['energy']),
+              power: this.step_type_conversion(recipe_listData['process_details'][i]['power']),
+              action: recipe_listData['process_details'][i]['action'],
+              pressure: this.step_type_conversion(recipe_listData['process_details'][i]['pressure']),
+              rpm: this.step_type_conversion(recipe_listData['process_details'][i]['rpm'])
+            })
+          }
         }
         this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
         this.generateRecipeForm.SelectSite = this.$route.params['site']
@@ -973,6 +980,7 @@ export default {
         this.generateRecipeForm.version = this.$route.params['version']
         this.generateRecipeForm.scheme = this.$route.params['scheme']
         this.generateRecipeName()
+        this.loading = false
         return recipe_listData
       } catch (e) { throw new Error(e) }
     },
@@ -1097,7 +1105,6 @@ export default {
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        // console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
 
@@ -1334,7 +1341,6 @@ export default {
       this.RecipeMaterialList.splice(index, 1)
     },
     postRecipeList() {
-
       if (this.RecipeMaterialList.length === 0) {
         this.$message({
           message: '密炼步序不能为空',
@@ -1476,12 +1482,12 @@ export default {
     },
     recipe_save_return: async function() {
       this.$refs['generateRecipeForm'].validate(valid => {
-          if (valid) {
-            this.postRecipeList()
-          } else {
-            return false
-          }
-        })
+        if (valid) {
+          this.postRecipeList()
+        } else {
+          return false
+        }
+      })
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })
