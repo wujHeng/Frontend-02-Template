@@ -108,7 +108,7 @@
 
       <el-table-column align="center" type="index" width="50" label="No" />
 
-      <el-table-column align="center" width="160%" prop="stage_product_batch_no" label="胶料配方编号">
+      <el-table-column align="center" width="160%" prop="stage_product_batch_no" label="胶料配方编码">
         <template slot-scope="scope">
           <el-link type="primary" @click="recipe_display_change(scope.row)">
             {{ scope.row.stage_product_batch_no }}
