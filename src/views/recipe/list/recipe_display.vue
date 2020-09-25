@@ -206,8 +206,8 @@ export default {
   },
   created() {
     //   rubber_process_url
-    console.log('====================')
-    console.log(this.$route.params)
+    // console.log('====================')
+    // console.log(this.$route.params)
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
     // 配方详情界面的配方信息和密炼步序信息接口访问(已废弃)
@@ -220,12 +220,12 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        // console.log('====================111111111')
-        // console.log(recipe_listData)
-        // console.log('====================111111111')
+        console.log('====================111111111')
+        console.log(recipe_listData)
+        console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
-        this.category__category_name = this.$route.params['category__category_name']
+        this.category__category_name = recipe_listData.category__category_name
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         this.production_time_interval = this.$route.params['production_time_interval']
