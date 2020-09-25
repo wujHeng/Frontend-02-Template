@@ -160,6 +160,9 @@
           </el-table>
           <el-form>
             <el-form-item style="text-align: center">
+              <div>序号<el-input-number v-model="rubberSnForInsert" :min="1" style="margin-right: 6px;margin-left: 6px;" size="mini" :controls="false" />
+                <el-button size="mini" :disabled="!insertRubberEnbale()" @click="insertBeforeSnOneRubber">前插入一行</el-button>
+              </div>
               <el-button size="mini" @click="insertOneRubber">插入一行</el-button>
             </el-form-item>
           </el-form>
@@ -203,6 +206,9 @@
           </el-table>
           <el-form>
             <el-form-item style="text-align: center">
+              <div>序号<el-input-number v-model="carbonSnForInsert" :min="1" style="margin-right: 6px;margin-left: 6px;" size="mini" :controls="false" />
+                <el-button size="mini" :disabled="!insertCarbonEnbale()" @click="insertBeforeSnOneCarbon">前插入一行</el-button>
+              </div>
               <el-button size="mini" @click="insertOnecarbon">插入一行</el-button>
             </el-form-item>
           </el-form>
@@ -246,6 +252,9 @@
           </el-table>
           <el-form>
             <el-form-item style="text-align: center">
+              <div>序号<el-input-number v-model="oilSnForInsert" :min="1" style="margin-right: 6px;margin-left: 6px;" size="mini" :controls="false" />
+                <el-button size="mini" :disabled="!insertOilEnbale()" @click="insertBeforeSnOneOil">前插入一行</el-button>
+              </div>
               <el-button size="mini" @click="insertOneOil">插入一行</el-button>
             </el-form-item>
           </el-form>
@@ -578,7 +587,10 @@ export default {
       tankOils: [],
       tankCarbons: [],
       loading: true,
-      recipeStepSnForInsert: 1
+      recipeStepSnForInsert: 1,
+      rubberSnForInsert: 1,
+      carbonSnForInsert: 1,
+      oilSnForInsert: 1
     }
   },
   created() {
@@ -623,6 +635,26 @@ export default {
     removeOilRow(row) {
       this.oil_tableData.splice(this.oil_tableData.indexOf(row), 1)
     },
+    insertRubberEnbale() {
+      return this.rubber_tableData.some(rb => {
+        return rb.sn === this.rubberSnForInsert
+      })
+    },
+    insertBeforeSnOneRubber() {
+      var t_r = this.rubber_tableData.find(rb => {
+        return rb.sn === this.rubberSnForInsert
+      })
+      var index = this.rubber_tableData.indexOf(t_r)
+      for (var i = index; i < this.rubber_tableData.length; ++i) {
+        this.rubber_tableData[i].sn += 1
+      }
+      this.rubber_tableData.splice(index, 0, {
+        sn: this.rubberSnForInsert,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
     insertOneRubber() {
       var sn = this.rubber_tableData.length + 1
       if (this.rubber_tableData[this.rubber_tableData.length - 1]) {
@@ -635,6 +667,26 @@ export default {
         material_name: ''
       })
     },
+    insertCarbonEnbale() {
+      return this.carbon_tableData.some(cb => {
+        return cb.sn === this.carbonSnForInsert
+      })
+    },
+    insertBeforeSnOneCarbon() {
+      var t_c = this.carbon_tableData.find(cb => {
+        return cb.sn === this.carbonSnForInsert
+      })
+      var index = this.carbon_tableData.indexOf(t_c)
+      for (var i = index; i < this.carbon_tableData.length; ++i) {
+        this.carbon_tableData[i].sn += 1
+      }
+      this.carbon_tableData.splice(index, 0, {
+        sn: this.carbonSnForInsert,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
     insertOnecarbon() {
       var sn = this.carbon_tableData.length + 1
       if (this.carbon_tableData[this.carbon_tableData.length - 1]) {
@@ -642,6 +694,26 @@ export default {
       }
       this.carbon_tableData.push({
         sn,
+        actual_weight: 0,
+        standard_error: 0,
+        material_name: ''
+      })
+    },
+    insertOilEnbale() {
+      return this.oil_tableData.some(oil => {
+        return oil.sn === this.oilSnForInsert
+      })
+    },
+    insertBeforeSnOneOil() {
+      var t_o = this.oil_tableData.find(oil => {
+        return oil.sn === this.oilSnForInsert
+      })
+      var index = this.oil_tableData.indexOf(t_o)
+      for (var i = index; i < this.oil_tableData.length; ++i) {
+        this.oil_tableData[i].sn += 1
+      }
+      this.oil_tableData.splice(index, 0, {
+        sn: this.oilSnForInsert,
         actual_weight: 0,
         standard_error: 0,
         material_name: ''
