@@ -325,11 +325,13 @@
                   <el-button size="mini" @click="del_recipe_step_row(step_ele, index)">删除</el-button>
                 </td>
               </tr>
-
             </tbody>
           </table>
           <el-form>
             <el-form-item style="text-align: center">
+              <div>序号<el-input-number v-model="recipeStepSnForInsert" :min="1" style="margin-right: 6px;margin-left: 6px;" size="mini" :controls="false" />
+                <el-button size="mini" :disabled="!insertRecipeStepEnbale()" @click="insert_before_sn_recipe_step">前插入一行</el-button>
+              </div>
               <el-button size="mini" @click="insert_recipe_step">插入一行</el-button>
             </el-form-item>
           </el-form>
@@ -575,7 +577,8 @@ export default {
       rubberRow: null,
       tankOils: [],
       tankCarbons: [],
-      loading: true
+      loading: true,
+      recipeStepSnForInsert: 1
     }
   },
   created() {
@@ -1078,6 +1081,30 @@ export default {
     //     }
     //   }
     // },
+    insertRecipeStepEnbale() {
+      return this.RecipeMaterialList.some(rm => {
+        return rm.sn === this.recipeStepSnForInsert
+      })
+    },
+    insert_before_sn_recipe_step() {
+      var t_rm = this.RecipeMaterialList.find(rm => {
+        return rm.sn === this.recipeStepSnForInsert
+      })
+      var index = this.RecipeMaterialList.indexOf(t_rm)
+      for (var i = index; i < this.RecipeMaterialList.length; ++i) {
+        this.RecipeMaterialList[i].sn += 1
+      }
+      this.RecipeMaterialList.splice(index, 0, {
+        sn: this.recipeStepSnForInsert,
+        time: undefined,
+        temperature: undefined,
+        energy: undefined,
+        power: undefined,
+        //     action:"",
+        pressure: undefined,
+        rpm: undefined
+      })
+    },
     insert_recipe_step: function() {
       var sn = this.RecipeMaterialList[this.RecipeMaterialList.length - 1]
         ? this.RecipeMaterialList[this.RecipeMaterialList.length - 1].sn + 1 : 1
