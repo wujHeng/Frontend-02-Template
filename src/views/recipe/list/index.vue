@@ -159,7 +159,7 @@
       <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type !== 1 && scope.row.used_type !== 4" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1 && scope.row.batching_type !== 2" size="mini" :disabled="scope.row.used_type !== 1 && scope.row.used_type !== 4" @click="ModifyRecipeButton(scope.row)">修改</el-button>
             <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
           </el-button-group>
         </template>
@@ -631,37 +631,6 @@ export default {
       await this.equip_copy_list(this.currentRow['dev_type'])
     },
     CopyRecipeConfirm: async function(formName) {
-      // if (this.copyForm.CopySelectEquip === '') {
-      //   this.$message({
-      //     message: '机台不能为空',
-      //     type: 'error'
-      //   })
-      //   return
-      // }
-      // if (this.copyForm.CopySelectEquip === this.currentRow['equip']) {
-      //   this.$message({
-      //     message: '该机台配方已存在',
-      //     type: 'error'
-      //   })
-      //   return
-      // }
-      // var copy_recipe_return = await this.copy_recipe_list(
-      // { data: {
-      // 'product_batching': this.currentRow['id'],
-      // 'equip': this.CopySelectEquip
-      // }}
-      // )
-      // if (copy_recipe_return.error !== undefined) {
-      // return
-      // }
-      // this.dialogCopyRecipeSync = false
-      // this.currentRow = {
-      // product_name: null
-      // }
-      // this.get_recipe_list()
-
-      // console.log('----------------------------------------')
-      // console.log(this.currentRow)
       this.$refs[formName].validate(valide => {
         if (valide) {
           validate_versions({
@@ -677,6 +646,13 @@ export default {
               if (this.copyForm.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) {
                 add_currentRow.equip_no = this.SelectCopyEquipOptions[i]['equip_no']
               }
+            }
+            if (this.copyForm.CopySelectEquip !== this.currentRow.equip_id) {
+              this.$notify({
+                title: '提示',
+                message: '选择机台与拷贝源机台不同, 炭黑和油料称量信息未被拷贝！',
+                duration: 0
+              })
             }
             // console.log(add_currentRow)
             this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
