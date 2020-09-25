@@ -27,10 +27,10 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="配方编号">
+      <el-form-item label="配方编码">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
-      <el-form-item label="配方名称">
+      <el-form-item label="胶料名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 100%" />
       </el-form-item>
       <el-form-item style="float: right">

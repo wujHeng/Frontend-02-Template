@@ -81,7 +81,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="胶料编号" prop="SelectRecipeNo">
+            <el-form-item label="胶料编码" prop="SelectRecipeNo">
               <el-select
                 v-model="generateRecipeForm.SelectRecipeNo"
                 filterable
