@@ -8,3 +8,10 @@ export function getChildSystems() {
     params: { all: 1 }
   })
 }
+
+export function saveInternetTime() {
+  return request({
+    url: API.SaveInternetTime,
+    method: 'post'
+  })
+}
