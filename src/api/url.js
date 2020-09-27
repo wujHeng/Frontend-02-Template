@@ -79,6 +79,8 @@ export default {
 
   ChildSystemsUrl: '/api/v1/system/child-systems/',
 
+  SaveInternetTime: '/api/v1/system/save-internet-time/',
+
   GroupUrl: '/api/v1/system/group_extension/',
 
   PermissionUrl: '/api/v1/system/permission/',
@@ -86,6 +88,7 @@ export default {
   PlanStatusListUrl: '/api/v1/plan/plan-status-list/',
 
   SynchronizationUrl: '/api/v1/system/synchronization/',
+  ManualSyncUrl: '/api/v1/system/manual-sync/',
 
   // 新增计划的展示
   ProductClassesPlanUrl: '/api/v1/plan/product-classes-plan-list/',

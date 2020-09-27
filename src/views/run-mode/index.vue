@@ -29,11 +29,12 @@
           <el-button
             size="mini"
             type="success"
-            @click="handleMesConnect(scope.$index, scope.row)"
+            @click="handleAuConnect(scope.$index, scope.row)"
           >联网</el-button>
           <el-button
             size="mini"
             type="info"
+            @click="handleAuIndependent(scope.$index, scope.row)"
           >独立</el-button>
         </template>
       </el-table-column>
@@ -60,13 +61,13 @@
         width="180"
       />
       <el-table-column
-        label="操作(上辅机系统是否联网运行)"
+        label="操作(上辅机工作站是否联网运行)"
       >
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="success"
-            @click="handleAuConnect(scope.$index, scope.row)"
+            @click="handleAuWsConnect(scope.$index, scope.row)"
           >联网</el-button>
           <el-button
             size="mini"
@@ -85,7 +86,7 @@
 <script>
 import MesToAuDialog from './MesToAuDialog'
 import AuToMesDialog from './AuToMesDialog'
-import { getChildSystems } from '@/api/run-mode'
+import { getChildSystems, saveInternetTime } from '@/api/run-mode'
 
 export default {
   components: {
@@ -117,10 +118,15 @@ export default {
         })
       })
     },
-    handleMesConnect(index, row) {
+    handleAuConnect(index, row) {
       this.$refs.mesToAuDialog.show()
     },
-    handleAuConnect(index, row) {
+    handleAuIndependent(index, row) {
+      saveInternetTime().then(response => {
+        this.$message.success('独立成功')
+      })
+    },
+    handleAuWsConnect(index, row) {
       this.$refs.auToMesDialog.show()
     }
   }
