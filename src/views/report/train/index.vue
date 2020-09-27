@@ -60,6 +60,7 @@
       :data="tableData"
       style="width: 100%"
       :height="maxHeightTable"
+      :default-sort="{prop: 'begin_time', order: 'ascending'}"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -85,13 +86,15 @@
       />
       <el-table-column
         prop="begin_time"
-        width="100"
+        width="110"
+        sortable
         label="开始时间"
       />
       <el-table-column
         prop="end_time"
         label="结束时间"
-        width="100"
+        sortable
+        width="110"
       />
       <el-table-column
         prop="plan_trains"
