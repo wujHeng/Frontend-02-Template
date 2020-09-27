@@ -161,6 +161,7 @@
 
     <page
       :total="total"
+      :current-page="getParams.page"
       @currentChange="currentChange"
     />
 

@@ -1,9 +1,17 @@
 <template>
   <div style="margin-top: 25px">
     <el-row>
-      <el-form style="margin-left: 10px" :inline="true">
+      <el-form
+        style="margin-left: 10px"
+        :inline="true"
+      >
         <el-form-item label="机台">
-          <el-select v-model="equip" placeholder="请选择" @change="equipChange" @visible-change="equipVisibleChange">
+          <el-select
+            v-model="equip"
+            placeholder="请选择"
+            @change="equipChange"
+            @visible-change="equipVisibleChange"
+          >
             <el-option
               v-for="item in equipOptions"
               :key="item.equip_no"
@@ -13,21 +21,66 @@
           </el-select>
         </el-form-item>
         <el-form-item style="float: right">
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="showFindDialog">查询</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1" type="info" @click="showAddPlanDialog">新增</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="stopPlan">停止</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1" type="info" :disabled="disabled" @click="delPlan">删除</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="issuedPlan">下达</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1"
+            type="info"
+            @click="showFindDialog"
+          >查询</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1"
+            type="info"
+            @click="showAddPlanDialog"
+          >新增</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="stopPlan"
+          >停止</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="delPlan"
+          >删除</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="issuedPlan"
+          >下达</el-button>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
-      <el-form style="margin-left: 10px" :inline="true">
+      <el-form
+        style="margin-left: 10px"
+        :inline="true"
+      >
         <el-form-item style="float: right">
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1" type="info" @click="refreshPlan">刷新</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="upPlan">上调</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="downPlan">下调</el-button>
-          <el-button v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1" type="info" :disabled="disabled" @click="showAlterTrainNumberDialog">修改车次</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1"
+            type="info"
+            @click="refreshPlan"
+          >刷新</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="upPlan"
+          >上调</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="downPlan"
+          >下调</el-button>
+          <el-button
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            type="info"
+            :disabled="disabled"
+            @click="showAlterTrainNumberDialog"
+          >修改车次</el-button>
           <el-button
             v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
             type="info"
@@ -40,40 +93,85 @@
     </el-row>
     <div style="border-radius: 2px; border:.5px solid #000; padding:10px">
       <el-row>
-        <el-form style="margin-left: 10px" :inline="true">
+        <el-form
+          style="margin-left: 10px"
+          :inline="true"
+        >
           <el-form-item label="机台">
-            <el-input v-model="equip" type="text" disabled />
+            <el-input
+              v-model="equip"
+              type="text"
+              disabled
+            />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
-        <el-form style="margin-left: 10px" :inline="true">
+        <el-form
+          style="margin-left: 10px"
+          :inline="true"
+        >
           <el-form-item label="开始">
-            <el-input v-model="currentAlive.begin_time" type="text" style="float: left" disabled />
+            <el-input
+              v-model="currentAlive.begin_time"
+              type="text"
+              style="float: left"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="配方">
             <span style="float: right; margin-left: 60px" />
-            <el-input v-model="currentAlive.product_no" type="text" style="float: right" disabled />
+            <el-input
+              v-model="currentAlive.product_no"
+              type="text"
+              style="float: right"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="设定车次">
-            <el-input v-model="currentAlive.plan_trains" type="text" style="float: left" disabled />
+            <el-input
+              v-model="currentAlive.plan_trains"
+              type="text"
+              style="float: left"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="状态">
-            <el-input v-model="currentAlive.status" type="text" style="float: left" disabled />
+            <el-input
+              v-model="currentAlive.status"
+              type="text"
+              style="float: left"
+              disabled
+            />
           </el-form-item>
         </el-form>
       </el-row>
       <el-row>
-        <el-form style="margin-left: 10px" :inline="true">
+        <el-form
+          style="margin-left: 10px"
+          :inline="true"
+        >
           <el-form-item label="结束">
-            <el-input v-model="currentAlive.end_time" type="text" disabled />
+            <el-input
+              v-model="currentAlive.end_time"
+              type="text"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="当前计划">
             <span style="float: right; margin-left: 30px" />
-            <el-input v-model="currentAlive.plan_classes_uid" type="text" disabled />
+            <el-input
+              v-model="currentAlive.plan_classes_uid"
+              type="text"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="当前车次">
-            <el-input v-model="currentAlive.actual_trains" type="text" disabled />
+            <el-input
+              v-model="currentAlive.actual_trains"
+              type="text"
+              disabled
+            />
           </el-form-item>
         </el-form>
       </el-row>
@@ -85,26 +183,81 @@
       style="width: 100%"
       @current-change="handleCurrentChange"
     >
-      <el-table-column type="index" label="No" width="55" />
-      <el-table-column prop="plan_classes_uid" label="计划编号" width="180" />
-      <el-table-column prop="sn" label="序号" width="55" />
-      <el-table-column prop="stage_product_batch_no" label="配方名称" width="150" />
-      <el-table-column prop="begin_time" label="开始时间" width="160" />
-      <el-table-column prop="end_time" label="结束时间" width="160" />
-      <el-table-column prop="equip_name" label="机台" width="100" />
-      <el-table-column prop="classes" label="班次" width="80" />
-      <el-table-column prop="plan_trains" label="设定" width="80" />
-      <el-table-column prop="actual_trains" label="完成" width="80">
+      <el-table-column
+        type="index"
+        label="No"
+        width="55"
+      />
+      <el-table-column
+        prop="plan_classes_uid"
+        label="计划编号"
+        width="180"
+      />
+      <el-table-column
+        prop="sn"
+        label="序号"
+        width="55"
+      />
+      <el-table-column
+        prop="stage_product_batch_no"
+        label="配方名称"
+        width="150"
+      />
+      <el-table-column
+        prop="begin_time"
+        label="开始时间"
+        width="160"
+      />
+      <el-table-column
+        prop="end_time"
+        label="结束时间"
+        width="160"
+      />
+      <el-table-column
+        prop="equip_name"
+        label="机台"
+        width="100"
+      />
+      <el-table-column
+        prop="classes"
+        label="班次"
+        width="80"
+      />
+      <el-table-column
+        prop="plan_trains"
+        label="设定"
+        width="80"
+      />
+      <el-table-column
+        prop="actual_trains"
+        label="完成"
+        width="80"
+      >
         <template slot-scope="scope">
           <div v-if="scope.row && scope.row.actual_trains">{{ scope.row.actual_trains }}</div>
           <div v-else>{{ 0 }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="created_username" label="操作员" width="120" />
-      <el-table-column prop="status" label="状态" />
+      <el-table-column
+        prop="created_username"
+        label="操作员"
+        width="120"
+      />
+      <el-table-column
+        prop="status"
+        label="状态"
+      />
     </el-table>
-    <page :total="total" @currentChange="currentChange" />
-    <el-dialog title="查询计划" :visible.sync="findDialogVisible" width="30%">
+    <page
+      :total="total"
+      :current-page="page"
+      @currentChange="currentChange"
+    />
+    <el-dialog
+      title="查询计划"
+      :visible.sync="findDialogVisible"
+      width="30%"
+    >
       <el-form :inline="true">
         <el-row>
           <el-form-item label="开始时间: ">
@@ -130,7 +283,12 @@
         </el-row>
         <el-row>
           <el-form-item label="班次: ">
-            <el-select v-model="classes" clearable placeholder="请选择" @visible-change="classesVisibleChange">
+            <el-select
+              v-model="classes"
+              clearable
+              placeholder="请选择"
+              @visible-change="classesVisibleChange"
+            >
               <el-option
                 v-for="item in classesOptions"
                 :key="item.global_name"
@@ -142,7 +300,13 @@
         </el-row>
         <el-row>
           <el-form-item label="配方: ">
-            <el-select v-model="recipe" filterable clearable placeholder="请选择" @visible-change="recipeVisibleChange">
+            <el-select
+              v-model="recipe"
+              filterable
+              clearable
+              placeholder="请选择"
+              @visible-change="recipeVisibleChange"
+            >
               <el-option
                 v-for="(item, index) in recipeOptions"
                 :key="index"
@@ -153,15 +317,27 @@
           </el-form-item>
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="findDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="findAlterTrainNumberSubmit">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="findAlterTrainNumberSubmit"
+        >确 定</el-button>
         <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
       </div>
     </el-dialog>
-    <alter-train-number-dialog ref="alterTrainNumberDialog" @handleSuccessed="getPlanList" />
+    <alter-train-number-dialog
+      ref="alterTrainNumberDialog"
+      @handleSuccessed="getPlanList"
+    />
 
-    <add-plan-dialog ref="addPlanDialog" @handleSuccessed="getPlanList" />
+    <add-plan-dialog
+      ref="addPlanDialog"
+      @handleSuccessed="getPlanList"
+    />
   </div>
 </template>
 
@@ -255,15 +431,15 @@ export default {
           }
         }
         // this.tableData.splice(0, 0, data1)
-      // eslint-disable-next-line no-empty
-      } catch (e) {}
+        // eslint-disable-next-line no-empty
+      } catch (e) { }
     },
     async getEquipList() {
       try {
         const equipData = await equip('get')
         this.equipOptions = equipData.results
-      // eslint-disable-next-line no-empty
-      } catch (e) {}
+        // eslint-disable-next-line no-empty
+      } catch (e) { }
     },
     refreshPlan() {
       this.getPlanStatusList()
@@ -299,15 +475,15 @@ export default {
           params: { all: 1, class_name: '班次' }
         })
         this.classesOptions = classData.results
-      // eslint-disable-next-line no-empty
-      } catch (e) {}
+        // eslint-disable-next-line no-empty
+      } catch (e) { }
     },
     async getRecipeList() {
       try {
         const recipeData = await productbatching('get', { params: { all: 1, distinct: 1 }})
         this.recipeOptions = recipeData.results
-      // eslint-disable-next-line no-empty
-      } catch (e) {}
+        // eslint-disable-next-line no-empty
+      } catch (e) { }
     },
     clearFindForm() {
       const myDate = new Date()
