@@ -1,6 +1,9 @@
 <template>
   <div style="margin-top: 25px">
-    <el-form style="margin-left: 10px" :inline="true">
+    <el-form
+      style="margin-left: 10px"
+      :inline="true"
+    >
       <el-form-item label="开始时间">
         <el-date-picker
           v-model="params.st"
@@ -38,7 +41,12 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" type="index" width="50" label="No" />
+      <el-table-column
+        align="center"
+        type="index"
+        width="50"
+        label="No"
+      />
       <el-table-column
         prop="equip_no"
         label="机台"
@@ -60,7 +68,11 @@
         label="实际重量"
       />
     </el-table>
-    <page :total="total" @currentChange="currentChange" />
+    <page
+      :total="total"
+      :current-page="params.page"
+      @currentChange="currentChange"
+    />
   </div>
 </template>
 
@@ -102,8 +114,7 @@ export default {
     materialTypeChanged(materialType) {
       if (materialType) {
         this.params.material_type = materialType
-      }
-      else {
+      } else {
         this.params.material_type = null
       }
       this.search()

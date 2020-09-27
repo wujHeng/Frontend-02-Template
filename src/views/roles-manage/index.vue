@@ -95,6 +95,7 @@
     </el-table>
     <page
       :total="count"
+      :current-page="getParams.page"
       @currentChange="changePage"
     />
     <el-dialog
