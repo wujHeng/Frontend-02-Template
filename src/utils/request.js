@@ -85,12 +85,19 @@ service.interceptors.response.use(
       return Promise.reject(error.response.data)
     } else if (Object.prototype.toString.call(error.response.data) === '[object Array]') {
       let str = ''
-      let row = 0
       error.response.data.forEach(errorData => {
-        if (errorData && Object.prototype.hasOwnProperty.call(errorData, 'non_field_errors')) {
-          str += (`${row++} : ${errorData.non_field_errors.join(',')}\n`)
+        let obj = null
+        if (errorData) {
+          try {
+            obj = JSON.parse(errorData)
+          } catch (e) {
+            obj = errorData
+          }
+        }
+        if (errorData && Object.prototype.hasOwnProperty.call(obj, 'non_field_errors')) {
+          str += (`${obj.non_field_errors.join(',')}\n`)
         } else {
-          str += JSON.stringify(errorData)
+          str += errorData
         }
       })
       Message({
@@ -101,7 +108,7 @@ service.interceptors.response.use(
       return Promise.reject(error.response.data)
     } else {
       Message({
-        message: error.message,
+        message: error.response.data || error.message,
         type: 'error',
         duration: 3 * 1000
       })
