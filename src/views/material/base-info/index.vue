@@ -117,12 +117,12 @@
       >
         <template slot-scope="scope">
           <!-- <el-button-group> -->
-          <!-- <el-button
-              v-if="permissionObj.production.material.indexOf('change')>-1"
-              size="mini"
-              @click="showUpdateMaterialDialog(scope.row)"
-            >编辑
-            </el-button> -->
+          <el-button
+            v-if="permissionObj.production.material.indexOf('change')>-1"
+            size="mini"
+            @click="showUpdateMaterialDialog(scope.row)"
+          >编辑
+          </el-button>
           <el-button
             v-if="permissionObj.production.material.indexOf('change')>-1"
             size="mini"
