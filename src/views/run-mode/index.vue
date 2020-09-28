@@ -77,7 +77,7 @@
       </el-table-column>
     </el-table>
 
-    <mes-to-au-dialog ref="mesToAuDialog" />
+    <mes-to-au-dialog ref="mesToAuDialog" @synced="getChildSystems" />
     <au-to-mes-dialog ref="auToMesDialog" />
   </div>
 
@@ -108,6 +108,8 @@ export default {
   },
   methods: {
     getChildSystems() {
+      this.mesSystemTableData = []
+      this.auxiliaryTableData = []
       getChildSystems().then(response => {
         response.results.forEach(result => {
           if (result.system_name === 'MES') {
@@ -124,6 +126,7 @@ export default {
     handleAuIndependent(index, row) {
       saveInternetTime().then(response => {
         this.$message.success('独立成功')
+        this.getChildSystems()
       })
     },
     handleAuWsConnect(index, row) {

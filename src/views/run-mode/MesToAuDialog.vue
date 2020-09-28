@@ -25,6 +25,7 @@ export default {
       Synchronization().then(response => {
         ManualSync().then(r => {
           this.$message.success('同步成功')
+          this.$emit('synced')
         })
       })
       this.dialogVisible = false
