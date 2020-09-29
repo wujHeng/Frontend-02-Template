@@ -188,7 +188,7 @@ export default {
       this.putCbList()
       this.putOilList()
     },
-    low_valuehange(row, value) {
+    low_value_change(row, value) {
       if (!value) {
         row.low_value = 0
       }
