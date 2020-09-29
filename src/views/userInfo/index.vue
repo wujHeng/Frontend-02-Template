@@ -282,7 +282,7 @@ export default {
       getParams: {
         num: '',
         username: '',
-        is_active: 1
+        is_active: ''
       },
       currentPage: 1,
       dialogCreateUserVisible: false,

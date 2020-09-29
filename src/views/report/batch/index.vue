@@ -27,19 +27,6 @@
           :make-use-batch="true"
           @productBatchingChanged="productBatchingChanged"
         />
-        <!-- <el-select
-          v-model="getParams.product_no"
-          placeholder="请选择"
-          clearable
-          @change="changeSearch"
-        >
-          <el-option
-            v-for="item in glueList"
-            :key="item.id"
-            :label="item.stage_product_batch_no"
-            :value="item.stage_product_batch_no"
-          />
-        </el-select> -->
       </el-form-item>
       <el-form-item label="机台">
         <selectEquip
@@ -53,6 +40,7 @@
           placeholder="请选择"
           clearable
           @change="changeSearch"
+          @visible-change="visibleChange"
         >
           <el-option
             v-for="item in classesList"
@@ -306,7 +294,6 @@ import selectEquip from '@/components/select_w/equip'
 import ProductNoSelect from '@/components/ProductNoSelect'
 import {
   reportBatch,
-  rubberMaterial,
   classesList,
   palletFeedBacks,
   echartsListUrl,
@@ -339,7 +326,6 @@ export default {
       tableDataRubber: [],
       tableDataBAT: [],
       dialogVisibleBAT: false,
-      glueList: [],
       classesList: [],
       // 24小时，转换为时间戳24*60*60*1000
       fixedTime: 24 * 60 * 60 * 1000,
@@ -356,8 +342,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getGlueList() // 获取胶料列表
-    this.getClassesList() // 获取班次列表
+    // this.getClassesList() // 获取班次列表
 
     var _setDateCurrent = setDate()
     this.getParams.st = _setDateCurrent + ' 00:00:00'
@@ -383,20 +368,6 @@ export default {
           this.loadingTable = false
           // this.$message.error("请求错误");
         })
-    },
-    getGlueList() {
-      var _this = this
-      rubberMaterial('get', {
-        params: {
-          all: 1
-        }
-      })
-        .then(function(response) {
-          var glueList = response.results || []
-          _this.glueList = glueList
-        })
-        // eslint-disable-next-line handle-callback-err
-        .catch(function(error) { })
     },
     getClassesList() {
       var _this = this
@@ -473,7 +444,8 @@ export default {
           product_no: row.product_no,
           plan_classes_uid: row.plan_classes_uid,
           equip_no: row.equip_no,
-          current_trains: row.actual_trains
+          st: row.begin_time,
+          et: row.end_time
         }
       })
         .then(function(response) {
@@ -553,6 +525,11 @@ export default {
     currentChange(page) {
       this.getParams.page = page
       this.getList()
+    },
+    visibleChange(bool) {
+      if (bool && this.classesList.length === 0) {
+        this.getClassesList()
+      }
     }
   }
 }

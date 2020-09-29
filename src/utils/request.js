@@ -107,8 +107,12 @@ service.interceptors.response.use(
       })
       return Promise.reject(error.response.data)
     } else {
+      let errorStr = error.message
+      if (error.response.status === 400) {
+        errorStr = error.response.data
+      }
       Message({
-        message: error.response.data || error.message,
+        message: errorStr,
         type: 'error',
         duration: 3 * 1000
       })
