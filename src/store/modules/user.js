@@ -61,7 +61,6 @@ const actions = {
       username,
       password
     } = userInfo
-    console.log("login")
     return new Promise((resolve, reject) => {
       login({
         username: username.trim(),
