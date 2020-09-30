@@ -423,13 +423,13 @@ export default {
         const Data = await palletFeedBacks('get', { params: this.params })
         this.tableData = Data.results
         this.total = Data.count
-        for (var i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].status === '运行中') {
-            var data1 = this.tableData[i]
-            this.tableData.unshift(data1)
-            this.tableData.splice(i, 1)
-          }
-        }
+        // for (var i = 0; i < this.tableData.length; i++) {
+        //   if (this.tableData[i].status === '运行中') {
+        //     var data1 = this.tableData[i]
+        //     this.tableData.unshift(data1)
+        //     this.tableData.splice(i, 1)
+        //   }
+        // }
         // this.tableData.splice(0, 0, data1)
         // eslint-disable-next-line no-empty
       } catch (e) { }
