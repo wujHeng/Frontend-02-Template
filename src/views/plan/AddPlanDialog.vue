@@ -42,7 +42,7 @@
       <el-table-column fixed prop="equip_.equip_no" label="机台" width="150" />
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
-          <el-select v-model="scope.row.product_batching" @change="productBatchingChanged(scope.row)">
+          <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
             <el-option
               v-for="productBatching in scope.row.productBatchings"
               :key="productBatching.id"
