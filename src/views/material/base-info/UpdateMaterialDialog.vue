@@ -2,7 +2,7 @@
   <el-dialog title="编辑原材料基本信息" :visible.sync="dialogVisible">
     <el-form v-model="form">
       <el-form-item :error="formError.material_no" label="原材料编码">
-        <el-input v-model="form.material_no" />
+        <el-input v-model="form.material_no" disabled="true" />
       </el-form-item>
       <el-form-item :error="formError.material_name" label="原材料名称">
         <el-input v-model="form.material_name" />

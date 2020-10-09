@@ -39,7 +39,9 @@
       :data="plansForAdd"
       border
     >
-      <el-table-column fixed prop="equip_.equip_no" label="机台" width="150" />
+      <el-table-column fixed prop="equip_.equip_no" label="机台" />
+      <el-table-column fixed prop="work_schedule_name" label="倒班规则" />
+      <el-table-column fixed prop="day_time" label="日期" width="110" />
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
           <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
@@ -197,6 +199,7 @@ export default {
   },
   methods: {
     show() {
+      this.plansForAdd = []
       this.addPlanVisible = true
     },
     async getEquipList() {
@@ -345,7 +348,9 @@ export default {
         equip_: this.equipById[this.equipIdForAdd],
         equip: this.equipIdForAdd,
         plan_schedule: this.planScheduleId,
-        pdp_product_classes_plan
+        pdp_product_classes_plan,
+        day_time: planSchedule.day_time,
+        work_schedule_name: planSchedule.work_schedule_name
       }
       const rubberMateriaData = await getRubberMateria({
         all: 1,
@@ -362,6 +367,7 @@ export default {
         var planForSum = JSON.parse(JSON.stringify(plan))
         planForSum['sum'] = true
         planForSum['equip_'].equip_no = '小计'
+        planForSum['day_time'] = planForSum['work_schedule_name'] = null
         this.plansForAdd.push(planForSum)
       } else {
         var lastIndex = this.equipLastIndexInPlansForAdd()
