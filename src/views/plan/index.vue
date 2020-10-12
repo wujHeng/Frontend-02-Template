@@ -485,8 +485,15 @@ export default {
         // eslint-disable-next-line no-empty
       } catch (e) { }
     },
-    clearFindForm() {
-      const myDate = new Date()
+    getBeginTime(myDate) {
+      const Y = myDate.getFullYear()
+      const m = myDate.getMonth() + 1
+      const M = m < 10 ? '0' + m : m
+      const d = myDate.getDate()
+      const D = d < 10 ? ('0' + d) : d
+      return Y + '-' + M + '-' + D + ' 00:00:00'
+    },
+    getEndTime(myDate) {
       const Y = myDate.getFullYear()
       const m = myDate.getMonth() + 1
       const M = m < 10 ? '0' + m : m
@@ -498,9 +505,14 @@ export default {
       const Minute = minute < 10 ? ('0' + minute) : minute
       const second = myDate.getSeconds()
       const Second = second < 10 ? ('0' + second) : second
-      this.beginTime = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
-      // this.yesterday = Y + '-' + M + '-' + (D - 1) + ' 00:00:00'
-      this.endTime = Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
+      return Y + '-' + M + '-' + D + ' ' + H + ':' + Minute + ':' + Second
+    },
+    clearFindForm() {
+      const myDate = new Date()
+      this.endTime = this.getEndTime(myDate)
+      const yesterday = myDate.getTime() - 1000 * 60 * 60 * 24
+      myDate.setTime(yesterday)
+      this.beginTime = this.getBeginTime(myDate)
       this.classes = ''
       this.recipe = ''
       this.params = {
