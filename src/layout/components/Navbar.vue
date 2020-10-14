@@ -10,6 +10,18 @@
 
     <div class="right-menu">
       <el-dropdown
+        class="edition-dropdown"
+        @command="commandClick"
+      >
+        <span class="el-dropdown-link">
+          {{ currentEdition === 'v1'?'常规版':'万龙版' }}<i class="el-icon-arrow-down el-icon--right" />
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="v1">常规版</el-dropdown-item>
+          <el-dropdown-item command="v2">万龙版</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-dropdown
         class="avatar-container"
         trigger="click"
       >
@@ -57,11 +69,15 @@ export default {
   },
   data() {
     return {
-      tableVisible: false
+      tableVisible: false,
+      currentEdition: ''
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name'])
+    ...mapGetters(['sidebar', 'avatar', 'name', 'editionNo'])
+  },
+  created() {
+    this.currentEdition = this.editionNo
   },
   methods: {
     toggleSideBar() {
@@ -73,6 +89,10 @@ export default {
     },
     changePassword() {
       this.tableVisible = true
+    },
+    commandClick(val) {
+      this.currentEdition = val
+      this.$store.commit('user/SET_EDITION', val)
     }
   }
 }
@@ -87,6 +107,10 @@ export default {
   color:#fff !important;
   background: #e99d2a;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  .edition-dropdown{
+    margin-right:30px;
+    color:#fff;
+  }
 
   .right-menu .avatar-container .avatar-wrapper{
     margin-top: 0 !important;
