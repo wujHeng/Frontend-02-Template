@@ -20,15 +20,10 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    // if (config.method === 'get') {
-    // let urlTest = config.url
-    // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
-    // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
-    // let result = params_.substring(1, params_.length - 1)
-    // }
     if (store.getters.token) {
       config.headers['Authorization'] = 'JWT ' + getToken()
     }
+    config.headers['Accept'] = 'application/json; version=' + store.getters.editionNo
     return config
   },
   error => {

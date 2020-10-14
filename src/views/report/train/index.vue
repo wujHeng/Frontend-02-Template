@@ -35,6 +35,7 @@
           clearable
           placeholder="请选择"
           @change="changeSearch"
+          @visible-change="visibleChange"
         >
           <el-option
             v-for="item in operatorList"
@@ -105,45 +106,45 @@
         label="实际车次"
       />
       <el-table-column
-        prop="production_details.控制方式"
+        :prop="editionNo === 'v1'?'production_details.控制方式':'control_mode'"
         label="本/远控"
       />
       <el-table-column
-        prop="production_details.作业方式"
+        :prop="editionNo === 'v1'?'production_details.作业方式':'operating_type'"
         label="手/自动"
       />
       <el-table-column
-        prop="production_details.总重量"
+        :prop="editionNo === 'v1'?'production_details.总重量':'actual_weight'"
         label="总重量"
       />
       <el-table-column
-        prop="production_details.排胶时间"
+        :prop="editionNo === 'v1'?'production_details.排胶时间':'evacuation_time'"
         label="排胶时间"
       />
       <el-table-column
-        prop="production_details.排胶温度"
+        :prop="editionNo === 'v1'?'production_details.排胶温度':'evacuation_temperature'"
         label="排胶温度"
       />
       <el-table-column
-        prop="production_details.排胶能量"
+        :prop="editionNo === 'v1'?'production_details.排胶能量':'evacuation_energy'"
         label="排胶能量"
       />
       <el-table-column
-        prop="production_details.员工代号"
+        :prop="editionNo === 'v1'?'production_details.员工代号':'operation_user'"
         label="操作人"
       />
       <el-table-column
-        prop="production_details.存盘时间"
+        :prop="editionNo === 'v1'?'production_details.存盘时间':'save_ime'"
         label="存盘时间"
         width="100"
       />
       <el-table-column
-        prop="production_details.密炼时间"
+        :prop="editionNo === 'v1'?'production_details.密炼时间':'mixer_time'"
         label="密炼时间"
         width="100"
       />
       <el-table-column
-        prop="production_details.间隔时间"
+        :prop="editionNo === 'v1'?'production_details.间隔时间':'interval_time'"
         label="间隔时间"
       />
       <el-table-column
@@ -216,7 +217,7 @@
                 <td class="begin_time_width">开始</td>
                 <td>{{ rowInfo.begin_time ||'--' }}</td>
                 <td>本/遥控</td>
-                <td>{{ rowInfo.production_details.控制方式 ||'--' }}</td>
+                <td>{{ (editionNo === 'v1'?rowInfo.production_details.控制方式:rowInfo.control_mode) ||'--' }}</td>
               </tr>
               <tr class="train-one-tr-banburying">
                 <td>名称</td>
@@ -228,7 +229,10 @@
                 <td>状态</td>
                 <td>{{ rowInfo.status ||'--' }}</td>
               </tr>
-              <tr class="train-one-tr-banburying">
+              <tr
+                v-if="editionNo === 'v1'"
+                class="train-one-tr-banburying"
+              >
                 <td>排胶温度</td>
                 <td>{{ rowInfo.production_details.排胶温度 ||'--' }}</td>
                 <td>排胶能量</td>
@@ -237,6 +241,19 @@
                 <td>{{ rowInfo.production_details.排胶时间 ||'--' }}</td>
                 <td>总重</td>
                 <td>{{ rowInfo.production_details.总重量 ||'--' }}</td>
+              </tr>
+              <tr
+                v-if="editionNo === 'v2'"
+                class="train-one-tr-banburying"
+              >
+                <td>排胶温度</td>
+                <td>{{ rowInfo.evacuation_temperature ||'--' }}</td>
+                <td>排胶能量</td>
+                <td>{{ rowInfo.evacuation_energy ||'--' }}</td>
+                <td class="begin_time_width">时间</td>
+                <td>{{ rowInfo.evacuation_time ||'--' }}</td>
+                <td>总重</td>
+                <td>{{ rowInfo.actual_weight ||'--' }}</td>
               </tr>
             </table>
 
@@ -261,18 +278,29 @@
                   <td>种类</td>
                   <td>超差</td>
                 </tr>
+
                 <tr
                   v-for="(item,index) in weighInformationList"
                   :key="index"
                   class="train-one-tr-banburying"
                 >
                   <td>{{ index+1 }}</td>
-                  <td>{{ item.物料名称 }}</td>
-                  <td>{{ item.设定重量 }}</td>
-                  <td>{{ item.实际重量 }}</td>
-                  <td>{{ item.秤状态 }}</td>
-                  <td>{{ item.物料类型 }}</td>
-                  <td>{{ Math.round((Number(item.设定重量) - Number(item.实际重量))*100)/100 }}</td>
+                  <template v-if="editionNo === 'v2'">
+                    <td>{{ item.material_name }}</td>
+                    <td>{{ item.plan_weight }}</td>
+                    <td>{{ item.actual_weight }}</td>
+                    <td>{{ item.state_balance }}</td>
+                    <td>{{ item.material_type }}</td>
+                    <td>{{ Math.round((Number(item.plan_weight) - Number(item.actual_weight))*100)/100 }}</td>
+                  </template>
+                  <template v-if="editionNo === 'v1'">
+                    <td>{{ item.物料名称 }}</td>
+                    <td>{{ item.设定重量 }}</td>
+                    <td>{{ item.实际重量 }}</td>
+                    <td>{{ item.秤状态 }}</td>
+                    <td>{{ item.物料类型 }}</td>
+                    <td>{{ Math.round((Number(item.设定重量) - Number(item.实际重量))*100)/100 }}</td>
+                  </template>
                 </tr>
               </table>
             </div>
@@ -314,14 +342,14 @@
                   class="train-one-tr-banburying"
                 >
                   <td>{{ index+1 }}</td>
-                  <td>{{ item.条件 }}</td>
-                  <td>{{ item.时间 }}</td>
-                  <td>{{ item.温度 }}</td>
-                  <td>{{ item.功率 }}</td>
-                  <td>{{ item.能量 }}</td>
-                  <td>{{ item.动作 }}</td>
-                  <td>{{ item.转速 }}</td>
-                  <td>{{ item.压力 }}</td>
+                  <td>{{ item.condition_name }}</td>
+                  <td>{{ item.time }}</td>
+                  <td>{{ item.temperature }}</td>
+                  <td>{{ item.power }}</td>
+                  <td>{{ item.energy }}</td>
+                  <td>{{ item.action_name }}</td>
+                  <td>{{ item.rpm }}</td>
+                  <td>{{ item.pressure }}</td>
                 </tr>
               </table>
             </div>
@@ -379,7 +407,10 @@
           class="trainContentRight"
         >
           <div style="display:flex">
-            <div class="police-record">
+            <div
+              v-if="editionNo === 'v1'"
+              class="police-record"
+            >
               <span>排胶能量: {{ rowInfo.production_details.排胶能量 ||'--' }}</span>
               <span>设定: {{ rowInfo.plan_trains ||'--' }}</span>
               <span>时间: {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
@@ -389,6 +420,20 @@
               <span>排胶时间: {{ rowInfo.production_details.排胶时间||'--' }}</span>
               <span>名称: {{ rowInfo.product_no ||'--' }}</span>
               <span>总量: {{ rowInfo.production_details.总重量 || '--' }}</span>
+            </div>
+            <div
+              v-if="editionNo === 'v2'"
+              class="police-record"
+            >
+              <span>排胶能量: {{ rowInfo.evacuation_energy ||'--' }}</span>
+              <span>设定: {{ rowInfo.plan_trains ||'--' }}</span>
+              <span>时间: {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
+              <br>
+              <span>排胶温度: {{ rowInfo.evacuation_temperature||'--' }}</span>
+              <span>完成: {{ rowInfo.actual_trains || '--' }}</span>
+              <span>排胶时间: {{ rowInfo.evacuation_time||'--' }}</span>
+              <span>名称: {{ rowInfo.product_no ||'--' }}</span>
+              <span>总量: {{ rowInfo.actual_weight || '--' }}</span>
             </div>
             <div class="right-button">
               <!-- <el-button>上一步</el-button>
@@ -438,7 +483,6 @@
 import { setDate } from '@/utils/index'
 import {
   trainsFeedbacks,
-  rubberMaterial,
   weighInformation,
   mixerInformation,
   curveInformation
@@ -448,6 +492,7 @@ import page from '@/components/page'
 import selectEquip from '@/components/select_w/equip'
 import ProductNoSelect from '@/components/ProductNoSelect'
 import chartMixin from '../chartMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { page, selectEquip, ProductNoSelect },
@@ -459,8 +504,6 @@ export default {
       getParams: {
         page: 1
       },
-      // 配方
-      formulaList: [],
       operatorList: [],
       tableData: [],
       loading: true,
@@ -481,14 +524,21 @@ export default {
       dialogVisible: false
     }
   },
+  computed: {
+    ...mapGetters(['editionNo'])
+  },
+  watch: {
+    'editionNo'(val) {
+      this.loading = true
+      this.getList()
+    }
+  },
   created() {
     this.maxHeightTable = (document.body.clientHeight / 1.8) + 'px'
     this.clientHeight = (document.body.clientHeight - 300) + 'px'
     this.currentRowId = ''
     this.loading = true
     this.getList()
-    this.getFormulaList()
-    this.getOperatorList()
 
     this.currentTime = setDate('', true)
     const _setDateCurrent = setDate()
@@ -500,21 +550,17 @@ export default {
   methods: {
     async getList() {
       try {
+        this.showRowTable = false
+        this.tableData = []
         const data = await trainsFeedbacks('get', { params: this.getParams })
         this.tableData = data.results || []
         // this.tableData = [{
         //   'id': 1,
         //   'created_date': '2020-09-05T20:34:34.661620',
         //   'last_updated_date': '2020-09-05T20:34:34.661620',
-        //   'delete_date': null,
-        //   'delete_flag': false,
-        //   'created_user_id': null,
-        //   'last_updated_user_id': null,
-        //   'delete_user_id': null,
         //   'plan_classes_uid': '2020090520340801115A01',
         //   'plan_trains': 1,
         //   'actual_trains': 1,
-        //   'bath_no': 1,
         //   'equip_no': '115A01',
         //   'product_no': 'C-1MB-J260-01',
         //   'plan_weight': 1,
@@ -542,15 +588,10 @@ export default {
         //   'id': 3,
         //   'created_date': '2020-09-05T20:36:32.708891',
         //   'last_updated_date': '2020-09-05T20:36:32.708891',
-        //   'delete_date': null,
-        //   'delete_flag': false,
         //   'created_user_id': null,
-        //   'last_updated_user_id': null,
-        //   'delete_user_id': null,
         //   'plan_classes_uid': '2020090520340801115A01',
         //   'plan_trains': 1,
         //   'actual_trains': 2,
-        //   'bath_no': 2,
         //   'equip_no': '115A01',
         //   'product_no': 'C-1MB-J260-01',
         //   'plan_weight': 1,
@@ -573,23 +614,10 @@ export default {
         this.loading = false
       }
     },
-    async getFormulaList() {
-      try {
-        const data = await rubberMaterial('get', {
-          params: { all: 1 }
-        })
-        const formulaList = data.results || []
-        // 去重
-        var obj = {}
-        var newArr = formulaList.reduce((item, next) => {
-          obj[next.stage_product_batch_no]
-            ? ' '
-            : (obj[next.stage_product_batch_no] = true && item.push(next))
-          return item
-        }, [])
-        this.formulaList = newArr || []
-        // eslint-disable-next-line no-empty
-      } catch (e) { }
+    visibleChange(bool) {
+      if (bool && this.operatorList.length === 0) {
+        this.getOperatorList()
+      }
     },
     async getOperatorList() {
       try {
@@ -644,12 +672,12 @@ export default {
         const data = await weighInformation('get', { params: { feed_back_id: id, page: page } })
         // const test = [
         //   {
-        //     序号: 1,
-        //     物料名称: 'abshjfh',
-        //     设定重量: 400,
-        //     实际重量: 400.3,
-        //     秤状态: 0,
-        //     物料类型: 'P'
+        //     id: 1,
+        //     material_name: 'abshjfh',
+        //     plan_weight: 400,
+        //     actual_weight: 400.3,
+        //     state_balance: 0,
+        //     material_type: 'P'
         //   }
         // ]
         // return test
@@ -664,15 +692,15 @@ export default {
         const data = await mixerInformation('get', { params: { feed_back_id: id, page: page } })
         // const test = [
         //   {
-        //     序号: 1,
-        //     条件: '条件',
-        //     时间: 0,
-        //     温度: 97,
-        //     功率: 38,
-        //     能量: 0,
-        //     动作: '加胶料',
-        //     转速: 34,
-        //     压力: 0
+        //     sn: 1,
+        //     condition_name: '条件',
+        //     time: 0,
+        //     temperature: 97,
+        //     power: 38,
+        //     energy: 0,
+        //     action_name: '加胶料',
+        //     rpm: 34,
+        //     pressure: 0
         //   }
         // ]
         // return test
@@ -740,7 +768,7 @@ export default {
       this.rowInfo = JSON.parse(JSON.stringify(row))
 
       // eslint-disable-next-line no-prototype-builtins
-      if (!this.rowInfo.hasOwnProperty('production_details') || !this.rowInfo.production_details) {
+      if (this.editionNo === 'v1' && (!this.rowInfo.hasOwnProperty('production_details') || !this.rowInfo.production_details)) {
         this.rowInfo.production_details = {}
       }
 
