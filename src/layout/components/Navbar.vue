@@ -14,11 +14,11 @@
         @command="commandClick"
       >
         <span class="el-dropdown-link">
-          {{ currentEdition === 'v1'?'常规版':'万龙版' }}<i class="el-icon-arrow-down el-icon--right" />
+          {{ currentEdition === 'v1'?'万龙版':'国自版' }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="v1">常规版</el-dropdown-item>
-          <el-dropdown-item command="v2">万龙版</el-dropdown-item>
+          <el-dropdown-item command="v1">万龙版</el-dropdown-item>
+          <el-dropdown-item command="v2">国自版</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown
