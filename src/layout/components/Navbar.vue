@@ -93,6 +93,10 @@ export default {
     commandClick(val) {
       this.currentEdition = val
       this.$store.commit('user/SET_EDITION', val)
+      const { fullPath } = this.$route
+      this.$router.replace({
+        path: '/redirect?path=' + fullPath
+      })
     }
   }
 }

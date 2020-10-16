@@ -41,6 +41,11 @@ export const constantRoutes = [{
   hidden: true
 },
 {
+  path: '/redirect',
+  component: () => import('@/views/redirectIndex'),
+  hidden: true
+},
+{
   path: '/',
   component: Layout,
   redirect: '/dashboard',
@@ -304,7 +309,7 @@ export const asyncRoutes = [{
       permissionName: 'childsysteminfo'
     }
   }
-]
+  ]
 },
 {
   path: '*',

@@ -527,12 +527,6 @@ export default {
   computed: {
     ...mapGetters(['editionNo'])
   },
-  watch: {
-    'editionNo'(val) {
-      this.loading = true
-      this.getList()
-    }
-  },
   created() {
     this.maxHeightTable = (document.body.clientHeight / 1.8) + 'px'
     this.clientHeight = (document.body.clientHeight - 300) + 'px'
