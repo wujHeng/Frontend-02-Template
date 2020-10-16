@@ -35,6 +35,7 @@
                 style="width: 100px"
                 clearable
                 placeholder="请选择"
+                :disabled="!isNormalRecipe"
                 @visible-change="SelectSiteDisplay"
               >
                 <el-option
@@ -52,6 +53,7 @@
                 style="width: 100px"
                 clearable
                 placeholder="请选择"
+                :disabled="!isNormalRecipe"
                 @change="generateRecipeName"
                 @visible-change="SelectGlobalSITEDisplay"
               >
@@ -70,6 +72,7 @@
                 style="width: 100px"
                 clearable
                 placeholder="请选择"
+                :disabled="!isNormalRecipe"
                 @change="generateRecipeName"
                 @visible-change="SelectStageDisplay"
               >
@@ -89,6 +92,7 @@
                 style="width: 100px"
                 clearable
                 placeholder="请选择"
+                :disabled="!isNormalRecipe"
                 @change="generateRecipeName"
                 @visible-change="SelectRecipeNoDisplay"
               >
@@ -101,10 +105,15 @@
               </el-select>
             </el-form-item>
             <el-form-item label="版本" prop="version">
-              <el-input v-model="generateRecipeForm.version" style="width: 90px" size="mini" placeholder="版本" @change="generateRecipeName" />
+              <el-input v-model="generateRecipeForm.version" :disabled="!isNormalRecipe" style="width: 90px" size="mini" placeholder="版本" @change="generateRecipeName" />
             </el-form-item>
             <el-form-item label="方案">
-              <el-input v-model="generateRecipeForm.scheme" style="width: 90px" size="mini" placeholder="方案" />
+              <el-input v-model="generateRecipeForm.scheme" :disabled="!isNormalRecipe" style="width: 90px" size="mini" placeholder="方案" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="配方编号" :disabled="isNormalRecipe" prop="stage_product_batch_no">
+              <el-input v-model="generateRecipeForm.stage_product_batch_no" maxlength="19" size="mini" :disabled="isNormalRecipe" @input="recipeNameChange" />
             </el-form-item>
           </el-row>
         </el-col>
@@ -700,7 +709,8 @@ export default {
       recipeStepSnForInsert: 1,
       rubberSnForInsert: 1,
       carbonSnForInsert: 1,
-      oilSnForInsert: 1
+      oilSnForInsert: 1,
+      isNormalRecipe: true
     }
   },
   created() {
@@ -722,15 +732,14 @@ export default {
     this.action_list()
     this.material_type_list()
     this.equip_list()
-    var app = this
-    timer = setInterval(function() {
-      app.generateRecipeName()
-    }, 3000)
   },
   destroyed() {
     clearInterval(timer)
   },
   methods: {
+    recipeNameChange() {
+      this.stage_product_batch_no = this.generateRecipeForm.stage_product_batch_no
+    },
     generateRecipeName() {
       var SITE_name = null
       var stage_name = null
@@ -1037,13 +1046,23 @@ export default {
           }
         }
         this.RecipeMaterialList = this.RecipeMaterialList.sort(this.compareSn)
-        this.generateRecipeForm.SelectSite = this.$route.params['site']
-        this.generateRecipeForm.SelectSITE = this.$route.params['SITE']
-        this.generateRecipeForm.SelectStage = this.$route.params['selectStage']
-        this.generateRecipeForm.SelectRecipeNo = this.$route.params['selectRecipeNo']
-        this.generateRecipeForm.version = this.$route.params['version']
-        this.generateRecipeForm.scheme = this.$route.params['scheme']
-        this.generateRecipeName()
+        this.isNormalRecipe = this.$route.params.isNormalRecipe
+        if (this.isNormalRecipe) {
+          this.generateRecipeForm.SelectSite = this.$route.params['site']
+          this.generateRecipeForm.SelectSITE = this.$route.params['SITE']
+          this.generateRecipeForm.SelectStage = this.$route.params['selectStage']
+          this.generateRecipeForm.SelectRecipeNo = this.$route.params['selectRecipeNo']
+          this.generateRecipeForm.version = this.$route.params['version']
+          this.generateRecipeForm.scheme = this.$route.params['scheme']
+          this.generateRecipeName()
+          var app = this
+          timer = setInterval(function() {
+            app.generateRecipeName()
+          }, 3000)
+        } else {
+          this.generateRecipeForm.stage_product_batch_no = this.$route.params['stage_product_batch_no']
+          this.recipeNameChange()
+        }
         this.loading = false
         return recipe_listData
       } catch (e) { throw new Error(e) }
@@ -1516,12 +1535,12 @@ export default {
         recipe_list('post', null, {
           data: {
             'factory': this.generateRecipeForm['SelectSite'],
-            'site': this.generateRecipeForm['SelectSITE'],
-            'product_info': this.generateRecipeForm['SelectRecipeNo'],
+            'site': this.isNormalRecipe ? this.generateRecipeForm['SelectSITE'] : null,
+            'product_info': this.isNormalRecipe ? this.generateRecipeForm['SelectRecipeNo'] : null,
             'precept': this.generateRecipeForm['scheme'],
-            'stage_product_batch_no': null,
-            'stage': this.generateRecipeForm['SelectStage'],
-            'versions': this.generateRecipeForm['version'],
+            'stage_product_batch_no': this.isNormalRecipe ? null : this.stage_product_batch_no,
+            'stage': this.isNormalRecipe ? this.generateRecipeForm['SelectStage'] : null,
+            'versions': this.isNormalRecipe ? this.generateRecipeForm['version'] : null,
             'production_time_interval': this.production_time_interval,
             'batching_details': batching_details_list,
             'equip': this.generateRecipeForm['SelectEquip'],
@@ -1556,50 +1575,6 @@ export default {
           })
           this.$router.push({ name: 'RecipeList' })
         })
-        // try {
-        //   this.post_recipe_list(
-        //     { data: {
-        //       'factory': this.generateRecipeForm['SelectSite'],
-        //       'site': this.generateRecipeForm['SelectSITE'],
-        //       'product_info': this.generateRecipeForm['SelectRecipeNo'],
-        //       'precept': this.generateRecipeForm['scheme'],
-        //       'stage_product_batch_no': null,
-        //       'stage': this.generateRecipeForm['SelectStage'],
-        //       'versions': this.generateRecipeForm['version'],
-        //       'production_time_interval': this.production_time_interval,
-        //       'batching_details': batching_details_list,
-        //       'equip': this.generateRecipeForm['SelectEquip'],
-        //       // 密炼步序list
-        //       'process_details': step_details_list,
-        //       'processes': {
-        //         // 配方基础信息中第一行
-        //         'mini_time': (this.mini_time === undefined) ? 0 : this.mini_time,
-        //         'mini_temp': (this.mini_temp === undefined) ? 0 : this.mini_temp,
-        //         'over_temp': (this.over_temp === undefined) ? 0 : this.over_temp,
-        //         'batching_error': (this.batching_error === undefined) ? 0 : this.batching_error,
-        //         'zz_temp': (this.zz_temp === undefined) ? 0 : this.zz_temp,
-        //         'xlm_temp': (this.xlm_temp === undefined) ? 0 : this.xlm_temp,
-        //         'cb_temp': (this.cb_temp === undefined) ? 0 : this.cb_temp,
-        //         // 配方基础信息中第二行
-        //         'over_time': (this.over_time === undefined) ? 0 : this.over_time,
-        //         'max_temp': (this.max_temp === undefined) ? 0 : this.max_temp,
-        //         'reuse_time': (this.reuse_time === undefined) ? 0 : this.reuse_time,
-        //         'reuse_flag': this.reuse_flag,
-        //         'temp_use_flag': this.temp_use_flag,
-        //         'sp_num': this.sp_num,
-        //         'use_flag': this.use_flag,
-        //         // 设备id与配方id
-        //         'equip': this.$route.params['copy_equip_id'],
-        //         'product_batching': null
-        //       }
-        //     }}
-        //   )
-        //   this.$message({
-        //     message: this.stage_product_batch_no + '配方复制成功',
-        //     type: 'success'
-        //   })
-        //   this.$router.push({ name: 'RecipeList' })
-        // } catch (e) { e }
       } else {
         this.$message({
           message: '收皮信息不能为空',
@@ -1608,13 +1583,24 @@ export default {
       }
     },
     recipe_save_return: async function() {
-      this.$refs['generateRecipeForm'].validate(valid => {
-        if (valid) {
-          this.postRecipeList()
-        } else {
-          return false
-        }
-      })
+      if (this.isNormalRecipe) {
+        this.$refs['generateRecipeForm'].validate(valid => {
+          if (valid) {
+            this.postRecipeList()
+          } else {
+            return false
+          }
+        })
+      } else {
+
+        this.$refs['generateRecipeForm'].validateField('stage_product_batch_no', error => {
+          if (!error) {
+            this.postRecipeList()
+          } else {
+            return false
+          }
+        })
+      }
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })

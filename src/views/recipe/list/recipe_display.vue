@@ -220,9 +220,6 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        console.log('====================111111111')
-        console.log(recipe_listData)
-        console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
         this.category__category_name = recipe_listData.category__category_name
