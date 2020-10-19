@@ -87,7 +87,7 @@
               <el-input-number v-model="max_temp" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item v-show="reuse_flag" label="回收时间">
-              <el-input-number v-model="reuse_time" :step="1" step-strictly :min="1" controls-position="right" size="mini" style="width: 70px" />
+              <el-input-number v-model="reuse_time" :step="1" step-strictly :min="0" controls-position="right" size="mini" style="width: 70px" />
             </el-form-item>
             <el-form-item label="是否回收">
               <template>
