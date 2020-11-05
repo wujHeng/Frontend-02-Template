@@ -25,6 +25,7 @@
       </el-form-item>
       <el-form-item label="机台">
         <selectEquip
+          :is-created="true"
           :equip_no_props.sync="getParams.equip_no"
           @changeSearch="changeSearch"
         />
@@ -134,7 +135,7 @@
         label="操作人"
       />
       <el-table-column
-        :prop="editionNo === 'v1'?'production_details.存盘时间':'save_ime'"
+        :prop="editionNo === 'v1'?'production_details.存盘时间':'product_time'"
         label="存盘时间"
         width="100"
       />
@@ -336,21 +337,40 @@
                   <td>速度</td>
                   <td>压力</td>
                 </tr>
-                <tr
-                  v-for="(item,index) in mixerInformationList"
-                  :key="index"
-                  class="train-one-tr-banburying"
-                >
-                  <td>{{ index+1 }}</td>
-                  <td>{{ item.condition_name }}</td>
-                  <td>{{ item.time }}</td>
-                  <td>{{ item.temperature }}</td>
-                  <td>{{ item.power }}</td>
-                  <td>{{ item.energy }}</td>
-                  <td>{{ item.action_name }}</td>
-                  <td>{{ item.rpm }}</td>
-                  <td>{{ item.pressure }}</td>
-                </tr>
+                <template v-if="editionNo === 'v1'">
+                  <tr
+                    v-for="(item,index) in mixerInformationList"
+                    :key="index"
+                    class="train-one-tr-banburying"
+                  >
+                    <td>{{ index+1 }}</td>
+                    <td>{{ item.条件 }}</td>
+                    <td>{{ item.时间 }}</td>
+                    <td>{{ item.温度 }}</td>
+                    <td>{{ item.功率 }}</td>
+                    <td>{{ item.能量 }}</td>
+                    <td>{{ item.动作 }}</td>
+                    <td>{{ item.转速 }}</td>
+                    <td>{{ item.压力 }}</td>
+                  </tr>
+                </template>
+                <template v-if="editionNo === 'v2'">
+                  <tr
+                    v-for="(item,index) in mixerInformationList"
+                    :key="index"
+                    class="train-one-tr-banburying"
+                  >
+                    <td>{{ index+1 }}</td>
+                    <td>{{ item.condition }}</td>
+                    <td>{{ item.time }}</td>
+                    <td>{{ item.temperature }}</td>
+                    <td>{{ item.power }}</td>
+                    <td>{{ item.energy }}</td>
+                    <td>{{ item.action }}</td>
+                    <td>{{ item.rpm }}</td>
+                    <td>{{ item.pressure }}</td>
+                  </tr>
+                </template>
               </table>
             </div>
             <div
@@ -531,8 +551,7 @@ export default {
     this.maxHeightTable = (document.body.clientHeight / 1.8) + 'px'
     this.clientHeight = (document.body.clientHeight - 300) + 'px'
     this.currentRowId = ''
-    this.loading = true
-    this.getList()
+    // this.getList()
 
     this.currentTime = setDate('', true)
     const _setDateCurrent = setDate()
@@ -544,10 +563,12 @@ export default {
   methods: {
     async getList() {
       try {
+        this.loading = true
         this.showRowTable = false
         this.tableData = []
         const data = await trainsFeedbacks('get', { params: this.getParams })
         this.tableData = data.results || []
+        const obj = this.tableData.pop()
         // this.tableData = [{
         //   'id': 1,
         //   'created_date': '2020-09-05T20:34:34.661620',
@@ -604,6 +625,7 @@ export default {
           D.end_time = setDate(D.end_time, true)
         })
         this.loading = false
+        this.$store.commit('user/SET_EDITION', obj.version)
       } catch (e) {
         this.loading = false
       }
@@ -663,7 +685,8 @@ export default {
     async getWeighInformation(id, page) {
       try {
         // eslint-disable-next-line object-curly-spacing
-        const data = await weighInformation('get', { params: { feed_back_id: id, page: page } })
+        const data = await weighInformation('get', { params: { feed_back_id: id, page: page,
+          equip_no: this.getParams.equip_no }})
         // const test = [
         //   {
         //     id: 1,
@@ -683,7 +706,8 @@ export default {
     async getMixerInformation(id, page) {
       try {
         // eslint-disable-next-line object-curly-spacing
-        const data = await mixerInformation('get', { params: { feed_back_id: id, page: page } })
+        const data = await mixerInformation('get', { params: { feed_back_id: id,
+          page: page, equip_no: this.getParams.equip_no }})
         // const test = [
         //   {
         //     sn: 1,

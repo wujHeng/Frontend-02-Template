@@ -38,9 +38,9 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        // target: 'http://127.0.0.1:8000/',
-        target: 'http://10.10.120.40:15009/',
-        // target: 'http://10.10.120.40:8000/',
+        // target: 'http://10.4.14.42:9000/',
+        // target: 'http://10.10.120.40:15009/',
+        target: 'http://10.4.14.33:9001/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

@@ -9,7 +9,7 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <el-dropdown
+      <!-- <el-dropdown
         class="edition-dropdown"
         @command="commandClick"
       >
@@ -20,7 +20,7 @@
           <el-dropdown-item command="v1">万龙版</el-dropdown-item>
           <el-dropdown-item command="v2">国自版</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
       <el-dropdown
         class="avatar-container"
         trigger="click"
