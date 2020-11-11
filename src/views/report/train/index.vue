@@ -526,7 +526,7 @@ export default {
       },
       operatorList: [],
       tableData: [],
-      loading: true,
+      loading: false,
       loadingTable: false,
       loaddingExal: true,
       total: 0,
@@ -864,7 +864,7 @@ function base64ToBlob(code) {
 </script>
 
 <style lang="scss" scoped>
-$border-color: #dcdfe6;
+$border-color: #EBEEF5;
 $border-weight: 0.5px;
 $scrollbar-width: 4px;
 $thumb-color:rgba(0, 0, 0, 0.2);

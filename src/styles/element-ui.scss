@@ -1,4 +1,5 @@
 // cover some element-ui styles
+@import './variables.scss';
 
 .navbar {
   .el-breadcrumb__separator {
@@ -29,6 +30,7 @@
   left: 0;
   position: relative;
   margin: 0 auto;
+  background-color: $backGroundBody;
 }
 
 // refine element ui upload
@@ -53,4 +55,16 @@
 // to fix el-date-picker css style
 .el-range-separator {
   box-sizing: content-box;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color:#909399;
+}
+tbody{
+  .el-table__row{
+    background-color:$backGroundBody;
+  }
+}
+.el-table__empty-block{
+  background-color:$backGroundBody;
 }
