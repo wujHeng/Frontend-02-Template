@@ -865,7 +865,7 @@ function base64ToBlob(code) {
 
 <style lang="scss" scoped>
 $border-color: #EBEEF5;
-$border-weight: 0.5px;
+$border-weight: 1px;
 $scrollbar-width: 4px;
 $thumb-color:rgba(0, 0, 0, 0.2);
 $track-color: rgba(0, 0, 0, 0.1);
