@@ -40,7 +40,11 @@ module.exports = {
       '/api': {
         // target: 'http://10.4.14.42:9000/',
         // target: 'http://10.10.120.40:15009/',
-        target: 'http://10.4.14.33:9001/',
+        // target: 'http://10.4.14.33:9001/',
+        target: 'http://10.4.10.55:80/', // 生产环境
+        // target: 'http://10.4.14.112:8000/', // 李威
+        // target: 'http://10.4.14.42:9001', // 博文
+        // target: 'http://10.4.23.77:8000', // 李威 中控室
         ws: true,
         changeOrigin: true,
         pathRewrite: {

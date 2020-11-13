@@ -279,7 +279,7 @@
                   <el-option
                     v-for="item in tankCarbons"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -325,7 +325,7 @@
                   <el-option
                     v-for="item in tankOils"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -833,11 +833,23 @@ export default {
     getTankCarbons() {
       tank_materials(this.equip_no, 1).then(response => {
         this.tankCarbons = response.results
+        this.tankCarbons = this.tankCarbons.map(ret => {
+          return {
+            ...ret,
+            label: `${ret.material_name} (${ret.tank_name})`
+          }
+        })
       })
     },
     getTankOils() {
       tank_materials(this.equip_no, 2).then(response => {
         this.tankOils = response.results
+        this.tankOils = this.tankOils.map(ret => {
+          return {
+            ...ret,
+            label: `${ret.material_name} (${ret.tank_name})`
+          }
+        })
       })
     },
     async equip_list() {
@@ -992,6 +1004,17 @@ export default {
               this.carbon_tableData.push({
                 ...recipe_listData['batching_details'][j]
               })
+              const carbonItem = this.tankCarbons.find(item => {
+                return item.id === recipe_listData['batching_details'][j].material
+              })
+              if (!carbonItem) { // 不在下拉选项中的数据
+                this.tankCarbons.push(
+                  {
+                    id: recipe_listData['batching_details'][j].material,
+                    material_name: recipe_listData['batching_details'][j].material_name,
+                    label: recipe_listData['batching_details'][j].material_name
+                  })
+              }
             }
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             if (canAddCarbonOil) {
@@ -999,6 +1022,17 @@ export default {
                 action_name: '投料',
                 ...recipe_listData['batching_details'][j]
               })
+              const oilItem = this.tankOils.find(item => {
+                return item.id === recipe_listData['batching_details'][j].material
+              })
+              if (!oilItem) { // 不在下拉选项中的数据
+                this.tankOils.push(
+                  {
+                    id: recipe_listData['batching_details'][j].material,
+                    material_name: recipe_listData['batching_details'][j].material_name,
+                    label: recipe_listData['batching_details'][j].material_name
+                  })
+              }
             }
           } else {
             this.rubber_tableData.push({
@@ -1592,7 +1626,6 @@ export default {
           }
         })
       } else {
-
         this.$refs['generateRecipeForm'].validateField('stage_product_batch_no', error => {
           if (!error) {
             this.postRecipeList()
