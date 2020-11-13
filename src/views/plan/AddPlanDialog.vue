@@ -5,7 +5,13 @@
     title="添加胶料日生产计划"
   >
     <div style="margin-bottom: 15px">
-      <el-select v-model="equipIdForAdd" filterable placeholder="请选择机台" style="margin-right: 10px">
+      <el-select
+        v-model="equipIdForAdd"
+        filterable
+        placeholder="请选择机台"
+        style="margin-right: 10px"
+        @change="equipSelected"
+      >
         <el-option
           v-for="equip in equips"
           :key="equip.id"
@@ -148,7 +154,7 @@ import {
   postProductDayPlanManyCreate
 } from '@/api/plan'
 
-// import dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 export default {
   data() {
@@ -157,7 +163,7 @@ export default {
       equipIdForAdd: null,
       equips: [],
       equipById: {},
-      day_time: '',
+      day_time: dayjs().format('YYYY-MM-DD'),
       planScheduleId: null,
       planSchedules: [],
       workSchedules: [],
@@ -196,8 +202,12 @@ export default {
     this.getEquipList()
     this.getRubberMateria()
     this.getWorkSchedules()
+    this.getPlanSchedules()
   },
   methods: {
+    equipSelected(equip) {
+      localStorage.setItem('addPlan:equip', equip)
+    },
     show() {
       this.plansForAdd = []
       this.addPlanVisible = true
@@ -209,6 +219,10 @@ export default {
         this.equips.forEach(equip => {
           this.equipById[equip.id] = equip
         })
+        const equipId = localStorage.getItem('addPlan:equip')
+        if (equipId) {
+          this.equipIdForAdd = Number(equipId)
+        }
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -242,6 +256,7 @@ export default {
             day_time: this.day_time
           })
           this.planSchedules = planSchedulesData.results
+          this.planScheduleId = this.planSchedules[0] ? this.planSchedules[0].id : null
         }
       // eslint-disable-next-line no-empty
       } catch (e) {}
