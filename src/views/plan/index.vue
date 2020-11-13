@@ -5,64 +5,116 @@
         style="margin-left: 10px"
         :inline="true"
       >
-        <el-form-item label="机台">
-          <el-select
-            v-model="equip"
-            placeholder="请选择"
-            @change="equipChange"
-            @visible-change="equipVisibleChange"
-          >
-            <el-option
-              v-for="item in equipOptions"
-              :key="item.equip_no"
-              :label="item.equip_no"
-              :value="item.equip_no"
+        <el-col :span="16">
+          <el-form-item label="机台">
+            <el-select
+              v-model="equip"
+              placeholder="请选择"
+              @change="equipChange"
+              @visible-change="equipVisibleChange"
+            >
+              <el-option
+                v-for="item in equipOptions"
+                :key="item.equip_no"
+                :label="item.equip_no"
+                :value="item.equip_no"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开始时间: ">
+            <el-date-picker
+              v-model="beginTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期"
+              @change="searchChange"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item style="float: right">
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1"
-            type="info"
-            @click="showFindDialog"
-          >查询</el-button>
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1"
-            type="info"
-            @click="showAddPlanDialog"
-          >新增</el-button>
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
-            type="info"
-            :disabled="disabled"
-            @click="stopPlan"
-          >停止</el-button>
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1"
-            type="info"
-            :disabled="disabled"
-            @click="delPlan"
-          >删除</el-button>
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
-            type="info"
-            :disabled="disabled"
-            @click="issuedPlan"
-          >下达</el-button>
-        </el-form-item>
-      </el-form>
-    </el-row>
+          </el-form-item>
+          <el-form-item label="结束时间: ">
+            <el-date-picker
+              v-model="endTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期"
+              @change="searchChange"
+            />
+          </el-form-item>
+          <el-form-item label="班次: ">
+            <el-select
+              v-model="classes"
+              clearable
+              placeholder="请选择"
+              @visible-change="classesVisibleChange"
+              @change="searchChange"
+            >
+              <el-option
+                v-for="item in classesOptions"
+                :key="item.global_name"
+                :label="item.global_name"
+                :value="item.global_name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="配方: ">
+            <el-select
+              v-model="recipe"
+              filterable
+              clearable
+              placeholder="请选择"
+              @visible-change="recipeVisibleChange"
+              @change="searchChange"
+            >
+              <el-option
+                v-for="(item, index) in recipeOptions"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item style="float: right">
+            <el-button
+              v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1"
+              type="info"
+              @click="refreshPlan"
+            >刷新</el-button>
+            <el-button
+              v-if="permissionObj.plan.productclassesplan.indexOf('add')>-1"
+              type="info"
+              @click="showAddPlanDialog"
+            >新增</el-button>
+            <el-button
+              v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+              type="info"
+              :disabled="disabled"
+              @click="stopPlan"
+            >停止</el-button>
+            <el-button
+              v-if="permissionObj.plan.productclassesplan.indexOf('delete')>-1"
+              type="info"
+              :disabled="disabled"
+              @click="delPlan"
+            >删除</el-button>
+            <el-button
+              v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+              type="info"
+              :disabled="disabled"
+              @click="issuedPlan"
+            >下达</el-button>
+          </el-form-item>
+        </el-col>
+        <!-- </el-form> -->
+        <!-- </el-row>
     <el-row>
       <el-form
         style="margin-left: 10px"
         :inline="true"
-      >
+      > -->
         <el-form-item style="float: right">
-          <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('view')>-1"
-            type="info"
-            @click="refreshPlan"
-          >刷新</el-button>
           <el-button
             v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
             type="info"
@@ -253,82 +305,6 @@
       :current-page="page"
       @currentChange="currentChange"
     />
-    <el-dialog
-      title="查询计划"
-      :visible.sync="findDialogVisible"
-      width="30%"
-    >
-      <el-form :inline="true">
-        <el-row>
-          <el-form-item label="开始时间: ">
-            <el-date-picker
-              v-model="beginTime"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="选择日期"
-            />
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="结束时间: ">
-            <el-date-picker
-              v-model="endTime"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="选择日期"
-            />
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="班次: ">
-            <el-select
-              v-model="classes"
-              clearable
-              placeholder="请选择"
-              @visible-change="classesVisibleChange"
-            >
-              <el-option
-                v-for="item in classesOptions"
-                :key="item.global_name"
-                :label="item.global_name"
-                :value="item.global_name"
-              />
-            </el-select>
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="配方: ">
-            <el-select
-              v-model="recipe"
-              filterable
-              clearable
-              placeholder="请选择"
-              @visible-change="recipeVisibleChange"
-            >
-              <el-option
-                v-for="(item, index) in recipeOptions"
-                :key="index"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-          </el-form-item>
-        </el-row>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="findDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="findAlterTrainNumberSubmit"
-        >确 定</el-button>
-        <!-- <el-button type="primary" @click="handleCreateEquipCate('EquipCateForm')">确 定</el-button> -->
-      </div>
-    </el-dialog>
     <alter-train-number-dialog
       ref="alterTrainNumberDialog"
       @handleSuccessed="getPlanList"
@@ -375,7 +351,6 @@ export default {
       total: 0,
       page: 1,
 
-      findDialogVisible: false,
       beginTime: '',
       endTime: '',
       // yesterday: '',
@@ -400,7 +375,17 @@ export default {
   methods: {
     async getEquip() {
       const equipData = await equip('get')
-      this.equip = equipData.results[0].equip_no
+      if (localStorage.getItem('addPlan')) {
+        const equipId = JSON.parse(localStorage.getItem('addPlan'))
+        for (var i = 0; i < equipData.results.length; i++) {
+          if (equipData.results[i].id === Number(equipId)) {
+            this.equip = equipData.results[i].equip_no
+          }
+        }
+      } else {
+        this.equip = equipData.results[0].equip_no
+        localStorage.setItem('addPlan', JSON.stringify(equipData.results[0].id))
+      }
       this.clearFindForm()
       // this.beginTime = this.yesterday
       this.getPlanStatusList()
@@ -413,11 +398,11 @@ export default {
     async getPlanList() {
       this.params['page'] = this.page
       this.params['equip_no'] = this.equip
-      if (this.beginTime) {
-        this.params['begin_time'] = this.beginTime
-      }
+      // if (this.beginTime) {
+      this.params['begin_time'] = this.beginTime
+      // }
       // if (this.endTime) {
-      //   this.params['end_time'] = this.endTime
+      this.params['end_time'] = this.endTime
       // }
       try {
         const Data = await palletFeedBacks('get', { params: this.params })
@@ -463,6 +448,11 @@ export default {
     equipChange() {
       this.params = {}
       this.page = 1
+      for (var i = 0; i < this.equipOptions.length; i++) {
+        if (this.equipOptions[i].equip_no === this.equip) {
+          localStorage.setItem('addPlan', JSON.stringify(this.equipOptions[i].id))
+        }
+      }
       this.clearFindForm()
       // this.beginTime = this.yesterday
       this.getPlanStatusList()
@@ -519,30 +509,18 @@ export default {
         page: 1
       }
     },
-    clearFindFormError() {
-      this.formError = {}
-    },
-    showFindDialog() {
-      this.clearFindForm()
-      this.clearFindFormError()
-      this.findDialogVisible = true
-    },
-    findAlterTrainNumberSubmit() {
+    searchChange() {
       // if (this.beginTime) {
       //   this.params['begin_time'] = this.beginTime
       // }
-      if (this.endTime) {
-        this.params['end_time'] = this.endTime
-      }
-      if (this.classes) {
-        this.params['classes'] = this.classes
-      }
-      if (this.recipe) {
-        this.params['product_no'] = this.recipe
-      }
+      // if (this.endTime) {
+      //   this.params['end_time'] = this.endTime
+      // }
+      this.params['classes'] = this.classes
+      this.params['product_no'] = this.recipe
       this.page = 1
       this.getPlanList()
-      this.findDialogVisible = false
+      // this.findDialogVisible = false
     },
 
     delPlan() {
