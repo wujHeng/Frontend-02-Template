@@ -304,7 +304,7 @@
                   <el-option
                     v-for="item in tankCarbons"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -356,7 +356,7 @@
                   <el-option
                     v-for="item in tankOils"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -1062,9 +1062,21 @@ export default {
           this.category__category_name = this.SelectEquipOptions[i]['category__category_name']
           tank_materials(this.SelectEquipOptions[i].equip_no, 1).then(response => {
             this.tankCarbons = response.results
+            this.tankCarbons = this.tankCarbons.map(ret => {
+              return {
+                ...ret,
+                label: `${ret.material_name} (${ret.tank_name})`
+              }
+            })
           })
           tank_materials(this.SelectEquipOptions[i].equip_no, 2).then(response => {
             this.tankOils = response.results
+            this.tankOils = this.tankOils.map(ret => {
+              return {
+                ...ret,
+                label: `${ret.material_name} (${ret.tank_name})`
+              }
+            })
           })
         }
       }

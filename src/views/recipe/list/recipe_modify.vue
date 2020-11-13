@@ -182,7 +182,7 @@
                   <el-option
                     v-for="item in tankCarbons"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -228,7 +228,7 @@
                   <el-option
                     v-for="item in tankOils"
                     :key="item.id"
-                    :label="item.material_name"
+                    :label="item.label"
                     :value="item.id"
                   />
                 </el-select>
@@ -608,15 +608,46 @@ export default {
     this.equip_list()
   },
   methods: {
-    getTankCarbons() {
-      tank_materials(this.equip_no, 1).then(response => {
-        this.tankCarbons = response.results
+
+    async getTankCarbons() {
+      const response = await tank_materials(this.equip_no, 1)
+      this.tankCarbons = response.results
+      // console.log(this.tankCarbons, 'this.tankCarbons')
+      this.tankCarbons = this.tankCarbons.map(ret => {
+        return {
+          ...ret,
+          label: `${ret.material_name} (${ret.tank_name})`
+        }
       })
+      // tank_materials(this.equip_no, 1).then(response => {
+      //   this.tankCarbons = response.results
+      //   this.tankCarbons = this.tankCarbons.map(ret => {
+      //     return {
+      //       ...ret,
+      //       label: `${ret.material_name} (${ret.tank_name})`
+      //     }
+      //   })
+      // })
     },
-    getTankOils() {
-      tank_materials(this.equip_no, 2).then(response => {
-        this.tankOils = response.results
+    async getTankOils() {
+      const response = await tank_materials(this.equip_no, 2)
+      this.tankOils = response.results
+      // console.log(this.tankOils, 'this.tankOils')
+      this.tankOils = this.tankOils.map(ret => {
+        return {
+          ...ret,
+          label: `${ret.material_name} (${ret.tank_name})`
+        }
       })
+      // tank_materials(this.equip_no, 2).then(response => {
+      //   this.tankOils = response.results
+      //   this.tankOils = this.tankOils.map(ret => {
+      //     return {
+      //       ...ret,
+      //       label: `${ret.material_name} (${ret.tank_name})`
+      //     }
+      //   })
+      // })
     },
     async equip_list() {
       try {
@@ -736,6 +767,7 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
+        // console.log(recipe_listData, 'recipe_listData')
         this.production_time_interval = recipe_listData['production_time_interval']
         // console.log(recipe_listData, 'recipe_listData')
         // 机台、配方编号、配方名称
@@ -752,15 +784,18 @@ export default {
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
-          // var v_auto_falg = ''
-          // if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
-          //   v_auto_falg = '自动'
-          // } else if (recipe_listData['batching_details'][j]['auto_flag'] === 2) {
-          //   v_auto_falg = '手动'
-          // } else {
-          //   v_auto_falg = '其他'
-          // }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
+            const carbonItem = this.tankCarbons.find(item => {
+              return item.id === recipe_listData['batching_details'][j].material
+            })
+            if (!carbonItem) { // 不在下拉选项中的数据
+              this.tankCarbons.push(
+                {
+                  id: recipe_listData['batching_details'][j].material,
+                  material_name: recipe_listData['batching_details'][j].material_name,
+                  label: recipe_listData['batching_details'][j].material_name
+                })
+            }
             this.carbon_tableData.push({
               // sn: this.carbon_tableData.length + 1,
               ...recipe_listData['batching_details'][j]
@@ -775,6 +810,18 @@ export default {
               action_name: '投料',
               ...recipe_listData['batching_details'][j]
             })
+
+            const oilItem = this.tankOils.find(item => {
+              return item.id === recipe_listData['batching_details'][j].material
+            })
+            if (!oilItem) { // 不在下拉选项中的数据
+              this.tankOils.push(
+                {
+                  id: recipe_listData['batching_details'][j].material,
+                  material_name: recipe_listData['batching_details'][j].material_name,
+                  label: recipe_listData['batching_details'][j].material_name
+                })
+            }
           } else {
             this.rubber_tableData.push({
               // sn: this.rubber_tableData.length + 1,
@@ -1069,7 +1116,7 @@ export default {
         v_production_time_interval = this.production_time_interval
       }
       try {
-        console.log('batching_details_list', batching_details_list)
+        // console.log('batching_details_list', batching_details_list)
         await this.put_recipe_list(
           this.$route.params['id'],
           { data: {
