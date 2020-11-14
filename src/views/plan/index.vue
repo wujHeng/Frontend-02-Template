@@ -312,7 +312,7 @@
 
     <add-plan-dialog
       ref="addPlanDialog"
-      @handleSuccessed="getPlanList"
+      @handleSuccessed="getEquip"
     />
   </div>
 </template>
@@ -375,8 +375,8 @@ export default {
   methods: {
     async getEquip() {
       const equipData = await equip('get')
-      if (localStorage.getItem('addPlan')) {
-        const equipId = JSON.parse(localStorage.getItem('addPlan'))
+      if (localStorage.getItem('addPlan:equip')) {
+        const equipId = JSON.parse(localStorage.getItem('addPlan:equip'))
         for (var i = 0; i < equipData.results.length; i++) {
           if (equipData.results[i].id === Number(equipId)) {
             this.equip = equipData.results[i].equip_no
@@ -384,7 +384,7 @@ export default {
         }
       } else {
         this.equip = equipData.results[0].equip_no
-        localStorage.setItem('addPlan', JSON.stringify(equipData.results[0].id))
+        localStorage.setItem('addPlan:equip', JSON.stringify(equipData.results[0].id))
       }
       this.clearFindForm()
       // this.beginTime = this.yesterday
@@ -450,7 +450,7 @@ export default {
       this.page = 1
       for (var i = 0; i < this.equipOptions.length; i++) {
         if (this.equipOptions[i].equip_no === this.equip) {
-          localStorage.setItem('addPlan', JSON.stringify(this.equipOptions[i].id))
+          localStorage.setItem('addPlan:equip', JSON.stringify(this.equipOptions[i].id))
         }
       }
       this.clearFindForm()
