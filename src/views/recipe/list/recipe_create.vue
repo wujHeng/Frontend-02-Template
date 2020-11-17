@@ -301,15 +301,15 @@
             <el-table-column width="250" align="center" label="炭黑名称">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.material"
+                  v-model="scope.row._index"
                   style="width: 220px"
                   @change="materialChange($event,scope.$index,tankCarbons,carbon_tableData)"
                 >
                   <el-option
-                    v-for="item in tankCarbons"
-                    :key="item.id"
+                    v-for="(item,index) in tankCarbons"
+                    :key="index"
                     :label="item.label"
-                    :value="item.id"
+                    :value="index"
                   >
                     <span>{{ item.tank_name }}</span>&nbsp;
                     <span>{{ item.material_name }}</span>
@@ -366,16 +366,16 @@
             <el-table-column width="250" align="center" label="油脂名称">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.material"
+                  v-model="scope.row._index"
                   style="width: 220px"
                   class="setOption"
                   @change="materialChange($event,scope.$index,tankOils,oil_tableData)"
                 >
                   <el-option
-                    v-for="item in tankOils"
-                    :key="item.id"
+                    v-for="(item,index) in tankOils"
+                    :key="index"
                     :label="item.label"
-                    :value="item.id"
+                    :value="index"
                   >
                     <span>{{ item.tank_name }}</span>&nbsp;
                     <span>{{ item.material_name }}</span>
@@ -1685,9 +1685,10 @@ export default {
       this.$router.push({ name: 'RecipeList' })
     },
     materialChange(id, index, materialList, arrList) {
-      const arr = materialList.filter(D => D.id === id)
-      this.$set(arrList[index], 'tank_no', arr[0].tank_no)
-      this.$set(arrList[index], 'provenance', arr[0].provenance)
+      const Obj = materialList[id]
+      this.$set(arrList[index], 'tank_no', Obj.tank_no)
+      this.$set(arrList[index], 'provenance', Obj.provenance)
+      this.$set(arrList[index], 'material', Obj.id)
     }
   }
 }
