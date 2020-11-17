@@ -29,7 +29,7 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
+              @change="masterialChange(scope.row)"
             >
               <el-option
                 v-for="item in cbOptions"
@@ -46,7 +46,6 @@
               v-model="scope.row.provenance"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
               @visible-change="getProvenanceOptions($event, scope.row.material_no)"
             >
               <el-option
@@ -81,7 +80,7 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
+              @change="masterialChange(scope.row)"
             >
               <el-option
                 v-for="item in oilOptions"
@@ -98,7 +97,6 @@
               v-model="scope.row.provenance"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
               @visible-change="getProvenanceOptions($event, scope.row.material_no)"
             >
               <el-option
@@ -257,7 +255,9 @@ export default {
       this.getCbList()
       this.getOilList()
     },
-    masterialChange() {},
+    masterialChange(row) {
+      row.provenance = ''
+    },
     stateChange() {},
     save() {
       console.log(this.tableBinCbData)
