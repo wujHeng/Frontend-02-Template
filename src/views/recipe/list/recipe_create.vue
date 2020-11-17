@@ -1092,8 +1092,7 @@ export default {
             this.tankCarbons = this.tankCarbons.map(ret => {
               return {
                 ...ret,
-                label: `${ret.tank_name}  ${ret.material_name}
-                 ${ret.provenance}`
+                label: `${ret.tank_name}  ${ret.material_name}`
               }
             })
           })
@@ -1102,7 +1101,7 @@ export default {
             this.tankOils = this.tankOils.map(ret => {
               return {
                 ...ret,
-                label: `${ret.tank_name}  ${ret.material_name} ${ret.provenance ? ret.provenance : ''}`
+                label: `${ret.tank_name}  ${ret.material_name}`
               }
             })
           })
@@ -1529,8 +1528,6 @@ export default {
           }
           batching_details_list.push(now_stage_material__)
         }
-        console.log(batching_details_list, 8888)
-        // return
         var step_details_list = []
         // 循环整个表格
         if (this.RecipeMaterialList.length === 0) {
