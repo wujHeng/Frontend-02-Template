@@ -36,3 +36,11 @@ export function equip(method, data = { params: { all: 1, category_name: '密炼�
   Object.assign(obj, data)
   return request(obj)
 }
+
+export function getMaterialSuppliers(params) {
+  return request({
+    url: API.MaterialSuppliers,
+    method: 'get',
+    params
+  })
+}
