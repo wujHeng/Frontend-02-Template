@@ -300,14 +300,27 @@
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column width="250" align="center" label="炭黑名称">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.material" style="width: 220px">
+                <el-select
+                  v-model="scope.row.material"
+                  style="width: 220px"
+                  @change="materialChange($event,scope.$index,tankCarbons,carbon_tableData)"
+                >
                   <el-option
                     v-for="item in tankCarbons"
                     :key="item.id"
                     :label="item.label"
                     :value="item.id"
-                  />
+                  >
+                    <span>{{ item.tank_name }}</span>&nbsp;
+                    <span>{{ item.material_name }}</span>
+                    <!-- <span v-if="item.provenance" style="display:block;margin-top: -10px;">{{ item.provenance }}</span> -->
+                  </el-option>
                 </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="产地">
+              <template slot-scope="scope">
+                {{ scope.row.provenance?scope.row.provenance:'--' }}
               </template>
             </el-table-column>
             <el-table-column align="center" width="95" label="设定值(kg)">
@@ -352,14 +365,28 @@
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column width="250" align="center" label="油脂名称">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.material" style="width: 220px">
+                <el-select
+                  v-model="scope.row.material"
+                  style="width: 220px"
+                  class="setOption"
+                  @change="materialChange($event,scope.$index,tankOils,oil_tableData)"
+                >
                   <el-option
                     v-for="item in tankOils"
                     :key="item.id"
                     :label="item.label"
                     :value="item.id"
-                  />
+                  >
+                    <span>{{ item.tank_name }}</span>&nbsp;
+                    <span>{{ item.material_name }}</span>
+                    <!-- <span v-if="item.provenance" style="display:block;margin-top: -10px;">{{ item.provenance }}</span> -->
+                  </el-option>
                 </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="产地">
+              <template slot-scope="scope">
+                {{ scope.row.provenance?scope.row.provenance:'--' }}
               </template>
             </el-table-column>
             <el-table-column align="center" width="95" label="设定值(kg)">
@@ -641,8 +668,8 @@
 
 <script>
 import { tank_materials, recipe_list, rubber_process_url, equip_url, site_url, recipe_no_url, stage_url, dev_type_url, global_SITE_url, raw_material_url, material_type_url, condition_url, action_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 
 export default {
   data: function() {
@@ -1065,7 +1092,8 @@ export default {
             this.tankCarbons = this.tankCarbons.map(ret => {
               return {
                 ...ret,
-                label: `${ret.material_name} (${ret.tank_name})`
+                label: `${ret.tank_name}  ${ret.material_name}
+                 ${ret.provenance}`
               }
             })
           })
@@ -1074,7 +1102,7 @@ export default {
             this.tankOils = this.tankOils.map(ret => {
               return {
                 ...ret,
-                label: `${ret.material_name} (${ret.tank_name})`
+                label: `${ret.tank_name}  ${ret.material_name} ${ret.provenance ? ret.provenance : ''}`
               }
             })
           })
@@ -1481,6 +1509,7 @@ export default {
             material: this.carbon_tableData[j].material,
             actual_weight: this.carbon_tableData[j].actual_weight ? this.carbon_tableData[j].actual_weight : 0,
             standard_error: this.carbon_tableData[j].standard_error,
+            tank_no: this.carbon_tableData[j].tank_no,
             type: 2
           }
           batching_details_list.push(now_stage_material_)
@@ -1495,10 +1524,13 @@ export default {
             material: this.oil_tableData[j].material,
             actual_weight: this.oil_tableData[j].actual_weight ? this.oil_tableData[j].actual_weight : 0,
             standard_error: this.oil_tableData[j].standard_error,
+            tank_no: this.oil_tableData[j].tank_no,
             type: 3
           }
           batching_details_list.push(now_stage_material__)
         }
+        console.log(batching_details_list, 8888)
+        // return
         var step_details_list = []
         // 循环整个表格
         if (this.RecipeMaterialList.length === 0) {
@@ -1654,14 +1686,23 @@ export default {
     },
     recipe_return_list: function() {
       this.$router.push({ name: 'RecipeList' })
+    },
+    materialChange(id, index, materialList, arrList) {
+      const arr = materialList.filter(D => D.id === id)
+      this.$set(arrList[index], 'tank_no', arr[0].tank_no)
+      this.$set(arrList[index], 'provenance', arr[0].provenance)
     }
-
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  .el-select-dropdown__item{
+      height:auto !important;
+      min-height: 30px;
+  }
 .recipe_create{
+
 .font_custom{
     font-size: 14px;
     color: #606266;

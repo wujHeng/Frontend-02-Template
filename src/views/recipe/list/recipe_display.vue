@@ -121,7 +121,16 @@
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="炭黑名称" />
+            <el-table-column align="center" prop="material_name" label="炭黑名称">
+              <template slot-scope="{row}">
+                {{ row.material_name }} ({{ row.tank_no }}号罐)
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="90%" label="产地">
+              <template slot-scope="{row}">
+                {{ row.provenance?row.provenance:'' }}
+              </template>
+            </el-table-column>
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
@@ -135,9 +144,19 @@
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="油脂名称" />
+            <el-table-column align="center" prop="material_name" label="油脂名称">
+              <template slot-scope="{row}">
+                {{ row.material_name }} ({{ row.tank_no }}号罐)
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="90%" label="产地">
+              <template slot-scope="{row}">
+                {{ row.provenance?row.provenance:'' }}
+              </template>
+            </el-table-column>
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
+
           </el-table>
         </div>
       </el-col>
@@ -170,8 +189,8 @@
 
 <script>
 import { recipe_list, rubber_process_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 
 export default {
   data: function() {
@@ -242,7 +261,9 @@ export default {
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
+              standard_error: recipe_listData['batching_details'][j]['standard_error'],
+              provenance: recipe_listData['batching_details'][j]['provenance'],
+              tank_no: recipe_listData['batching_details'][j]['tank_no']
             })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             this.oil_tableData.push({
@@ -251,7 +272,9 @@ export default {
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
+              standard_error: recipe_listData['batching_details'][j]['standard_error'],
+              provenance: recipe_listData['batching_details'][j]['provenance'],
+              tank_no: recipe_listData['batching_details'][j]['tank_no']
             })
           } else {
             this.rubber_tableData.push({
