@@ -40,6 +40,24 @@
             </el-select>
           </template>
         </el-table-column>
+        <el-table-column prop="provenance" label="产地">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.provenance"
+              style="width:100%"
+              :disabled="!scope.row.use_flag"
+              @change="masterialChange"
+              @visible-change="getProvenanceOptions($event, scope.row.material_no)"
+            >
+              <el-option
+                v-for="item in provenanceOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column :formatter="formatter" prop="use_flag" label="使用状态">
           <template slot-scope="scope">
             <el-switch
@@ -74,6 +92,24 @@
             </el-select>
           </template>
         </el-table-column>
+        <el-table-column prop="provenance" label="产地">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.provenance"
+              style="width:100%"
+              :disabled="!scope.row.use_flag"
+              @change="masterialChange"
+              @visible-change="getProvenanceOptions($event, scope.row.material_no)"
+            >
+              <el-option
+                v-for="item in provenanceOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column :formatter="formatter" prop="use_flag" label="使用状态">
           <template slot-scope="scope">
             <el-switch
@@ -96,7 +132,8 @@ import {
   weighCb,
   weighOil,
   materials,
-  equip
+  equip,
+  getMaterialSuppliers
 } from '@/api/weigh'
 import { mapGetters } from 'vuex'
 export default {
@@ -109,7 +146,8 @@ export default {
       materialsTypeId: '',
       cbOptions: [],
       oilOptions: [],
-      disabled: true
+      disabled: true,
+      provenanceOptions: []
     }
   },
   computed: {
@@ -122,6 +160,16 @@ export default {
     this.getMaterialsOilList()
   },
   methods: {
+    getProvenanceOptions(bool, material_no) {
+      console.log(bool, 'bool')
+      console.log(material_no, 'material_no')
+      if (bool) {
+        getMaterialSuppliers({ material_no: material_no })
+          .then(response => {
+            this.provenanceOptions = response
+          })
+      }
+    },
     getDisabled() {
       this.permissionObj = this.permission
       this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > -1)
@@ -212,6 +260,8 @@ export default {
     masterialChange() {},
     stateChange() {},
     save() {
+      console.log(this.tableBinCbData)
+      console.log(this.tableBinOilData)
       this.putCbList()
       this.putOilList()
     }

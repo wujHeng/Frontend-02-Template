@@ -7,6 +7,7 @@ export default {
   // 日料罐、称量参数接口
   WeighCbUrl: '/api/v1/production/weigh-cb/', // 炭黑罐、炭黑称量参数
   WeighOilUrl: '/api/v1/production/weigh-oil/', // 油料罐、油料称量参数
+  MaterialSuppliers: '/api/v1/recipe/material_suppliers/', // c物料产地
   EquipUrl: '/api/v1/basics/equips/', // 机台
   MaterialsUrl: '/api/v1/recipe/materials/', // 原材料
 

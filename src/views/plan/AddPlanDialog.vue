@@ -2,6 +2,7 @@
   <el-dialog
     width="90%"
     :visible.sync="addPlanVisible"
+    :before-close="handleClose"
     title="添加胶料日生产计划"
   >
     <div style="margin-bottom: 15px">
@@ -199,7 +200,7 @@ export default {
     }
   },
   created() {
-    this.getEquipList()
+    // this.getEquipList()
     this.getRubberMateria()
     this.getWorkSchedules()
     this.getPlanSchedules()
@@ -211,6 +212,7 @@ export default {
     show() {
       this.plansForAdd = []
       this.addPlanVisible = true
+      this.getEquipList()
     },
     async getEquipList() {
       try {
@@ -499,6 +501,10 @@ export default {
         this.plansForAdd.splice(this.plansForAdd.indexOf(plans[0]), 1)
       }
       this.statistic()
+    },
+    handleClose(done) {
+      this.$parent.getEquip()
+      done()
     }
   }
 }
