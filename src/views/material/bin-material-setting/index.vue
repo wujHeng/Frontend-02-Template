@@ -29,7 +29,7 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange(scope.row)"
+              @change="masterialChange(scope.row,cbOptions)"
             >
               <el-option
                 v-for="item in cbOptions"
@@ -80,7 +80,7 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange(scope.row)"
+              @change="masterialChange(scope.row,oilOptions)"
             >
               <el-option
                 v-for="item in oilOptions"
@@ -255,8 +255,10 @@ export default {
       this.getCbList()
       this.getOilList()
     },
-    masterialChange(row) {
+    masterialChange(row, list) {
       row.provenance = ''
+      const arr = list.filter(d => d.material_no === row.material_no)
+      row.material_name1 = arr[0].material_name
     },
     stateChange() {},
     save() {
