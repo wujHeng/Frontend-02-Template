@@ -178,14 +178,26 @@
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column width="250" align="center" label="炭黑名称">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.material" style="width: 220px">
+                <el-select
+                  v-model="scope.row._index"
+                  style="width: 220px"
+                  @change="materialChange($event,scope.$index,tankCarbons,carbon_tableData)"
+                >
                   <el-option
-                    v-for="item in tankCarbons"
-                    :key="item.id"
+                    v-for="(item,index) in tankCarbons"
+                    :key="index"
                     :label="item.label"
-                    :value="item.id"
-                  />
+                    :value="index"
+                  >
+                    <span>{{ item.tank_name }}</span>&nbsp;
+                    <span>{{ item.material_name }}</span>
+                  </el-option>
                 </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="产地">
+              <template slot-scope="scope">
+                {{ scope.row.provenance?scope.row.provenance:'--' }}
               </template>
             </el-table-column>
             <el-table-column align="center" width="95" label="设定值(kg)">
@@ -224,14 +236,27 @@
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
             <el-table-column width="250" align="center" label="油脂名称">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.material" style="width: 220px">
+                <el-select
+                  v-model="scope.row._index"
+                  style="width: 220px"
+                  class="setOption"
+                  @change="materialChange($event,scope.$index,tankOils,oil_tableData)"
+                >
                   <el-option
-                    v-for="item in tankOils"
-                    :key="item.id"
+                    v-for="(item,index) in tankOils"
+                    :key="index"
                     :label="item.label"
-                    :value="item.id"
-                  />
+                    :value="index"
+                  >
+                    <span>{{ item.tank_name }}</span>&nbsp;
+                    <span>{{ item.material_name }}</span>
+                  </el-option>
                 </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="95" label="产地">
+              <template slot-scope="scope">
+                {{ scope.row.provenance?scope.row.provenance:'--' }}
               </template>
             </el-table-column>
             <el-table-column align="center" width="95" label="设定值(kg)">
@@ -593,11 +618,11 @@ export default {
       oilSnForInsert: 1
     }
   },
-  created() {
+  async created() {
     //   rubber_process_url
     this.equip_no = this.$route.params['equip_no']
-    this.getTankCarbons()
-    this.getTankOils()
+    await this.getTankCarbons()
+    await this.getTankOils()
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
     // 配方详情界面的配方信息和密炼步序信息接口访问（已废弃）
@@ -608,17 +633,18 @@ export default {
     this.equip_list()
   },
   methods: {
-
     async getTankCarbons() {
       const response = await tank_materials(this.equip_no, 1)
       this.tankCarbons = response.results
       // console.log(this.tankCarbons, 'this.tankCarbons')
-      this.tankCarbons = this.tankCarbons.map(ret => {
+      this.tankCarbons = this.tankCarbons.map((ret, index) => {
         return {
           ...ret,
-          label: `${ret.material_name} (${ret.tank_name})`
+          label: `${ret.tank_name}  ${ret.material_name}`,
+          _index: index
         }
       })
+
       // tank_materials(this.equip_no, 1).then(response => {
       //   this.tankCarbons = response.results
       //   this.tankCarbons = this.tankCarbons.map(ret => {
@@ -633,10 +659,11 @@ export default {
       const response = await tank_materials(this.equip_no, 2)
       this.tankOils = response.results
       // console.log(this.tankOils, 'this.tankOils')
-      this.tankOils = this.tankOils.map(ret => {
+      this.tankOils = this.tankOils.map((ret, index) => {
         return {
           ...ret,
-          label: `${ret.material_name} (${ret.tank_name})`
+          label: `${ret.tank_name}  ${ret.material_name}`,
+          _index: index
         }
       })
       // tank_materials(this.equip_no, 2).then(response => {
@@ -786,42 +813,47 @@ export default {
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           if (recipe_listData['batching_details'][j]['type'] === 2) {
             const carbonItem = this.tankCarbons.find(item => {
-              return item.id === recipe_listData['batching_details'][j].material
+              return (item.id === recipe_listData['batching_details'][j].material) &&
+              (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
             })
             if (!carbonItem) { // 不在下拉选项中的数据
               this.tankCarbons.push(
                 {
                   id: recipe_listData['batching_details'][j].material,
                   material_name: recipe_listData['batching_details'][j].material_name,
-                  label: recipe_listData['batching_details'][j].material_name
+                  label: recipe_listData['batching_details'][j].material_name,
+                  _index: this.tankCarbons.length - 1
                 })
             }
             this.carbon_tableData.push({
               // sn: this.carbon_tableData.length + 1,
-              ...recipe_listData['batching_details'][j]
+              ...recipe_listData['batching_details'][j],
+              _index: carbonItem._index
               // auto_flag: v_auto_falg,
               // material_name: recipe_listData['batching_details'][j]['material_name'],
               // actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
               // standard_error: recipe_listData['batching_details'][j]['standard_error']
             })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
-            this.oil_tableData.push({
-              // sn: this.oil_tableData.length + 1,
-              action_name: '投料',
-              ...recipe_listData['batching_details'][j]
-            })
-
             const oilItem = this.tankOils.find(item => {
-              return item.id === recipe_listData['batching_details'][j].material
+              return (item.id === recipe_listData['batching_details'][j].material) &&
+               (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
             })
             if (!oilItem) { // 不在下拉选项中的数据
               this.tankOils.push(
                 {
                   id: recipe_listData['batching_details'][j].material,
                   material_name: recipe_listData['batching_details'][j].material_name,
-                  label: recipe_listData['batching_details'][j].material_name
+                  label: recipe_listData['batching_details'][j].material_name,
+                  _index: this.tankCarbons.length - 1
                 })
             }
+            this.oil_tableData.push({
+              // sn: this.oil_tableData.length + 1,
+              action_name: '投料',
+              _index: oilItem._index,
+              ...recipe_listData['batching_details'][j]
+            })
           } else {
             this.rubber_tableData.push({
               // sn: this.rubber_tableData.length + 1,
@@ -999,7 +1031,7 @@ export default {
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        // console.log(recipe_info_step_list)
+        console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
 
@@ -1283,6 +1315,9 @@ export default {
           return
         }
       }
+      console.log(this.oil_tableData, 111)
+      console.log(this.carbon_tableData, 2222)
+      // return
       if (this.sp_num) {
         var batching_details_list = []
         for (var j = 0; j < this.rubber_tableData.length; ++j) {
@@ -1308,7 +1343,8 @@ export default {
             material: this.carbon_tableData[j].material,
             actual_weight: this.carbon_tableData[j].actual_weight ? this.carbon_tableData[j].actual_weight : 0,
             standard_error: this.carbon_tableData[j].standard_error,
-            type: 2
+            type: 2,
+            tank_no: this.carbon_tableData[j].tank_no
           }
           batching_details_list.push(now_stage_material_)
         }
@@ -1322,7 +1358,8 @@ export default {
             material: this.oil_tableData[j].material,
             actual_weight: this.oil_tableData[j].actual_weight ? this.oil_tableData[j].actual_weight : 0,
             standard_error: this.oil_tableData[j].standard_error,
-            type: 3
+            type: 3,
+            tank_no: this.oil_tableData[j].tank_no
           }
           batching_details_list.push(now_stage_material__)
         }
@@ -1436,8 +1473,14 @@ export default {
         case 5:
           return '5车/托'
       }
+    },
+    materialChange(id, index, materialList, arrList) {
+      const Obj = materialList[id]
+      console.log(Obj, 'Obj')
+      this.$set(arrList[index], 'tank_no', Obj.tank_no)
+      this.$set(arrList[index], 'provenance', Obj.provenance)
+      this.$set(arrList[index], 'material', Obj.id)
     }
-
   }
 }
 </script>
