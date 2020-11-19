@@ -174,7 +174,17 @@ export default {
     },
     async getEquip() {
       const equipData = await equip('get')
-      this.equip = equipData.results[0].equip_no
+      if (localStorage.getItem('addPlan:equip')) {
+        const equipId = JSON.parse(localStorage.getItem('addPlan:equip'))
+        for (var i = 0; i < equipData.results.length; i++) {
+          if (equipData.results[i].id === Number(equipId)) {
+            this.equip = equipData.results[i].equip_no
+          }
+        }
+      } else {
+        this.equip = equipData.results[0].equip_no
+        localStorage.setItem('addPlan:equip', JSON.stringify(equipData.results[0].id))
+      }
       this.getCbList()
       this.getOilList()
     },
@@ -252,6 +262,11 @@ export default {
       }
     },
     equipChange() {
+      for (var i = 0; i < this.equipOptions.length; i++) {
+        if (this.equipOptions[i].equip_no === this.equip) {
+          localStorage.setItem('addPlan:equip', JSON.stringify(this.equipOptions[i].id))
+        }
+      }
       this.getCbList()
       this.getOilList()
     },
