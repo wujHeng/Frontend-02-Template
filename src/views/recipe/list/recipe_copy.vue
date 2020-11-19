@@ -1028,18 +1028,18 @@ export default {
           // }
           if (recipe_listData['batching_details'][j]['type'] === 2) {
             if (canAddCarbonOil) {
-              const carbonItem = this.tankCarbons.find(item => {
+              let carbonItem = this.tankCarbons.find(item => {
                 return item.id === recipe_listData['batching_details'][j].material &&
               (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
               })
               if (!carbonItem) { // 不在下拉选项中的数据
-                this.tankCarbons.push(
-                  {
-                    id: recipe_listData['batching_details'][j].material,
-                    material_name: recipe_listData['batching_details'][j].material_name,
-                    label: recipe_listData['batching_details'][j].material_name,
-                    _index: this.tankCarbons.length - 1
-                  })
+                carbonItem = {
+                  id: recipe_listData['batching_details'][j].material,
+                  material_name: recipe_listData['batching_details'][j].material_name,
+                  label: recipe_listData['batching_details'][j].material_name,
+                  _index: this.tankCarbons.length - 1
+                }
+                this.tankCarbons.push(carbonItem)
               }
               this.carbon_tableData.push({
                 ...recipe_listData['batching_details'][j],
@@ -1048,18 +1048,18 @@ export default {
             }
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             if (canAddCarbonOil) {
-              const oilItem = this.tankOils.find(item => {
+              let oilItem = this.tankOils.find(item => {
                 return item.id === recipe_listData['batching_details'][j].material &&
               (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
               })
               if (!oilItem) { // 不在下拉选项中的数据
-                this.tankOils.push(
-                  {
-                    id: recipe_listData['batching_details'][j].material,
-                    material_name: recipe_listData['batching_details'][j].material_name,
-                    label: recipe_listData['batching_details'][j].material_name,
-                    _index: this.tankCarbons.length - 1
-                  })
+                oilItem = {
+                  id: recipe_listData['batching_details'][j].material,
+                  material_name: recipe_listData['batching_details'][j].material_name,
+                  label: recipe_listData['batching_details'][j].material_name,
+                  _index: this.tankOils.length - 1
+                }
+                this.tankOils.push(oilItem)
               }
               this.oil_tableData.push({
                 action_name: '投料',

@@ -812,18 +812,18 @@ export default {
         this.product_name = this.$route.params['product_name']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           if (recipe_listData['batching_details'][j]['type'] === 2) {
-            const carbonItem = this.tankCarbons.find(item => {
+            let carbonItem = this.tankCarbons.find(item => {
               return (item.id === recipe_listData['batching_details'][j].material) &&
               (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
             })
             if (!carbonItem) { // 不在下拉选项中的数据
-              this.tankCarbons.push(
-                {
-                  id: recipe_listData['batching_details'][j].material,
-                  material_name: recipe_listData['batching_details'][j].material_name,
-                  label: recipe_listData['batching_details'][j].material_name,
-                  _index: this.tankCarbons.length - 1
-                })
+              carbonItem = {
+                id: recipe_listData['batching_details'][j].material,
+                material_name: recipe_listData['batching_details'][j].material_name,
+                label: recipe_listData['batching_details'][j].material_name,
+                _index: this.tankCarbons.length - 1
+              }
+              this.tankCarbons.push(carbonItem)
             }
             this.carbon_tableData.push({
               // sn: this.carbon_tableData.length + 1,
@@ -835,18 +835,18 @@ export default {
               // standard_error: recipe_listData['batching_details'][j]['standard_error']
             })
           } else if (recipe_listData['batching_details'][j]['type'] === 3) {
-            const oilItem = this.tankOils.find(item => {
+            let oilItem = this.tankOils.find(item => {
               return (item.id === recipe_listData['batching_details'][j].material) &&
                (Number(item.tank_no) === Number(recipe_listData['batching_details'][j].tank_no))
             })
             if (!oilItem) { // 不在下拉选项中的数据
-              this.tankOils.push(
-                {
-                  id: recipe_listData['batching_details'][j].material,
-                  material_name: recipe_listData['batching_details'][j].material_name,
-                  label: recipe_listData['batching_details'][j].material_name,
-                  _index: this.tankCarbons.length - 1
-                })
+              oilItem = {
+                id: recipe_listData['batching_details'][j].material,
+                material_name: recipe_listData['batching_details'][j].material_name,
+                label: recipe_listData['batching_details'][j].material_name,
+                _index: this.tankOils.length - 1
+              }
+              this.tankOils.push(oilItem)
             }
             this.oil_tableData.push({
               // sn: this.oil_tableData.length + 1,
@@ -1031,7 +1031,7 @@ export default {
     async post_recipe_info_step_list(obj) {
       try {
         const recipe_info_step_list = await rubber_process_url('post', null, obj)
-        console.log(recipe_info_step_list)
+        // console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
 
@@ -1315,8 +1315,8 @@ export default {
           return
         }
       }
-      console.log(this.oil_tableData, 111)
-      console.log(this.carbon_tableData, 2222)
+      // console.log(this.oil_tableData, 111)
+      // console.log(this.carbon_tableData, 2222)
       // return
       if (this.sp_num) {
         var batching_details_list = []
