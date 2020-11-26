@@ -141,12 +141,12 @@
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.密炼时间':'mixer_time'"
-        label="密炼时间"
+        label="密炼时间/s"
         width="100"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.间隔时间':'interval_time'"
-        label="间隔时间"
+        label="间隔时间/s"
       />
       <el-table-column
         fixed="right"
