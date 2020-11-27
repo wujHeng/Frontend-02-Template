@@ -173,6 +173,7 @@ export default {
           type: 'success',
           center: true
         })
+        this.putOilList()
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -220,7 +221,7 @@ export default {
     },
     async save() {
       await this.putCbList()
-      await this.putOilList()
+      // await this.putOilList()
     },
     low_value_change(row, value) {
       if (!value) {
