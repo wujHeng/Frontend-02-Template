@@ -213,6 +213,7 @@ export default {
           type: 'success',
           center: true
         })
+        this.putOilList()
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -280,7 +281,7 @@ export default {
       console.log(this.tableBinCbData)
       console.log(this.tableBinOilData)
       this.putCbList()
-      this.putOilList()
+      // this.putOilList()
     }
   }
 }
