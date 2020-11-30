@@ -572,16 +572,30 @@ export default {
     },
 
     stopPlan() {
-      stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(
-        (response) => {
-          this.$message({
-            type: 'success',
-            message: '停止成功!'
-          })
-          this.getPlanStatusList()
-          this.getPlanList()
+      this.$alert('机台： ' + this.equip + '<br>计划编号： ' + this.currentRow.plan_classes_uid + '<br>配方名称： ' + this.currentRow.stage_product_batch_no,
+        '停止计划', {
+          showCancelButton: true,
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '停止',
+          cancelButtonText: '取消'
         }
-      )
+      ).then(() => {
+        stopPlan({ id: this.currentRow.id, equip_no: this.equip }).then(
+          (response) => {
+            this.$message({
+              type: 'success',
+              message: '停止成功!'
+            })
+            this.getPlanStatusList()
+            this.getPlanList()
+          }
+        )
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消停止'
+        })
+      })
     },
 
     retransmissionpPlan() {
@@ -597,7 +611,7 @@ export default {
 
     issuedPlan() {
       this.$alert('机台： ' + this.equip + '<br>计划编号： ' + this.currentRow.plan_classes_uid + '<br>配方名称： ' + this.currentRow.stage_product_batch_no,
-        '提示', {
+        '下达计划', {
           showCancelButton: true,
           dangerouslyUseHTMLString: true,
           confirmButtonText: '确定',
