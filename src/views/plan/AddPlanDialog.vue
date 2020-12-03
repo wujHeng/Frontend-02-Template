@@ -112,7 +112,7 @@
         <el-table-column prop="pdp_product_classes_plan[1].weight" label="重量" />
         <el-table-column prop="pdp_product_classes_plan[1].time" label="时间" />
       </el-table-column>
-      <el-table-column label="晚班计划">
+      <el-table-column label="夜班计划">
         <el-table-column label="顺序" width="210">
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
             <el-input-number
@@ -357,7 +357,7 @@ export default {
           pdp_product_classes_plan[0] = class_plan
         } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '中班') {
           pdp_product_classes_plan[1] = class_plan
-        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '晚班') {
+        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '夜班') {
           pdp_product_classes_plan[2] = class_plan
         }
       }
