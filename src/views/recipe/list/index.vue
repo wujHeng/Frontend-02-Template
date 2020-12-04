@@ -314,6 +314,8 @@ export default {
       }, {
         value: 4, label: '启用'
       }, {
+        value: 7, label: '停用'
+      }, {
         value: 5, label: '驳回'
       }
       ],
