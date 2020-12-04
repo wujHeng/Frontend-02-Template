@@ -157,11 +157,13 @@
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
       <el-table-column align="center" width="180%" prop="last_updated_date" label="修改时间" />
       <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
-      <el-table-column fixed="right" align="center" label="操作">
+      <el-table-column fixed="right" align="center" label="操作" width="140px">
         <template slot-scope="scope">
           <el-button-group>
             <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1 && scope.row.batching_type !== 2" size="mini" :disabled="scope.row.used_type !== 1 && scope.row.used_type !== 4" @click="ModifyRecipeButton(scope.row)">修改</el-button>
-            <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
+            <el-button size="mini" type="danger" @click.stop="handleRecipeDelete(scope.row)">
+              {{ scope.row.used_type===4?'停用':'启用' }}
+            </el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -294,9 +296,9 @@
 </template>
 
 <script>
-import { validate_versions, recipe_no_url, global_SITE_url, recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+import { validate_versions, recipe_no_url, global_SITE_url, recipe_list, recipe_copy_list, equip_url, site_url, stage_url } from '@/api/recipe_fun'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -612,19 +614,19 @@ export default {
       this.$route.params
     },
     handleRecipeDelete: function(delete_row) {
-      // console.log('--------------------------')
-      // console.log(delete_row)
-      this.$confirm('此操作将永久删除' + delete_row['stage_product_batch_no'] + ', 是否继续?', '提示', {
+      const str = delete_row.used_type === 4 ? '停用' : '启用'
+
+      this.$confirm('确定' + str + delete_row['stage_product_batch_no'] + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.delete_recipe_fun(delete_row['id'])
+      }).then(async() => {
+        await this.delete_recipe_fun(delete_row['id'])
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '操作成功!'
         })
-        this.get_recipe_list(this.currentPage)
+        await this.get_recipe_list(this.currentPage)
       }).catch(() => {
 
       })
