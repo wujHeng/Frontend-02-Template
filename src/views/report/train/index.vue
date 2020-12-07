@@ -116,19 +116,19 @@
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.总重量':'actual_weight'"
-        label="总重量"
+        label="总重量(kg)"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.排胶时间':'evacuation_time'"
-        label="排胶时间"
+        label="排胶时间(s)"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.排胶温度':'evacuation_temperature'"
-        label="排胶温度"
+        label="排胶温度(c°)"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.排胶能量':'evacuation_energy'"
-        label="排胶能量"
+        label="排胶能量(J)"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.员工代号':'operation_user'"
@@ -136,17 +136,17 @@
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.存盘时间':'product_time'"
-        label="存盘时间"
+        label="存盘时间(s)"
         width="100"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.密炼时间':'mixer_time'"
-        label="密炼时间/s"
+        label="密炼时间(s)"
         width="100"
       />
       <el-table-column
         :prop="editionNo === 'v1'?'production_details.间隔时间':'interval_time'"
-        label="间隔时间/s"
+        label="间隔时间(s)"
       />
       <el-table-column
         fixed="right"
@@ -234,26 +234,26 @@
                 v-if="editionNo === 'v1'"
                 class="train-one-tr-banburying"
               >
-                <td>排胶温度</td>
+                <td>排胶温度(c°)</td>
                 <td>{{ rowInfo.production_details.排胶温度 ||'--' }}</td>
-                <td>排胶能量</td>
+                <td>排胶能量(J)</td>
                 <td>{{ rowInfo.production_details.排胶能量 ||'--' }}</td>
-                <td class="begin_time_width">时间</td>
+                <td class="begin_time_width">时间(s)</td>
                 <td>{{ rowInfo.production_details.排胶时间 ||'--' }}</td>
-                <td>总重</td>
+                <td>总重(kg)</td>
                 <td>{{ rowInfo.production_details.总重量 ||'--' }}</td>
               </tr>
               <tr
                 v-if="editionNo === 'v2'"
                 class="train-one-tr-banburying"
               >
-                <td>排胶温度</td>
+                <td>排胶温度(c°)</td>
                 <td>{{ rowInfo.evacuation_temperature ||'--' }}</td>
-                <td>排胶能量</td>
+                <td>排胶能量(J)</td>
                 <td>{{ rowInfo.evacuation_energy ||'--' }}</td>
-                <td class="begin_time_width">时间</td>
+                <td class="begin_time_width">时间(s)</td>
                 <td>{{ rowInfo.evacuation_time ||'--' }}</td>
-                <td>总重</td>
+                <td>总重(kg)</td>
                 <td>{{ rowInfo.actual_weight ||'--' }}</td>
               </tr>
             </table>
@@ -273,11 +273,11 @@
                 <tr class="train-one-tr-banburying">
                   <td>No</td>
                   <td>名称</td>
-                  <td>设定值</td>
-                  <td>实重</td>
+                  <td>设定值(kg)</td>
+                  <td>实重(kg)</td>
                   <td>状态</td>
                   <td>种类</td>
-                  <td>超差</td>
+                  <td>超差(kg)</td>
                 </tr>
 
                 <tr
@@ -329,13 +329,13 @@
                 <tr class="train-one-tr-banburying">
                   <td>No</td>
                   <td>条件名称</td>
-                  <td>时间</td>
-                  <td>温度</td>
-                  <td>功率</td>
-                  <td>能量</td>
+                  <td>时间(s)</td>
+                  <td>温度(c°)</td>
+                  <td>功率(W)</td>
+                  <td>能量(J)</td>
                   <td>动作名称</td>
-                  <td>速度</td>
-                  <td>压力</td>
+                  <td>速度(r/min)</td>
+                  <td>压力(Pa)</td>
                 </tr>
                 <template v-if="editionNo === 'v1'">
                   <tr
@@ -396,11 +396,11 @@
               <tr class="train-one-tr-banburying">
                 <td>ID</td>
                 <td>名称</td>
-                <td>设定值</td>
-                <td>实重</td>
+                <td>设定值(kg)</td>
+                <td>实重(kg)</td>
                 <td>状态</td>
                 <td>种类</td>
-                <td>超差</td>
+                <td>超差(kg)</td>
               </tr>
               <tr
                 v-for="(item,index) in alarmRecordList"
@@ -409,11 +409,11 @@
               >
                 <td>ID</td>
                 <td>名称</td>
-                <td>设定值</td>
-                <td>实重</td>
+                <td>设定值(kg)</td>
+                <td>实重(kg)</td>
                 <td>状态</td>
                 <td>种类</td>
-                <td>超差</td>
+                <td>超差(kg)</td>
               </tr>
             </table>
             <div
@@ -431,29 +431,29 @@
               v-if="editionNo === 'v1'"
               class="police-record"
             >
-              <span>排胶能量: {{ rowInfo.production_details.排胶能量 ||'--' }}</span>
+              <span>排胶能量(J): {{ rowInfo.production_details.排胶能量 ||'--' }}</span>
               <span>设定: {{ rowInfo.plan_trains ||'--' }}</span>
-              <span>时间: {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
+              <span>时间(s): {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
               <br>
-              <span>排胶温度: {{ rowInfo.production_details.排胶温度||'--' }}</span>
+              <span>排胶温度(c°): {{ rowInfo.production_details.排胶温度||'--' }}</span>
               <span>完成: {{ rowInfo.actual_trains || '--' }}</span>
-              <span>排胶时间: {{ rowInfo.production_details.排胶时间||'--' }}</span>
+              <span>排胶时间(s): {{ rowInfo.production_details.排胶时间||'--' }}</span>
               <span>名称: {{ rowInfo.product_no ||'--' }}</span>
-              <span>总量: {{ rowInfo.production_details.总重量 || '--' }}</span>
+              <span>总量(kg): {{ rowInfo.production_details.总重量 || '--' }}</span>
             </div>
             <div
               v-if="editionNo === 'v2'"
               class="police-record"
             >
-              <span>排胶能量: {{ rowInfo.evacuation_energy ||'--' }}</span>
+              <span>排胶能量(J): {{ rowInfo.evacuation_energy ||'--' }}</span>
               <span>设定: {{ rowInfo.plan_trains ||'--' }}</span>
-              <span>时间: {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
+              <span>时间(s): {{ rowInfo.begin_time || '--' }} 至 {{ rowInfo.end_time|| '--' }}</span>
               <br>
-              <span>排胶温度: {{ rowInfo.evacuation_temperature||'--' }}</span>
+              <span>排胶温度(c°): {{ rowInfo.evacuation_temperature||'--' }}</span>
               <span>完成: {{ rowInfo.actual_trains || '--' }}</span>
-              <span>排胶时间: {{ rowInfo.evacuation_time||'--' }}</span>
+              <span>排胶时间(s): {{ rowInfo.evacuation_time||'--' }}</span>
               <span>名称: {{ rowInfo.product_no ||'--' }}</span>
-              <span>总量: {{ rowInfo.actual_weight || '--' }}</span>
+              <span>总量(kg): {{ rowInfo.actual_weight || '--' }}</span>
             </div>
             <div class="right-button">
               <!-- <el-button>上一步</el-button>

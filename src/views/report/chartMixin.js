@@ -16,12 +16,12 @@ export default {
     this.colors = ['#FF40A3', '#B2670A', '#3B3834', '#196D26', '#2E77B4']
     this.chartSettings = {
       labelMap: {
-        'created_date_date': '时间',
-        'temperature': '温度',
-        'power': '功率',
-        'energy': '能量',
-        'rpm': '转速',
-        'pressure': '压力'
+        'created_date_date': '时间(s)',
+        'temperature': '温度(c°)',
+        'power': '功率(W)',
+        'energy': '能量(J)',
+        'rpm': '转速(r/min)',
+        'pressure': '压力(Pa)'
       },
       axisSite: {
         right: ['temperature', 'rpm', 'energy', 'pressure']
