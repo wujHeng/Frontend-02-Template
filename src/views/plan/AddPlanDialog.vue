@@ -49,16 +49,16 @@
       :data="plansForAdd"
       border
     >
-      <el-table-column fixed prop="equip_.equip_no" label="机台" />
-      <el-table-column fixed prop="work_schedule_name" label="倒班规则" />
-      <el-table-column fixed prop="day_time" label="日期" width="110">
+      <el-table-column fixed prop="equip_.equip_no" label="机台" width="40" />
+      <el-table-column fixed prop="work_schedule_name" label="倒班规则" width="40" />
+      <el-table-column fixed prop="day_time" label="日期" width="60">
         <template v-if="row.planSchedule" slot-scope="{ row }">
           <el-popover trigger="hover" placement="top">
             <p v-for="schedule_plan in row.planSchedule.work_schedule_plan" :key="schedule_plan.id">
               {{ schedule_plan.classes_name + ':' + schedule_plan.start_time + '到' + schedule_plan.end_time }}
             </p>
             <div slot="reference">
-              <el-tag size="medium">{{ row.day_time }}</el-tag>
+              <span size="mini">{{ row.day_time }}</span>
             </div>
           </el-popover>
         </template>
@@ -75,9 +75,9 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column prop="batching_weight" label="配料重量（吨）" />
-      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" />
-      <el-table-column label="当前库存（吨）" />
+      <el-table-column prop="batching_weight" label="配料重量（吨）" width="70" />
+      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" width="70" />
+      <el-table-column label="当前库存（吨）" width="70" />
       <el-table-column label="早班计划">
         <el-table-column label="顺序" width="210">
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
