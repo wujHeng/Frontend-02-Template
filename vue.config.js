@@ -46,6 +46,7 @@ module.exports = {
         // target: 'http://10.4.23.77:8000', // 李威 中控室
         //  target: 'http://10.4.10.55:80/', // 生产环境
         target: 'http://127.0.0.1:8000',
+        // target: 'http://10.20.181.32:9000/', // 阿峰 家里
         ws: true,
         changeOrigin: true,
         pathRewrite: {

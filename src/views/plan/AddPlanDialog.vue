@@ -6,6 +6,9 @@
     title="添加胶料日生产计划"
   >
     <div style="margin-bottom: 15px">
+      <p>
+        选择日期时，必须使用工厂时间！！！
+      </p>
       <el-select
         v-model="equipIdForAdd"
         filterable
@@ -48,7 +51,18 @@
     >
       <el-table-column fixed prop="equip_.equip_no" label="机台" />
       <el-table-column fixed prop="work_schedule_name" label="倒班规则" />
-      <el-table-column fixed prop="day_time" label="日期" width="110" />
+      <el-table-column fixed prop="day_time" label="日期" width="110">
+        <template v-if="row.planSchedule" slot-scope="{ row }">
+          <el-popover trigger="hover" placement="top">
+            <p v-for="schedule_plan in row.planSchedule.work_schedule_plan" :key="schedule_plan.id">
+              {{ schedule_plan.classes_name + ':' + schedule_plan.start_time + '到' + schedule_plan.end_time }}
+            </p>
+            <div slot="reference">
+              <el-tag size="medium">{{ row.day_time }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column label="胶料配方编码" width="180">
         <template v-if="!scope.row.sum" slot-scope="scope">
           <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
@@ -367,7 +381,8 @@ export default {
         plan_schedule: this.planScheduleId,
         pdp_product_classes_plan,
         day_time: planSchedule.day_time,
-        work_schedule_name: planSchedule.work_schedule_name
+        work_schedule_name: planSchedule.work_schedule_name,
+        planSchedule: planSchedule
       }
       const rubberMateriaData = await getRubberMateria({
         all: 1,
@@ -384,7 +399,7 @@ export default {
         var planForSum = JSON.parse(JSON.stringify(plan))
         planForSum['sum'] = true
         planForSum['equip_'].equip_no = '小计'
-        planForSum['day_time'] = planForSum['work_schedule_name'] = null
+        planForSum['day_time'] = planForSum['work_schedule_name'] = planForSum['planSchedule'] = null
         this.plansForAdd.push(planForSum)
       } else {
         var lastIndex = this.equipLastIndexInPlansForAdd()
