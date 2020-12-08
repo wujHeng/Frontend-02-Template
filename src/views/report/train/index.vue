@@ -728,7 +728,7 @@ export default {
     },
     async getAlarmRecordList(id, page) {
       try {
-        const data = await alarmLogList('get', null, { params: { feed_back_id: id,
+        const data = await alarmLogList('get', { params: { feed_back_id: id,
           page: page }})
         this.totalAlarmRecord = data.count
         return data.results || []
