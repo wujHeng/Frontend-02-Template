@@ -49,9 +49,9 @@
       :data="plansForAdd"
       border
     >
-      <el-table-column fixed prop="equip_.equip_no" label="机台" width="40" />
-      <el-table-column fixed prop="work_schedule_name" label="倒班规则" width="40" />
-      <el-table-column fixed prop="day_time" label="日期" width="60">
+      <el-table-column fixed prop="equip_.equip_no" label="机台" width="40" align="center" />
+      <el-table-column fixed prop="work_schedule_name" label="倒班规则" width="40" align="center" />
+      <el-table-column fixed prop="day_time" label="日期" width="60" align="center">
         <template v-if="row.planSchedule" slot-scope="{ row }">
           <el-popover trigger="hover" placement="top">
             <p v-for="schedule_plan in row.planSchedule.work_schedule_plan" :key="schedule_plan.id">
@@ -63,7 +63,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="胶料配方编码" width="180">
+      <el-table-column label="胶料配方编码" width="180" align="center">
         <template v-if="!scope.row.sum" slot-scope="scope">
           <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
             <el-option
@@ -75,10 +75,10 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column prop="batching_weight" label="配料重量（吨）" width="70" />
-      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" width="70" />
-      <el-table-column label="当前库存（吨）" width="70" />
-      <el-table-column label="早班计划">
+      <el-table-column prop="batching_weight" label="配料重量（吨）" width="70" align="center" />
+      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" width="70" align="center" />
+      <el-table-column label="当前库存（吨）" width="70" align="center" />
+      <el-table-column label="早班计划" align="center">
         <el-table-column label="顺序" width="210">
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
             <el-input-number
@@ -88,7 +88,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="车次" width="210">
+        <el-table-column label="车次" width="210" align="center">
           <template v-if="scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[0].plan_trains"
@@ -99,11 +99,11 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[0].weight" label="重量" />
-        <el-table-column prop="pdp_product_classes_plan[0].time" label="时间" />
+        <el-table-column prop="pdp_product_classes_plan[0].weight" label="重量" align="center" />
+        <el-table-column prop="pdp_product_classes_plan[0].time" label="时间" align="center" />
       </el-table-column>
-      <el-table-column label="中班计划">
-        <el-table-column label="顺序" width="210">
+      <el-table-column label="中班计划" align="center">
+        <el-table-column label="顺序" width="210" align="center">
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[1].sn"
@@ -112,7 +112,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="车次" width="210">
+        <el-table-column label="车次" width="210" align="center">
           <template v-if="scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[1].plan_trains"
@@ -123,11 +123,11 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[1].weight" label="重量" />
-        <el-table-column prop="pdp_product_classes_plan[1].time" label="时间" />
+        <el-table-column prop="pdp_product_classes_plan[1].weight" label="重量" align="center" />
+        <el-table-column prop="pdp_product_classes_plan[1].time" label="时间" align="center" />
       </el-table-column>
-      <el-table-column label="夜班计划">
-        <el-table-column label="顺序" width="210">
+      <el-table-column label="夜班计划" align="center">
+        <el-table-column label="顺序" width="210" align="center">
           <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[2].sn"
@@ -135,8 +135,8 @@
               :precision="0"
             />
           </template>
-        </el-table-column>
-        <el-table-column label="车次" width="210">
+        </el-table-column align="center">
+        <el-table-column label="车次" width="210" align="center">
           <template v-if="scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
             <el-input-number
               v-model.number="scope.row.pdp_product_classes_plan[2].plan_trains"
@@ -146,11 +146,11 @@
               @change="planTrainsChanged(scope.row, 2)"
             />
           </template>
-        </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" />
-        <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" />
+        </el-table-column align="center">
+        <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" align="center" />
+        <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" align="center" />
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template v-if="!scope.row.sum" slot-scope="scope">
           <el-button type="danger" @click="deleteOnePlan(scope.row)">删除</el-button>
         </template>
