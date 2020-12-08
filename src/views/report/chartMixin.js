@@ -50,7 +50,7 @@ export default {
           // align: 'right'
         },
         grid: {
-          y: 50
+          y: 100
         },
         legend: {
           left: 120
@@ -73,6 +73,7 @@ export default {
           itemSize: 20,
           itemGap: 30,
           right: 0,
+          top: 30,
           feature: {
             // dataView: {show:true},
             saveAsImage: {
