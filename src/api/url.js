@@ -56,6 +56,7 @@ export default {
   CurveInformationUrl: '/api/v1/production/curve-information-list/',
   // 报表-车次列表
   TrainsFeedbacksUrl: '/api/v1/production/trains-feedbacks-apiview/',
+  AlarmLogList: '/api/v1/production/alarm_log-list/',
 
   // 首页
   EquipStatusSlanListUrl: '/api/v1/production/equip-status-plan-list/',

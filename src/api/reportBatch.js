@@ -109,3 +109,11 @@ export function curveInformation(method, data) {
   Object.assign(obj, data)
   return request(obj)
 }
+export function alarmLogList(method, data) {
+  const obj = {
+    url: API.AlarmLogList,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
