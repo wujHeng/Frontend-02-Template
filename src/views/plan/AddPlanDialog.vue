@@ -327,10 +327,6 @@ export default {
         .catch(error => {
         })
     },
-    planScheduleTimes(id) {
-      const planSchedule = this.planSchedules.find(item => item.id === id)
-      return planSchedule ? planSchedule.day_time : ''
-    },
     async addOnePlan() {
       if (!this.equipIdForAdd || !this.planScheduleId) {
         this.$alert('请选择机台和排班规则', '错误', {
