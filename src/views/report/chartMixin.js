@@ -21,7 +21,7 @@ export default {
         'power': '功率(W)',
         'energy': '能量(J)',
         'rpm': '转速(r/min)',
-        'pressure': '压力(Pa)'
+        'pressure': '压力(bar)'
       },
       axisSite: {
         right: ['temperature', 'rpm', 'energy', 'pressure']
@@ -50,7 +50,7 @@ export default {
           // align: 'right'
         },
         grid: {
-          y: 50
+          y: 100
         },
         legend: {
           left: 120
@@ -73,6 +73,7 @@ export default {
           itemSize: 20,
           itemGap: 30,
           right: 0,
+          top: 30,
           feature: {
             // dataView: {show:true},
             saveAsImage: {
