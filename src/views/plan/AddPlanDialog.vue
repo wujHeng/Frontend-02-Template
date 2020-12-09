@@ -85,6 +85,11 @@
               v-model.number="scope.row.pdp_product_classes_plan[0].sn"
               :precision="0"
               :min="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[0].sn) {
+                  scope.row.pdp_product_classes_plan[0].sn = 0
+                }
+              }"
             />
           </template>
         </el-table-column>
@@ -95,6 +100,12 @@
               :precision="0"
               :disabled="scope.row.sum"
               :min="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[0].plan_trains) {
+                  scope.row.pdp_product_classes_plan[0].plan_trains = 0
+                  planTrainsChanged(scope.row, 0)
+                }
+              }"
               @change="planTrainsChanged(scope.row, 0)"
             />
           </template>
@@ -109,6 +120,11 @@
               v-model.number="scope.row.pdp_product_classes_plan[1].sn"
               :min="0"
               :precision="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[1].sn) {
+                  scope.row.pdp_product_classes_plan[1].sn = 0
+                }
+              }"
             />
           </template>
         </el-table-column>
@@ -119,6 +135,12 @@
               :precision="0"
               :disabled="scope.row.sum"
               :min="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[1].plan_trains) {
+                  scope.row.pdp_product_classes_plan[1].plan_trains = 0
+                  planTrainsChanged(scope.row, 1)
+                }
+              }"
               @change="planTrainsChanged(scope.row, 1)"
             />
           </template>
@@ -133,9 +155,14 @@
               v-model.number="scope.row.pdp_product_classes_plan[2].sn"
               :min="0"
               :precision="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[2].sn) {
+                  scope.row.pdp_product_classes_plan[2].sn = 0
+                }
+              }"
             />
           </template>
-        </el-table-column align="center">
+        </el-table-column>
         <el-table-column label="车次" width="210" align="center">
           <template v-if="scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
             <el-input-number
@@ -143,10 +170,16 @@
               :precision="0"
               :disabled="scope.row.sum"
               :min="0"
+              @blur="() => {
+                if (!scope.row.pdp_product_classes_plan[2].plan_trains) {
+                  scope.row.pdp_product_classes_plan[2].plan_trains = 0
+                  planTrainsChanged(scope.row, 2)
+                }
+              }"
               @change="planTrainsChanged(scope.row, 2)"
             />
           </template>
-        </el-table-column align="center">
+        </el-table-column>
         <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" align="center" />
         <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" align="center" />
       </el-table-column>
@@ -471,8 +504,6 @@ export default {
         }
         for (var k = 0; k < plans.length; k++) {
           var plan = plans[k]
-          const res = await getPlanSchedule(plan.plan_schedule)
-          const planSchedule = res.data
           batching_weight += Number(plan.batching_weight)
           production_time_interval += Number(plan.production_time_interval)
           for (var i = 0; i < 3; i++) {
@@ -480,26 +511,8 @@ export default {
             pdp_product_classes_plan[i].plan_trains += Number(class_plan.plan_trains)
             pdp_product_classes_plan[i].weight += Number(class_plan.weight)
             pdp_product_classes_plan[i].time += Number(class_plan.time)
-            // var workSchedulePlanTimeSpan =
-            //                     dayjs(planSchedule.work_schedule_plan[i].end_time).diff(
-            //                       dayjs(planSchedule.work_schedule_plan[i].start_time), 'minute')
-            // if (pdp_product_classes_plan[i].time > workSchedulePlanTimeSpan) {
-            //   this.$alert('机台' + plan.equip_.equip_no +
-            //                         planSchedule.work_schedule_plan[i].classes_name +
-            //                         '计划时间大于排班时间' + '(计划时间' + pdp_product_classes_plan[i].time + '分钟' +
-            //                         ' 排班时间' + workSchedulePlanTimeSpan + '分钟' +
-            //                         ')', '警告', {
-            //     confirmButtonText: '确定'
-            //   })
-            // }
           }
         }
-        // for (i = 0; i < 3; i++) {
-        //
-        //     pdp_product_classes_plan[i].weight = pdp_product_classes_plan[i].weight.toFixed(2);
-        //     pdp_product_classes_plan[i].time = pdp_product_classes_plan[i].time.toFixed(2);
-        // }
-
         batching_weight = batching_weight.toFixed(3)
         production_time_interval = production_time_interval.toFixed(2)
         planSumByEquipId[equipId].batching_weight = batching_weight
