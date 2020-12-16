@@ -11,8 +11,8 @@
               v-model="equip"
               placeholder="请选择"
               @change="equipChange"
-              @visible-change="equipVisibleChange"
             >
+              <!-- @visible-change="equipVisibleChange" -->
               <el-option
                 v-for="item in equipOptions"
                 :key="item.equip_no"
@@ -88,7 +88,7 @@
               @click="showAddPlanDialog"
             >新增</el-button>
             <el-button
-              v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+              v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1&&version!=='v3'"
               type="info"
               :disabled="disabled"
               @click="stopPlan"
@@ -134,7 +134,7 @@
             @click="showAlterTrainNumberDialog"
           >修改车次</el-button>
           <el-button
-            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1"
+            v-if="permissionObj.plan.productclassesplan.indexOf('change')>-1&&version!=='v3'"
             type="info"
             style="width: 120px"
             :disabled="disabled"
@@ -362,7 +362,8 @@ export default {
       formError: {},
 
       updateTrainsId: '',
-      disabled: true
+      disabled: true,
+      version: null
     }
   },
   computed: {
@@ -375,15 +376,18 @@ export default {
   methods: {
     async getEquip() {
       const equipData = await equip('get')
+      this.equipOptions = equipData.results
       if (localStorage.getItem('addPlan:equip')) {
         const equipId = JSON.parse(localStorage.getItem('addPlan:equip'))
         for (var i = 0; i < equipData.results.length; i++) {
           if (equipData.results[i].id === Number(equipId)) {
             this.equip = equipData.results[i].equip_no
+            this.version = equipData.results[i].version
           }
         }
       } else {
         this.equip = equipData.results[0].equip_no
+        this.version = equipData.results[0].version
         localStorage.setItem('addPlan:equip', JSON.stringify(equipData.results[0].id))
       }
       this.clearFindForm()
@@ -451,6 +455,7 @@ export default {
       for (var i = 0; i < this.equipOptions.length; i++) {
         if (this.equipOptions[i].equip_no === this.equip) {
           localStorage.setItem('addPlan:equip', JSON.stringify(this.equipOptions[i].id))
+          this.version = this.equipOptions[i].version
         }
       }
       this.clearFindForm()

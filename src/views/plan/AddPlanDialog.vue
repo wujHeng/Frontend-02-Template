@@ -41,7 +41,7 @@
       </el-select>
 
       <el-button style="float: right" :disabled="!saveEnable" @click="batchSave">保存</el-button>
-      <el-button @click="addOnePlan">添加</el-button>
+      <el-button :loading="loadingBtn" @click="addOnePlan">添加</el-button>
     </div>
     <p style="text-align: right; color: red"> {{ weightError }} </p>
     <p style="text-align: right; color: red"> {{ timeError }} </p>
@@ -199,7 +199,8 @@ import {
   getWorkSchedules,
   getPlanSchedules,
   getPlanSchedule,
-  postProductDayPlanManyCreate
+  postProductDayPlanManyCreate,
+  hfRecipeList
 } from '@/api/plan'
 
 import dayjs from 'dayjs'
@@ -219,7 +220,9 @@ export default {
       productBatchingById: {},
       saveEnable: false,
       weightError: '',
-      timeError: ''
+      timeError: '',
+      version: null,
+      loadingBtn: false
     }
   },
   watch: {
@@ -254,6 +257,8 @@ export default {
   },
   methods: {
     equipSelected(equip) {
+      const arr = this.equips.filter(D => D.id === Number(equip))
+      this.version = arr[0].version
       localStorage.setItem('addPlan:equip', equip)
     },
     show() {
@@ -269,6 +274,8 @@ export default {
           this.equipById[equip.id] = equip
         })
         const equipId = localStorage.getItem('addPlan:equip')
+        const arr = this.equips.filter(D => D.id === Number(equipId))
+        this.version = arr[0].version
         if (equipId) {
           this.equipIdForAdd = Number(equipId)
         }
@@ -349,7 +356,11 @@ export default {
         }
       })
       if (!plansForAdd_.length) return
-
+      plansForAdd_.forEach(D => {
+        if (D._version === 'v3') {
+          delete D.product_batching
+        }
+      })
       postProductDayPlanManyCreate(plansForAdd_)
         .then(response => {
           app.addPlanVisible = false
@@ -361,82 +372,97 @@ export default {
         })
     },
     async addOnePlan() {
-      if (!this.equipIdForAdd || !this.planScheduleId) {
-        this.$alert('请选择机台和排班规则', '错误', {
-          confirmButtonText: '确定'
+      try {
+        if (!this.equipIdForAdd || !this.planScheduleId) {
+          this.$alert('请选择机台和排班规则', '错误', {
+            confirmButtonText: '确定'
+          })
+          return
+        }
+        const planSchedule = await getPlanSchedule(this.planScheduleId)
+        var workSchedule = this.workSchedules.find(workSchedule => {
+          return workSchedule.id === planSchedule.work_schedule
         })
-        return
-      }
-      const planSchedule = await getPlanSchedule(this.planScheduleId)
-      var workSchedule = this.workSchedules.find(workSchedule => {
-        return workSchedule.id === planSchedule.work_schedule
-      })
-      if (!planSchedule.work_schedule_plan.length) {
-        this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
-          confirmButtonText: '确定'
-        })
-        return
-      }
-      var classesdetail_set_ = workSchedule.classesdetail_set
-      var init_class_plan = {
-        plan_trains: 0,
-        sn: 0,
-        unit: '吨',
-        time: '',
-        weight: '',
-        classes: null,
-        enable: false
-      }
-      var pdp_product_classes_plan = [init_class_plan, init_class_plan, init_class_plan]
-      for (var i = 0; i < 3; i++) {
-        var enable = !!planSchedule.work_schedule_plan[i]
-        var classes = enable ? classesdetail_set_[i].classes : null
-        var class_plan = {
+        if (!planSchedule.work_schedule_plan.length) {
+          this.$alert(planSchedule.work_schedule_name + '无排班', '错误', {
+            confirmButtonText: '确定'
+          })
+          return
+        }
+        var classesdetail_set_ = workSchedule.classesdetail_set
+        var init_class_plan = {
           plan_trains: 0,
           sn: 0,
           unit: '吨',
-          time: enable ? 0 : '',
-          weight: enable ? 0 : '',
-          classes,
-          enable
+          time: '',
+          weight: '',
+          classes: null,
+          enable: false
         }
-        if (enable && planSchedule.work_schedule_plan[i].classes_name === '早班') {
-          pdp_product_classes_plan[0] = class_plan
-        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '中班') {
-          pdp_product_classes_plan[1] = class_plan
-        } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '夜班') {
-          pdp_product_classes_plan[2] = class_plan
+        var pdp_product_classes_plan = [init_class_plan, init_class_plan, init_class_plan]
+        for (var i = 0; i < 3; i++) {
+          var enable = !!planSchedule.work_schedule_plan[i]
+          var classes = enable ? classesdetail_set_[i].classes : null
+          var class_plan = {
+            plan_trains: 0,
+            sn: 0,
+            unit: '吨',
+            time: enable ? 0 : '',
+            weight: enable ? 0 : '',
+            classes,
+            enable
+          }
+          if (enable && planSchedule.work_schedule_plan[i].classes_name === '早班') {
+            pdp_product_classes_plan[0] = class_plan
+          } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '中班') {
+            pdp_product_classes_plan[1] = class_plan
+          } else if (enable && planSchedule.work_schedule_plan[i].classes_name === '夜班') {
+            pdp_product_classes_plan[2] = class_plan
+          }
         }
-      }
-      var plan = {
-        equip_: this.equipById[this.equipIdForAdd],
-        equip: this.equipIdForAdd,
-        plan_schedule: this.planScheduleId,
-        pdp_product_classes_plan,
-        day_time: planSchedule.day_time,
-        work_schedule_name: planSchedule.work_schedule_name,
-        planSchedule: planSchedule
-      }
-      const rubberMateriaData = await getRubberMateria({
-        all: 1,
-        used_type: 4,
-        // dev_type: this.equipById[this.equipIdForAdd].category
-        equip_id: this.equipIdForAdd
-      })
-      this.$set(plan, 'productBatchings', rubberMateriaData.results)
-      rubberMateriaData.results.forEach(batching => {
-        this.productBatchingById[batching.id] = batching
-      })
-      if (this.equipFirstIndexInPlansForAdd() === -1) {
-        this.plansForAdd.push(plan)
-        var planForSum = JSON.parse(JSON.stringify(plan))
-        planForSum['sum'] = true
-        planForSum['equip_'].equip_no = '小计'
-        planForSum['day_time'] = planForSum['work_schedule_name'] = planForSum['planSchedule'] = null
-        this.plansForAdd.push(planForSum)
-      } else {
-        var lastIndex = this.equipLastIndexInPlansForAdd()
-        this.plansForAdd.splice(lastIndex, 0, plan)
+        var plan = {
+          equip_: this.equipById[this.equipIdForAdd],
+          equip: this.equipIdForAdd,
+          plan_schedule: this.planScheduleId,
+          pdp_product_classes_plan,
+          day_time: planSchedule.day_time,
+          work_schedule_name: planSchedule.work_schedule_name,
+          planSchedule: planSchedule
+        }
+        this.loadingBtn = true
+        const _api = this.version === 'v3' ? hfRecipeList : getRubberMateria
+        const rubberMateriaData = await _api({
+          all: 1,
+          used_type: 4,
+          equip_id: this.equipIdForAdd
+        })
+        this.loadingBtn = false
+        if (this.version === 'v3') {
+          rubberMateriaData.results.forEach((D, i) => {
+            D.batching_weight = 0
+            D.production_time_interval = 0
+            D.stage_product_batch_no = D.recipe_number
+            D.id = i
+          })
+        }
+
+        this.$set(plan, 'productBatchings', rubberMateriaData.results)
+        rubberMateriaData.results.forEach(batching => {
+          this.productBatchingById[batching.id] = batching
+        })
+        if (this.equipFirstIndexInPlansForAdd() === -1) {
+          this.plansForAdd.push(plan)
+          var planForSum = JSON.parse(JSON.stringify(plan))
+          planForSum['sum'] = true
+          planForSum['equip_'].equip_no = '小计'
+          planForSum['day_time'] = planForSum['work_schedule_name'] = planForSum['planSchedule'] = null
+          this.plansForAdd.push(planForSum)
+        } else {
+          var lastIndex = this.equipLastIndexInPlansForAdd()
+          this.plansForAdd.splice(lastIndex, 0, plan)
+        }
+      } catch (e) {
+        this.loadingBtn = false
       }
     },
     equipLastIndexInPlansForAdd() {
@@ -460,6 +486,12 @@ export default {
     productBatchingChanged(planForAdd) {
       planForAdd['batching_weight'] = this.productBatchingById[planForAdd.product_batching].batching_weight
       planForAdd['production_time_interval'] = this.productBatchingById[planForAdd.product_batching].production_time_interval
+      planForAdd['product_batch_no'] = this.productBatchingById[planForAdd.product_batching].stage_product_batch_no
+      if (this.version === 'v3') {
+        planForAdd['product_version'] = this.productBatchingById[planForAdd.product_batching].recipe_version
+      }
+      planForAdd['_version'] = this.version
+
       for (var i = 0; i < 3; i++) {
         this.planTrainsChanged(planForAdd, i, false)
       }

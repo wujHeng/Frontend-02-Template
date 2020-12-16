@@ -131,6 +131,7 @@ const actions = {
       commit('SET_PERMISSION', '')
       commit('SET_TOKEN', '')
       commit('SET_NAME', '')
+      localStorage.clear()
       resolve()
       // }).catch(error => {
       //   reject(error)
