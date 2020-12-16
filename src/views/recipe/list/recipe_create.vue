@@ -1694,19 +1694,19 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.recipe_create{
   .el-select-dropdown__item{
       height:auto !important;
       min-height: 30px;
   }
-.recipe_create{
-
 .font_custom{
     font-size: 14px;
     color: #606266;
     line-height: 40px;
     font-weight: 700;
 }
+
 .el-input-number.is-controls-right .el-input__inner {
     padding-left: 0px;
     padding-right: 0px;
