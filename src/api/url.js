@@ -100,5 +100,7 @@ export default {
   TankMaterialsUrl: '/api/v1/recipe/tank_materials/',
   OperationsUrl: '/api/v1/system/operations/',
 
-  ValidateVersionsUrl: '/api/v1/recipe/validate-versions/'
+  ValidateVersionsUrl: '/api/v1/recipe/validate-versions/',
+  // 其他库查的胶料配方编码
+  HfRecipeList: '/api/v1/plan/hf-recipe-list/'
 }

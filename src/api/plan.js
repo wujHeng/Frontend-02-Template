@@ -166,3 +166,11 @@ export function productClassesPlanPanycreateUrl(method, data = {}) {
   return request(obj)
 }
 
+export function hfRecipeList(params) {
+  return request({
+    url: API.HfRecipeList,
+    method: 'get',
+    params
+  })
+}
+
