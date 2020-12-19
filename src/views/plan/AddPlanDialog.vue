@@ -297,7 +297,7 @@ export default {
     },
     async getWorkSchedules() {
       try {
-        const workSchedulesData = await getWorkSchedules({ all: 1 })
+        const workSchedulesData = await getWorkSchedules({ all: 1, work_procedure: '密炼' })
         this.workSchedules = workSchedulesData.results
       // eslint-disable-next-line no-empty
       } catch (e) {}
