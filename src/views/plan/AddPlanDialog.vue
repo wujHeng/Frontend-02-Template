@@ -5,190 +5,192 @@
     :before-close="handleClose"
     title="添加胶料日生产计划"
   >
-    <div style="margin-bottom: 15px">
-      <p>
-        选择日期时，必须使用工厂时间！！！
-      </p>
-      <el-select
-        v-model="equipIdForAdd"
-        filterable
-        placeholder="请选择机台"
-        style="margin-right: 10px"
-        @change="equipSelected"
-      >
-        <el-option
-          v-for="equip in equips"
-          :key="equip.id"
-          :label="equip.equip_no"
-          :value="equip.id"
+    <div v-loading="loadingFrom">
+      <div style="margin-bottom: 15px">
+        <p>
+          选择日期时，必须使用工厂时间！！！
+        </p>
+        <el-select
+          v-model="equipIdForAdd"
+          filterable
+          placeholder="请选择机台"
+          style="margin-right: 10px"
+          @change="equipSelected"
+        >
+          <el-option
+            v-for="equip in equips"
+            :key="equip.id"
+            :label="equip.equip_no"
+            :value="equip.id"
+          />
+        </el-select>
+        <el-date-picker
+          v-model="day_time"
+          style="margin-right: 10px"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期"
+          @change="getPlanSchedules"
         />
-      </el-select>
-      <el-date-picker
-        v-model="day_time"
-        style="margin-right: 10px"
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="选择日期"
-        @change="getPlanSchedules"
-      />
-      <el-select v-model="planScheduleId" filterable placeholder="倒班规则">
-        <el-option
-          v-for="planSchedule in planSchedules"
-          :key="planSchedule.id"
-          :label="planSchedule.work_schedule__schedule_name"
-          :value="planSchedule.id"
-        />
-      </el-select>
+        <el-select v-model="planScheduleId" filterable placeholder="倒班规则">
+          <el-option
+            v-for="planSchedule in planSchedules"
+            :key="planSchedule.id"
+            :label="planSchedule.work_schedule__schedule_name"
+            :value="planSchedule.id"
+          />
+        </el-select>
 
-      <el-button style="float: right" :disabled="!saveEnable" @click="batchSave">保存</el-button>
-      <el-button :loading="loadingBtn" @click="addOnePlan">添加</el-button>
+        <el-button style="float: right" :disabled="!saveEnable" @click="batchSave">保存</el-button>
+        <el-button :loading="loadingBtn" @click="addOnePlan">添加</el-button>
+      </div>
+      <p style="text-align: right; color: red"> {{ weightError }} </p>
+      <p style="text-align: right; color: red"> {{ timeError }} </p>
+      <el-table
+        :data="plansForAdd"
+        border
+      >
+        <el-table-column fixed prop="equip_.equip_no" label="机台" width="40" align="center" />
+        <el-table-column fixed prop="work_schedule_name" label="倒班规则" width="40" align="center" />
+        <el-table-column fixed prop="day_time" label="日期" width="60" align="center">
+          <template v-if="row.planSchedule" slot-scope="{ row }">
+            <el-popover trigger="hover" placement="top">
+              <p v-for="schedule_plan in row.planSchedule.work_schedule_plan" :key="schedule_plan.id">
+                {{ schedule_plan.classes_name + ':' + schedule_plan.start_time + '到' + schedule_plan.end_time }}
+              </p>
+              <div slot="reference">
+                <span size="mini">{{ row.day_time }}</span>
+              </div>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="胶料配方编码" width="180" align="center">
+          <template v-if="!scope.row.sum" slot-scope="scope">
+            <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
+              <el-option
+                v-for="productBatching in scope.row.productBatchings"
+                :key="productBatching.id"
+                :label="productBatching.stage_product_batch_no"
+                :value="productBatching.id"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="batching_weight" label="配料重量（吨）" width="70" align="center" />
+        <el-table-column prop="production_time_interval" label="炼胶时间（秒）" width="70" align="center" />
+        <el-table-column label="当前库存（吨）" width="70" align="center" />
+        <el-table-column label="早班计划" align="center">
+          <el-table-column label="顺序" width="210">
+            <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[0].sn"
+                :precision="0"
+                :min="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[0].sn) {
+                    scope.row.pdp_product_classes_plan[0].sn = 0
+                  }
+                }"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="车次" width="210" align="center">
+            <template v-if="scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[0].plan_trains"
+                :precision="0"
+                :disabled="scope.row.sum"
+                :min="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[0].plan_trains) {
+                    scope.row.pdp_product_classes_plan[0].plan_trains = 0
+                    planTrainsChanged(scope.row, 0)
+                  }
+                }"
+                @change="planTrainsChanged(scope.row, 0)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="pdp_product_classes_plan[0].weight" label="重量" align="center" />
+          <el-table-column prop="pdp_product_classes_plan[0].time" label="时间" align="center" />
+        </el-table-column>
+        <el-table-column label="中班计划" align="center">
+          <el-table-column label="顺序" width="210" align="center">
+            <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[1].sn"
+                :min="0"
+                :precision="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[1].sn) {
+                    scope.row.pdp_product_classes_plan[1].sn = 0
+                  }
+                }"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="车次" width="210" align="center">
+            <template v-if="scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[1].plan_trains"
+                :precision="0"
+                :disabled="scope.row.sum"
+                :min="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[1].plan_trains) {
+                    scope.row.pdp_product_classes_plan[1].plan_trains = 0
+                    planTrainsChanged(scope.row, 1)
+                  }
+                }"
+                @change="planTrainsChanged(scope.row, 1)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="pdp_product_classes_plan[1].weight" label="重量" align="center" />
+          <el-table-column prop="pdp_product_classes_plan[1].time" label="时间" align="center" />
+        </el-table-column>
+        <el-table-column label="夜班计划" align="center">
+          <el-table-column label="顺序" width="210" align="center">
+            <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[2].sn"
+                :min="0"
+                :precision="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[2].sn) {
+                    scope.row.pdp_product_classes_plan[2].sn = 0
+                  }
+                }"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="车次" width="210" align="center">
+            <template v-if="scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
+              <el-input-number
+                v-model.number="scope.row.pdp_product_classes_plan[2].plan_trains"
+                :precision="0"
+                :disabled="scope.row.sum"
+                :min="0"
+                @blur="() => {
+                  if (!scope.row.pdp_product_classes_plan[2].plan_trains) {
+                    scope.row.pdp_product_classes_plan[2].plan_trains = 0
+                    planTrainsChanged(scope.row, 2)
+                  }
+                }"
+                @change="planTrainsChanged(scope.row, 2)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" align="center" />
+          <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" align="center" />
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template v-if="!scope.row.sum" slot-scope="scope">
+            <el-button type="danger" @click="deleteOnePlan(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-    <p style="text-align: right; color: red"> {{ weightError }} </p>
-    <p style="text-align: right; color: red"> {{ timeError }} </p>
-    <el-table
-      :data="plansForAdd"
-      border
-    >
-      <el-table-column fixed prop="equip_.equip_no" label="机台" width="40" align="center" />
-      <el-table-column fixed prop="work_schedule_name" label="倒班规则" width="40" align="center" />
-      <el-table-column fixed prop="day_time" label="日期" width="60" align="center">
-        <template v-if="row.planSchedule" slot-scope="{ row }">
-          <el-popover trigger="hover" placement="top">
-            <p v-for="schedule_plan in row.planSchedule.work_schedule_plan" :key="schedule_plan.id">
-              {{ schedule_plan.classes_name + ':' + schedule_plan.start_time + '到' + schedule_plan.end_time }}
-            </p>
-            <div slot="reference">
-              <span size="mini">{{ row.day_time }}</span>
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column label="胶料配方编码" width="180" align="center">
-        <template v-if="!scope.row.sum" slot-scope="scope">
-          <el-select v-model="scope.row.product_batching" filterable @change="productBatchingChanged(scope.row)">
-            <el-option
-              v-for="productBatching in scope.row.productBatchings"
-              :key="productBatching.id"
-              :label="productBatching.stage_product_batch_no"
-              :value="productBatching.id"
-            />
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column prop="batching_weight" label="配料重量（吨）" width="70" align="center" />
-      <el-table-column prop="production_time_interval" label="炼胶时间（秒）" width="70" align="center" />
-      <el-table-column label="当前库存（吨）" width="70" align="center" />
-      <el-table-column label="早班计划" align="center">
-        <el-table-column label="顺序" width="210">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[0].sn"
-              :precision="0"
-              :min="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[0].sn) {
-                  scope.row.pdp_product_classes_plan[0].sn = 0
-                }
-              }"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="车次" width="210" align="center">
-          <template v-if="scope.row.pdp_product_classes_plan[0].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[0].plan_trains"
-              :precision="0"
-              :disabled="scope.row.sum"
-              :min="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[0].plan_trains) {
-                  scope.row.pdp_product_classes_plan[0].plan_trains = 0
-                  planTrainsChanged(scope.row, 0)
-                }
-              }"
-              @change="planTrainsChanged(scope.row, 0)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[0].weight" label="重量" align="center" />
-        <el-table-column prop="pdp_product_classes_plan[0].time" label="时间" align="center" />
-      </el-table-column>
-      <el-table-column label="中班计划" align="center">
-        <el-table-column label="顺序" width="210" align="center">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[1].sn"
-              :min="0"
-              :precision="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[1].sn) {
-                  scope.row.pdp_product_classes_plan[1].sn = 0
-                }
-              }"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="车次" width="210" align="center">
-          <template v-if="scope.row.pdp_product_classes_plan[1].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[1].plan_trains"
-              :precision="0"
-              :disabled="scope.row.sum"
-              :min="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[1].plan_trains) {
-                  scope.row.pdp_product_classes_plan[1].plan_trains = 0
-                  planTrainsChanged(scope.row, 1)
-                }
-              }"
-              @change="planTrainsChanged(scope.row, 1)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[1].weight" label="重量" align="center" />
-        <el-table-column prop="pdp_product_classes_plan[1].time" label="时间" align="center" />
-      </el-table-column>
-      <el-table-column label="夜班计划" align="center">
-        <el-table-column label="顺序" width="210" align="center">
-          <template v-if="!scope.row.sum && scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[2].sn"
-              :min="0"
-              :precision="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[2].sn) {
-                  scope.row.pdp_product_classes_plan[2].sn = 0
-                }
-              }"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="车次" width="210" align="center">
-          <template v-if="scope.row.pdp_product_classes_plan[2].enable" slot-scope="scope">
-            <el-input-number
-              v-model.number="scope.row.pdp_product_classes_plan[2].plan_trains"
-              :precision="0"
-              :disabled="scope.row.sum"
-              :min="0"
-              @blur="() => {
-                if (!scope.row.pdp_product_classes_plan[2].plan_trains) {
-                  scope.row.pdp_product_classes_plan[2].plan_trains = 0
-                  planTrainsChanged(scope.row, 2)
-                }
-              }"
-              @change="planTrainsChanged(scope.row, 2)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="pdp_product_classes_plan[2].weight" label="重量" align="center" />
-        <el-table-column prop="pdp_product_classes_plan[2].time" label="时间" align="center" />
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template v-if="!scope.row.sum" slot-scope="scope">
-          <el-button type="danger" @click="deleteOnePlan(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
   </el-dialog>
 </template>
 
@@ -222,7 +224,8 @@ export default {
       weightError: '',
       timeError: '',
       version: null,
-      loadingBtn: false
+      loadingBtn: false,
+      loadingFrom: true
     }
   },
   watch: {
@@ -281,6 +284,7 @@ export default {
         }
       // eslint-disable-next-line no-empty
       } catch (e) {}
+      this.loadingFrom = false
     },
     async getRubberMateria() {
       try {
@@ -304,6 +308,7 @@ export default {
     },
     async getPlanSchedules() {
       try {
+        this.loadingFrom = true
         this.planSchedules = []
         this.planScheduleId = null
         if (this.day_time) {
@@ -316,6 +321,7 @@ export default {
         }
       // eslint-disable-next-line no-empty
       } catch (e) {}
+      this.loadingFrom = false
     },
 
     batchSave() {
@@ -330,8 +336,8 @@ export default {
       this.plansForAdd.forEach(plan => {
         if (!plan.sum) {
           var plan_ = JSON.parse(JSON.stringify(plan))
-          if (!plan_.product_batching) {
-            this.$alert('请选择所有胶料配方编码', '错误', {
+          if (!plan_.product_batching && plan_.product_batching !== 0) {
+            this.$alert('请选择胶料配方编码', '错误', {
               confirmButtonText: '确定'
             })
             return
@@ -352,7 +358,7 @@ export default {
               )
             }
           }
-          plansForAdd_.push(plan_)
+          plansForAdd_.push(JSON.parse(JSON.stringify(plan_)))
         }
       })
       if (!plansForAdd_.length) return
@@ -361,6 +367,8 @@ export default {
           delete D.product_batching
         }
       })
+      // console.log(plansForAdd_, 'plansForAdd_')
+      // return
       postProductDayPlanManyCreate(plansForAdd_)
         .then(response => {
           app.addPlanVisible = false
@@ -379,6 +387,8 @@ export default {
           })
           return
         }
+        this.loadingBtn = true
+
         const planSchedule = await getPlanSchedule(this.planScheduleId)
         var workSchedule = this.workSchedules.find(workSchedule => {
           return workSchedule.id === planSchedule.work_schedule
@@ -429,7 +439,6 @@ export default {
           work_schedule_name: planSchedule.work_schedule_name,
           planSchedule: planSchedule
         }
-        this.loadingBtn = true
         const _api = this.version === 'v3' ? hfRecipeList : getRubberMateria
         const rubberMateriaData = await _api({
           all: 1,
@@ -447,6 +456,7 @@ export default {
         }
 
         this.$set(plan, 'productBatchings', rubberMateriaData.results)
+
         rubberMateriaData.results.forEach(batching => {
           this.productBatchingById[batching.id] = batching
         })
@@ -462,6 +472,7 @@ export default {
           this.plansForAdd.splice(lastIndex, 0, plan)
         }
       } catch (e) {
+        this.$message.error(e)
         this.loadingBtn = false
       }
     },
