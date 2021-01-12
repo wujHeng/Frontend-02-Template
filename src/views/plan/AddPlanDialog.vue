@@ -472,7 +472,8 @@ export default {
           this.plansForAdd.splice(lastIndex, 0, plan)
         }
       } catch (e) {
-        this.$message.error(e)
+        console.log(e, 'e')
+        this.$message.error('添加失败')
         this.loadingBtn = false
       }
     },

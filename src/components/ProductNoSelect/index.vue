@@ -20,6 +20,7 @@
 import { getAllProductBatchings } from '@/api/product-batching'
 export default {
   props: {
+    // 根据stage_product_batch_no去重
     isStageProductbatchNoRemove: {
       type: Boolean,
       default: false
@@ -58,11 +59,9 @@ export default {
         if (this.makeUseBatch) {
           let arr = []
           arr = productBatchings.filter(D => D.used_type === 4 || D.used_type === 6)
-          this.productBatchings = arr
-          return
+          productBatchings = arr
         }
         if (this.isStageProductbatchNoRemove) {
-          // 根据stage_product_batch_no去重
           var obj = {}
           var newArr = productBatchings.reduce((item, next) => {
             obj[next.stage_product_batch_no]
