@@ -386,7 +386,10 @@ export default {
       this.SelectStage = recipeGetParams.stage_id
       this.input_rubber_no = recipeGetParams.stage_product_batch_no
     }
-    this.get_recipe_list()
+
+    //  加默认分页，传到要返回的界面，再传回来
+    this.currentPage = this.$route.params.currentPage || 1
+    this.get_recipe_list(this.currentPage)
   },
   methods: {
     async recipe_no_list() {
@@ -542,7 +545,8 @@ export default {
       this.currentRow = val
     },
     pagehandleCurrentChange: function(val) {
-      this.currentRow = val
+      this.currentRow = val // ?
+      this.currentPage = val
       this.get_recipe_list(val)
       this.currentRow = {
         product_name: null,
@@ -603,7 +607,7 @@ export default {
     },
 
     recipe_display_change: function(raw) {
-      this.$router.push({ name: 'RecipeDisplay', params: raw })
+      this.$router.push({ name: 'RecipeDisplay', params: { ...raw, currentPage: this.currentPage }})
       this.$route.params
     },
     AddRecipeButton: function() {
@@ -612,7 +616,7 @@ export default {
     },
     ModifyRecipeButton: function(modify_row) {
       // console.log(modify_row)
-      this.$router.push({ name: 'RecipeModify', params: modify_row })
+      this.$router.push({ name: 'RecipeModify', params: { ...modify_row, currentPage: this.currentPage }})
       this.$route.params
     },
     handleRecipeDelete: function(delete_row) {
