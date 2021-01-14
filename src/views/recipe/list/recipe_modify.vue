@@ -1030,7 +1030,7 @@ export default {
     },
     async post_recipe_info_step_list(obj) {
       try {
-        const recipe_info_step_list = await rubber_process_url('post', null, obj)
+        // const recipe_info_step_list = await rubber_process_url('post', null, obj)
         // console.log(recipe_info_step_list)
       } catch (e) { throw new Error(e) }
     },
@@ -1455,7 +1455,7 @@ export default {
       }
     },
     recipe_return_list: function() {
-      this.$router.push({ name: 'RecipeList' })
+      this.$router.push({ name: 'RecipeList', params: { currentPage: this.$route.params.currentPage }})
     },
     sp_numFormatter: function() {
       return this.sp_numChoice(this.sp_num)

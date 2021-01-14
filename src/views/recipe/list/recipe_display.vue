@@ -381,7 +381,7 @@ export default {
       } catch (e) { e }
     },
     recipe_return_list: function() {
-      this.$router.push({ name: 'RecipeList' })
+      this.$router.push({ name: 'RecipeList', params: { currentPage: this.$route.params.currentPage }})
     },
     sp_numFormatter: function() {
       return this.sp_numChoice(this.sp_num)
