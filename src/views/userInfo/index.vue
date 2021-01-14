@@ -112,6 +112,7 @@
     </el-table>
     <page
       :total="count"
+      :current-page="getParams.page"
       @currentChange="changePage"
     />
 
@@ -132,23 +133,6 @@
           label="用户名"
           prop="username"
         >
-          <!-- :class="[{'is-error':isError?true:false}]" -->
-          <!-- <div class="el-input">
-            <input
-              :value="userForm.username"
-              type="text"
-              autocomplete="off"
-              class="el-input__inner"
-              @input="changeUsername"
-              @blur="blurUsername"
-            >
-            <div
-              v-show="isError"
-              class="el-form-item__error"
-            >
-              请填写用户名
-            </div>
-          </div> -->
           <el-input v-model="userForm.username" />
         </el-form-item>
         <el-form-item
@@ -167,23 +151,6 @@
           label="密码"
           prop="password"
         >
-          <!-- <div class="el-input">
-            <input
-              type="password"
-              autocomplete="off"
-              class="el-input__inner"
-              @input="changePassword"
-              @blur="blurPassword"
-            >
-            <transition name="show">
-              <div
-                v-show="isErrorPassword"
-                class="el-form-item__error"
-              >
-                {{ titleNewPassword }}
-              </div>
-            </transition>
-          </div> -->
           <el-input
             v-model="userForm.password"
             type="password"
@@ -263,8 +230,8 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入密码'))
-      } else if (value && (value.length < 6 || value.length > 16)) {
-        callback(new Error('请输入6~16位长度的密码'))
+      } else if (value && (value.length < 3 || value.length > 16)) {
+        callback(new Error('请输入3~16位长度的密码'))
       } else {
         if (this.userForm.checkPass !== '') {
           this.$refs.userForm.validateField('checkPass')
@@ -300,8 +267,8 @@ export default {
       }
     }
     var validatePass4 = (rule, value, callback) => {
-      if (value && (value.length < 6 || value.length > 16)) {
-        callback(new Error('请输入6~16位长度的密码'))
+      if (value && (value.length < 3 || value.length > 16)) {
+        callback(new Error('请输入3~16位长度的密码'))
       } else {
         callback()
       }
@@ -315,7 +282,7 @@ export default {
       getParams: {
         num: '',
         username: '',
-        is_active: 1
+        is_active: ''
       },
       currentPage: 1,
       dialogCreateUserVisible: false,

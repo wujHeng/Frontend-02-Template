@@ -122,7 +122,17 @@ export default {
     },
     async getEquip() {
       const equipData = await equip('get')
-      this.equip = equipData.results[0].equip_no
+      if (localStorage.getItem('addPlan:equip')) {
+        const equipId = JSON.parse(localStorage.getItem('addPlan:equip'))
+        for (var i = 0; i < equipData.results.length; i++) {
+          if (equipData.results[i].id === Number(equipId)) {
+            this.equip = equipData.results[i].equip_no
+          }
+        }
+      } else {
+        this.equip = equipData.results[0].equip_no
+        localStorage.setItem('addPlan:equip', JSON.stringify(equipData.results[0].id))
+      }
       this.getCbList()
       this.getOilList()
     },
@@ -146,19 +156,39 @@ export default {
     },
     async putCbList() {
       try {
-        await weighCb('put', { data: this.tableBinCbData })
+        const arr = JSON.parse(JSON.stringify(this.tableBinCbData))
+        arr.forEach(d => {
+          d.low_value = (d.low_value).toString()
+          d.advance_value = (d.advance_value).toString()
+          d.adjust_value = (d.adjust_value).toString()
+          d.dot_time = (d.dot_time).toString()
+          d.fast_speed = (d.fast_speed).toString()
+          d.low_speed = (d.low_speed).toString()
+        })
+        console.log(arr)
+        await weighCb('put', { data: arr })
         this.$message({
           showClose: true,
           message: '炭黑罐保存成功',
           type: 'success',
           center: true
         })
+        this.putOilList()
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
     async putOilList() {
       try {
-        await weighOil('put', { data: this.tableBinOilData })
+        const arr = JSON.parse(JSON.stringify(this.tableBinOilData))
+        arr.forEach(d => {
+          d.low_value = (d.low_value).toString()
+          d.advance_value = (d.advance_value).toString()
+          d.adjust_value = (d.adjust_value).toString()
+          d.dot_time = (d.dot_time).toString()
+          d.fast_speed = (d.fast_speed).toString()
+          d.low_speed = (d.low_speed).toString()
+        })
+        await weighOil('put', { data: arr })
         this.$message({
           showClose: true,
           message: '油料罐保存成功',
@@ -181,14 +211,19 @@ export default {
       }
     },
     equipChange() {
+      for (var i = 0; i < this.equipOptions.length; i++) {
+        if (this.equipOptions[i].equip_no === this.equip) {
+          localStorage.setItem('addPlan:equip', JSON.stringify(this.equipOptions[i].id))
+        }
+      }
       this.getCbList()
       this.getOilList()
     },
-    save() {
-      this.putCbList()
-      this.putOilList()
+    async save() {
+      await this.putCbList()
+      // await this.putOilList()
     },
-    low_valuehange(row, value) {
+    low_value_change(row, value) {
       if (!value) {
         row.low_value = 0
       }

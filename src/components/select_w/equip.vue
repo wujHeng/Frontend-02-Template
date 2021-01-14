@@ -3,9 +3,10 @@
     <!-- 机台下拉框 -->
     <el-select
       v-model="_equip_no"
-      clearable
+      :clearable="!isCreated"
       placeholder="请选择机台"
       @change="changeSearch"
+      @visible-change="visibleChange"
     >
       <el-option
         v-for="item in machineList"
@@ -25,6 +26,10 @@ export default {
     equip_no_props: {
       type: String,
       default: null
+    },
+    isCreated: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -43,7 +48,9 @@ export default {
     }
   },
   created() {
-    this.getMachineList()
+    if (this.isCreated) {
+      this.getMachineList()
+    }
   },
   methods: {
     getMachineList() {
@@ -51,12 +58,21 @@ export default {
       equip('get', { params: { all: 1, category_name: '密炼设备' }})
         .then(function(response) {
           _this.machineList = response.results || []
+          if (_this.isCreated) {
+            _this._equip_no = _this.machineList[0].equip_no
+            _this.$emit('changeSearch', _this._equip_no)
+          }
         })
         // eslint-disable-next-line handle-callback-err
         .catch(function(error) { })
     },
     changeSearch(id) {
       this.$emit('changeSearch', id)
+    },
+    visibleChange(bool) {
+      if (bool && this.machineList.length === 0 && !this.isCreated) {
+        this.getMachineList()
+      }
     }
   }
 }

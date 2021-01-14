@@ -4,7 +4,7 @@
       layout="total,prev,pager,next"
       :total="total"
       :page-size="pageSize"
-      :current-page.sync="currentPage"
+      :current-page.sync="_currentPage"
       @current-change="currentChange"
     />
   </div>
@@ -22,15 +22,24 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    currentPage: {
+      type: Number,
+      default: 1
     }
-    // currentPage:{
-    //   type: Number,
-    //   default: 1,
-    // },
   },
   data() {
     return {
-      currentPage: 1
+    }
+  },
+  computed: {
+    _currentPage: {
+      get() {
+        return this.currentPage
+      },
+      set() {
+        return 1
+      }
     }
   },
   methods: {

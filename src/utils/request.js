@@ -20,15 +20,10 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    // if (config.method === 'get') {
-    // let urlTest = config.url
-    // console.log(urlTest.match(/\{[\S\s]+\}/g)[0], '11111111111')
-    // let params_ = urlTest.match(/\{[\S\s]+\}/g)[0]
-    // let result = params_.substring(1, params_.length - 1)
-    // }
     if (store.getters.token) {
       config.headers['Authorization'] = 'JWT ' + getToken()
     }
+    config.headers['Accept'] = 'application/json; version=' + store.getters.editionNo
     return config
   },
   error => {
@@ -85,12 +80,19 @@ service.interceptors.response.use(
       return Promise.reject(error.response.data)
     } else if (Object.prototype.toString.call(error.response.data) === '[object Array]') {
       let str = ''
-      let row = 0
       error.response.data.forEach(errorData => {
-        if (errorData && errorData.non_field_errors) {
-          str += (`${row++} : ${errorData.non_field_errors.join(',')}\n`)
+        let obj = null
+        if (errorData) {
+          try {
+            obj = JSON.parse(errorData)
+          } catch (e) {
+            obj = errorData
+          }
+        }
+        if (errorData && Object.prototype.hasOwnProperty.call(obj, 'non_field_errors')) {
+          str += (`${obj.non_field_errors.join(',')}\n`)
         } else {
-          str += JSON.stringify(errorData)
+          str += errorData
         }
       })
       Message({
@@ -100,8 +102,12 @@ service.interceptors.response.use(
       })
       return Promise.reject(error.response.data)
     } else {
+      let errorStr = error.message
+      if (error.response.status === 400) {
+        errorStr = error.response.data
+      }
       Message({
-        message: error.message,
+        message: errorStr,
         type: 'error',
         duration: 3 * 1000
       })

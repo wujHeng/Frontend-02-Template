@@ -25,7 +25,8 @@ const state = () => {
     token: getToken(),
     name: Cookies.get('name'),
     avatar: '',
-    permission: localStorage.getItem('permission')
+    permission: localStorage.getItem('permission'),
+    editionNo: Cookies.get('editionNo') || 'v1'
   }
 }
 
@@ -49,6 +50,10 @@ const mutations = {
       localStorage.removeItem('permission')
     }
     localStorage.setItem('permission', permission)
+  },
+  SET_EDITION: (state, name) => {
+    state.editionNo = name
+    Cookies.set('editionNo', name)
   }
 }
 
@@ -69,7 +74,7 @@ const actions = {
         commit('SET_TOKEN', response.token)
         commit('SET_NAME', response.username)
         commit('SET_PERMISSION', JSON.stringify(response.results))
-
+        // console.log(response.results)
         // 登录获取token,存到全局中
         setToken(response.token)
         resolve()
@@ -126,6 +131,8 @@ const actions = {
       commit('SET_PERMISSION', '')
       commit('SET_TOKEN', '')
       commit('SET_NAME', '')
+      localStorage.setItem('recipeGetParams', '')
+      // localStorage.clear()
       resolve()
       // }).catch(error => {
       //   reject(error)

@@ -29,13 +29,30 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
+              @change="masterialChange(scope.row,cbOptions)"
             >
               <el-option
                 v-for="item in cbOptions"
                 :key="item.material_no"
                 :label="item.material_name"
                 :value="item.material_no"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="provenance" label="产地">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.provenance"
+              style="width:100%"
+              :disabled="!scope.row.use_flag"
+              @visible-change="getProvenanceOptions($event, scope.row.material_no)"
+            >
+              <el-option
+                v-for="item in provenanceOptions"
+                :key="item"
+                :label="item"
+                :value="item"
               />
             </el-select>
           </template>
@@ -63,13 +80,30 @@
               v-model="scope.row.material_no"
               style="width:100%"
               :disabled="!scope.row.use_flag"
-              @change="masterialChange"
+              @change="masterialChange(scope.row,oilOptions)"
             >
               <el-option
                 v-for="item in oilOptions"
                 :key="item.material_no"
                 :label="item.material_name"
                 :value="item.material_no"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="provenance" label="产地">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.provenance"
+              style="width:100%"
+              :disabled="!scope.row.use_flag"
+              @visible-change="getProvenanceOptions($event, scope.row.material_no)"
+            >
+              <el-option
+                v-for="item in provenanceOptions"
+                :key="item"
+                :label="item"
+                :value="item"
               />
             </el-select>
           </template>
@@ -96,7 +130,8 @@ import {
   weighCb,
   weighOil,
   materials,
-  equip
+  equip,
+  getMaterialSuppliers
 } from '@/api/weigh'
 import { mapGetters } from 'vuex'
 export default {
@@ -109,7 +144,8 @@ export default {
       materialsTypeId: '',
       cbOptions: [],
       oilOptions: [],
-      disabled: true
+      disabled: true,
+      provenanceOptions: []
     }
   },
   computed: {
@@ -122,13 +158,33 @@ export default {
     this.getMaterialsOilList()
   },
   methods: {
+    getProvenanceOptions(bool, material_no) {
+      console.log(bool, 'bool')
+      console.log(material_no, 'material_no')
+      if (bool) {
+        getMaterialSuppliers({ material_no: material_no })
+          .then(response => {
+            this.provenanceOptions = response
+          })
+      }
+    },
     getDisabled() {
       this.permissionObj = this.permission
       this.disabled = !(this.permissionObj.production.materialtankstatus.indexOf('change') > -1)
     },
     async getEquip() {
       const equipData = await equip('get')
-      this.equip = equipData.results[0].equip_no
+      if (localStorage.getItem('addPlan:equip')) {
+        const equipId = JSON.parse(localStorage.getItem('addPlan:equip'))
+        for (var i = 0; i < equipData.results.length; i++) {
+          if (equipData.results[i].id === Number(equipId)) {
+            this.equip = equipData.results[i].equip_no
+          }
+        }
+      } else {
+        this.equip = equipData.results[0].equip_no
+        localStorage.setItem('addPlan:equip', JSON.stringify(equipData.results[0].id))
+      }
       this.getCbList()
       this.getOilList()
     },
@@ -157,6 +213,7 @@ export default {
           type: 'success',
           center: true
         })
+        this.putOilList()
       // eslint-disable-next-line no-empty
       } catch (e) {}
     },
@@ -206,14 +263,25 @@ export default {
       }
     },
     equipChange() {
+      for (var i = 0; i < this.equipOptions.length; i++) {
+        if (this.equipOptions[i].equip_no === this.equip) {
+          localStorage.setItem('addPlan:equip', JSON.stringify(this.equipOptions[i].id))
+        }
+      }
       this.getCbList()
       this.getOilList()
     },
-    masterialChange() {},
+    masterialChange(row, list) {
+      row.provenance = ''
+      const arr = list.filter(d => d.material_no === row.material_no)
+      row.material_name1 = arr[0].material_name
+    },
     stateChange() {},
     save() {
+      console.log(this.tableBinCbData)
+      console.log(this.tableBinOilData)
       this.putCbList()
-      this.putOilList()
+      // this.putOilList()
     }
   }
 }

@@ -37,26 +37,14 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/api-mes': {
-        target: 'http://10.4.14.4:8000',
-        // target: 'http://10.4.14.6:8000/',
-        // target: 'http://10.4.14.33:8000/',
-        ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api-mes': ''
-        }
-      },
       '/api': {
-        // target: 'http://10.4.14.33:8000',
         // target: 'http://10.10.120.40:15009/',
-        // target: 'http://10.20.181.196:8000', // 李威
+        target: 'http://10.20.181.196:8000', // 李威
         // target: 'http://10.4.14.42:9001', // 博文
         // target: 'http://10.4.14.112:8000 ', // 李威 中控室
-        target: 'http://10.4.10.55:80/', // 生产环境
+        // target: 'http://10.4.10.55:80/', // 生产环境
         // target: 'http://47.116.133.224:15011/',
         // target: 'http://10.20.181.32:9000/', // 阿峰 家里
-        // target: 'http://10.10.120.40',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

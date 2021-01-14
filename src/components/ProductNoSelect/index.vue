@@ -2,7 +2,10 @@
   <el-select
     v-model="productBatchingId"
     clearable
+    filterable
+    :loading="loading"
     @change="productBatchingChanged"
+    @visible-change="visibleChange"
   >
     <el-option
       v-for="item in productBatchings"
@@ -17,7 +20,13 @@
 import { getAllProductBatchings } from '@/api/product-batching'
 export default {
   props: {
+    // 根据stage_product_batch_no去重
     isStageProductbatchNoRemove: {
+      type: Boolean,
+      default: false
+    },
+    // 过滤出启用和弃用的胶料
+    makeUseBatch: {
       type: Boolean,
       default: false
     }
@@ -26,15 +35,20 @@ export default {
     return {
       productBatchings: [],
       productBatchingId: '',
-      productBatchingById: {}
+      productBatchingById: {},
+      loading: true
     }
   },
   created() {
-    this.getProductBatchings()
   },
   methods: {
     productBatchingChanged() {
       this.$emit('productBatchingChanged', this.productBatchingById[this.productBatchingId])
+    },
+    visibleChange(bool) {
+      if (bool && this.productBatchings.length === 0) {
+        this.getProductBatchings()
+      }
     },
     getProductBatchings() {
       getAllProductBatchings().then(response => {
@@ -42,8 +56,12 @@ export default {
         productBatchings.forEach(productBatching => {
           this.productBatchingById[productBatching.id] = productBatching
         })
+        if (this.makeUseBatch) {
+          let arr = []
+          arr = productBatchings.filter(D => D.used_type === 4 || D.used_type === 6)
+          productBatchings = arr
+        }
         if (this.isStageProductbatchNoRemove) {
-          // 根据stage_product_batch_no去重
           var obj = {}
           var newArr = productBatchings.reduce((item, next) => {
             obj[next.stage_product_batch_no]
@@ -53,6 +71,7 @@ export default {
           }, [])
           productBatchings = newArr || []
         }
+        this.loading = false
         this.productBatchings = productBatchings
       })
     }

@@ -1,5 +1,3 @@
-/* eslint-disable handle-callback-err */
-/* eslint-disable handle-callback-err */
 <template>
   <div
     v-loading="loading"
@@ -15,7 +13,7 @@
           v-model="search_date"
           type="daterange"
           range-separator="至"
-          :clearable="false"
+          :clearable="true"
           value-format="yyyy-MM-dd HH:mm:ss"
           :default-time="['00:00:00', '23:59:59']"
           start-placeholder="开始日期"
@@ -26,21 +24,9 @@
       <el-form-item label="胶料">
         <productNo-select
           :is-stage-productbatch-no-remove="true"
+          :make-use-batch="true"
           @productBatchingChanged="productBatchingChanged"
         />
-        <!-- <el-select
-          v-model="getParams.product_no"
-          placeholder="请选择"
-          clearable
-          @change="changeSearch"
-        >
-          <el-option
-            v-for="item in glueList"
-            :key="item.id"
-            :label="item.stage_product_batch_no"
-            :value="item.stage_product_batch_no"
-          />
-        </el-select> -->
       </el-form-item>
       <el-form-item label="机台">
         <selectEquip
@@ -54,6 +40,7 @@
           placeholder="请选择"
           clearable
           @change="changeSearch"
+          @visible-change="visibleChange"
         >
           <el-option
             v-for="item in classesList"
@@ -139,13 +126,14 @@
 
     <page
       :total="total"
+      :current-page="getParams.page"
       @currentChange="currentChange"
     />
 
     <el-dialog
       title="胶料产出反馈"
       :visible.sync="dialogVisibleRubber"
-      width="900px"
+      width="90%"
     >
       <el-form :inline="true">
         <el-form-item label="胶料区分: ">{{ palletFeedObj.hasOwnProperty("stage")?palletFeedObj.stage:'--' }}</el-form-item>
@@ -197,12 +185,17 @@
           label="作业者"
         />
       </el-table>
+      <page
+        :total="totalRubber"
+        :current-page="pageRubber"
+        @currentChange="currentChangeRubber"
+      />
     </el-dialog>
 
     <el-dialog
       title="BAT查询"
       :visible.sync="dialogVisibleBAT"
-      width="900px"
+      width="90%"
     >
       <div style="position: relative">
         <el-form
@@ -291,6 +284,9 @@
         :data="chartData"
         :settings="chartSettings"
         :after-set-option="afterSetOption"
+        :extend="extend"
+        :colors="colors"
+        :toolbox="toolbox"
       />
     </el-dialog>
   </div>
@@ -303,32 +299,19 @@ import selectEquip from '@/components/select_w/equip'
 import ProductNoSelect from '@/components/ProductNoSelect'
 import {
   reportBatch,
-  rubberMaterial,
   classesList,
   palletFeedBacks,
   echartsListUrl,
   productionTrainsFeedbacks
 } from '@/api/reportBatch'
 import { mapGetters } from 'vuex'
+import chartMixin from '../chartMixin'
+
 export default {
   components: { page, selectEquip, ProductNoSelect },
+  mixins: [chartMixin],
   data() {
-    this.chartSettings = {
-      labelMap: {
-        created_date_date: '时间',
-        power: '功率',
-        temperature: '温度',
-        energy: '能量',
-        pressure: '压力',
-        rpm: '转速'
-      },
-      axisSite: {
-        right: ['temperature', 'rpm', 'energy', 'pressure']
-      }
-      // yAxisName: ['功率']
-    }
     return {
-      // tableDataUrl: "InternalMixerUrl",
       loading: true,
       loadingTable: false,
       tableData: [],
@@ -348,7 +331,6 @@ export default {
       tableDataRubber: [],
       tableDataBAT: [],
       dialogVisibleBAT: false,
-      glueList: [],
       classesList: [],
       // 24小时，转换为时间戳24*60*60*1000
       fixedTime: 24 * 60 * 60 * 1000,
@@ -357,53 +339,9 @@ export default {
       BATObj: {},
       BATList: [],
       dialogVisibleGraph: false,
-      chartData: {
-        columns: [
-          'created_date_date',
-          'power',
-          'temperature',
-          'energy',
-          'pressure',
-          'rpm'
-        ],
-        rows: []
-      },
       total: 0,
-      options: {
-        title: {
-          show: true,
-          text: '主标题',
-          textAlign: 'left'
-        },
-        yAxis: [
-          {
-            min: 0,
-            max: 2500,
-            splitNumber: 5,
-            interval: (2500 - 0) / 5
-          },
-          {
-            min: 0,
-            max: 200,
-            splitNumber: 5,
-            interval: (200 - 0) / 5
-          }
-        ],
-        toolbox: {
-          itemSize: 20,
-          itemGap: 30,
-          right: 50,
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            saveAsImage: {
-              name: '',
-              pixelRatio: 2
-            }
-          }
-        }
-      }
+      totalRubber: 0,
+      pageRubber: 1
     }
   },
   computed: {
@@ -411,8 +349,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getGlueList() // 获取胶料列表
-    this.getClassesList() // 获取班次列表
+    // this.getClassesList() // 获取班次列表
 
     var _setDateCurrent = setDate()
     this.getParams.st = _setDateCurrent + ' 00:00:00'
@@ -438,20 +375,6 @@ export default {
           this.loadingTable = false
           // this.$message.error("请求错误");
         })
-    },
-    getGlueList() {
-      var _this = this
-      rubberMaterial('get', {
-        params: {
-          all: 1
-        }
-      })
-        .then(function(response) {
-          var glueList = response.results || []
-          _this.glueList = glueList
-        })
-        // eslint-disable-next-line handle-callback-err
-        .catch(function(error) { })
     },
     getClassesList() {
       var _this = this
@@ -479,22 +402,30 @@ export default {
     clickProductNo(row) {
       this.dialogVisibleRubber = true
       this.palletFeedObj = row
+      this.pageRubber = 1
       this.getRubberCoding()
     },
     getRubberCoding() {
       var _this = this
       palletFeedBacks('get', {
         params: {
+          page: _this.pageRubber,
           product_no: _this.palletFeedObj.product_no,
           plan_classes_uid: _this.palletFeedObj.plan_classes_uid,
-          equip_no: _this.palletFeedObj.equip_no
+          equip_no: _this.palletFeedObj.equip_no,
+          day_time: _this.palletFeedObj.end_time.split(' ')[0]
         }
       })
         .then(function(response) {
+          _this.totalRubber = response.count
           _this.palletFeedList = response.results || []
         })
         // eslint-disable-next-line handle-callback-err
         .catch(function(error) { })
+    },
+    currentChangeRubber(page) {
+      this.pageRubber = page
+      this.getRubberCoding()
     },
     clickBAT(row) {
       this.dialogVisibleBAT = true
@@ -528,7 +459,8 @@ export default {
           product_no: row.product_no,
           plan_classes_uid: row.plan_classes_uid,
           equip_no: row.equip_no,
-          current_trains: row.actual_trains
+          st: row.begin_time,
+          et: row.end_time
         }
       })
         .then(function(response) {
@@ -572,6 +504,7 @@ export default {
             _this.chartData.rows[0].hasOwnProperty('product_time')
             ? _this.chartData.rows[0].product_time.split(' ')[0] : ''
           _this.options.toolbox.feature.saveAsImage.name = '工艺曲线_' + (row.equip_no || '') + '-' + (row.product_no || '') + '-' + (row.begin_time || '')
+          _this.options.toolbox.feature.myTool1.show = false
         })
         // eslint-disable-next-line handle-callback-err
         .catch(() => { })
@@ -588,10 +521,8 @@ export default {
     },
     changeSearch() {
       this.loadingTable = true
-      if (this.search_date) {
-        this.getParams.st = this.search_date[0]
-        this.getParams.et = this.search_date[1]
-      }
+      this.getParams.st = this.search_date ? this.search_date[0] : ''
+      this.getParams.et = this.search_date ? this.search_date[1] : ''
 
       this.getParams.page = 1
       this.getList()
@@ -609,6 +540,11 @@ export default {
     currentChange(page) {
       this.getParams.page = page
       this.getList()
+    },
+    visibleChange(bool) {
+      if (bool && this.classesList.length === 0) {
+        this.getClassesList()
+      }
     }
   }
 }

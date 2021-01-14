@@ -8,6 +8,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectEquipDisplay"
           @change="SelectEquipChange"
@@ -26,6 +27,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @change="SelectRecipeStatusChange"
         >
@@ -43,6 +45,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectSiteDisplay"
           @change="SelectSiteChange"
@@ -62,6 +65,7 @@
           size="mini"
           style="width: 150px"
           clearable
+          filterable
           placeholder="请选择"
           @visible-change="SelectStageDisplay"
           @change="SelectStageChange"
@@ -83,9 +87,8 @@
           @input="input_rubber_noChanged"
         />
       </el-form-item>
-      <br>
       <el-form-item style="float: right">
-        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="currentRow.product_name === null" @click="CopyRecipeButton">复制新增</el-button>
+        <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('add')>-1" :disabled="!currentRow.id" @click="CopyRecipeButton">复制新增</el-button>
       </el-form-item>
       <!-- <el-form-item style="float: right">
 <el-button>删除</el-button>
@@ -105,7 +108,7 @@
 
       <el-table-column align="center" type="index" width="50" label="No" />
 
-      <el-table-column align="center" width="160%" prop="stage_product_batch_no" label="胶料配方编号">
+      <el-table-column align="center" width="160%" prop="stage_product_batch_no" label="胶料配方编码">
         <template slot-scope="scope">
           <el-link type="primary" @click="recipe_display_change(scope.row)">
             {{ scope.row.stage_product_batch_no }}
@@ -132,7 +135,10 @@
             <el-button v-if="scope.row.used_type === 2 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('using')>-1)" size="mini" @click="status_false(scope.row)">
               驳回
             </el-button>
-            <el-button v-if="scope.row.used_type === 4 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
+            <el-button v-if="scope.row.used_type === 5 && (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_true(scope.row)">
+              编辑
+            </el-button>
+            <el-button v-if="(scope.row.used_type === 4 || scope.row.used_type === 5)&& (permissionObj.recipe.prod && permissionObj.recipe.prod.indexOf('abandon')>-1)" size="mini" @click="status_false(scope.row)">
               废弃
             </el-button>
           </el-button-group>
@@ -144,13 +150,20 @@
       <el-table-column align="center" prop="stage_name" label="段次" />
       <el-table-column align="center" width="100%" prop="sp_num" label="收皮(车/托)" />
       <el-table-column align="center" width="120%" prop="created_username" label="创建者" />
+      <el-table-column align="center" prop="submit_username" label="提交人" />
+      <el-table-column align="center" prop="used_username" label="启用人" />
+      <el-table-column align="center" prop="reject_username" label="驳回人" />
+      <!-- <el-table-column align="center" prop="obsolete_username" label="废弃人" /> -->
       <el-table-column align="center" width="180%" prop="created_date" label="创建时间" />
+      <el-table-column align="center" width="180%" prop="last_updated_date" label="修改时间" />
       <el-table-column align="center" prop="batching_type" label="配方来源" :formatter="RecipeSourceFormatter" />
-      <el-table-column fixed="right" align="center" label="操作">
+      <el-table-column fixed="right" align="center" label="操作" width="140px">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1" size="mini" :disabled="scope.row.used_type != 1" @click="ModifyRecipeButton(scope.row)">修改</el-button>
-            <!-- <el-button size="mini" type="danger" @click="handleRecipeDelete(scope.row)">删除</el-button> -->
+            <el-button v-if="permissionObj.recipe.productbatching && permissionObj.recipe.productbatching.indexOf('change')>-1 && scope.row.batching_type !== 2" size="mini" :disabled="scope.row.used_type !== 1 && scope.row.used_type !== 4" @click="ModifyRecipeButton(scope.row)">修改</el-button>
+            <el-button size="mini" type="danger" @click.stop="handleRecipeDelete(scope.row)">
+              {{ scope.row.used_type===4?'停用':'启用' }}
+            </el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -166,15 +179,14 @@
     <el-dialog
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="30%"
       title="复制新增配方"
       :visible.sync="dialogCopyRecipeSync"
     >
 
-      <el-form :inline="true">
-        <el-form-item label="选择机台">
+      <el-form ref="copyForm" :model="copyForm" :inline="true" :rules="rules">
+        <el-form-item label="选择机台" prop="CopySelectEquip">
           <el-select
-            v-model="CopySelectEquip"
+            v-model="copyForm.CopySelectEquip"
             size="mini"
             clearable
             style="width: 300px"
@@ -184,15 +196,98 @@
             <el-option
               v-for="item in SelectCopyEquipOptions"
               :key="item.id"
-              :label="item.equip_name"
+              :label="item.equip_no"
               :value="item.id"
             />
           </el-select>
         </el-form-item>
+        <br>
+        <el-form-item v-show="isNormalRecipe" label="产地" prop="site">
+          <el-select
+            v-model="copyForm.site"
+            size="mini"
+            style="width: 150px"
+            clearable
+            placeholder="请选择"
+            :disabled="!isNormalRecipe"
+            @visible-change="SelectSiteDisplay"
+          >
+            <el-option
+              v-for="item in SelectSiteOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="isNormalRecipe" label="SITE" prop="SITE">
+          <el-select
+            v-model="copyForm.SITE"
+            size="mini"
+            style="width: 100px"
+            clearable
+            placeholder="请选择"
+            :disabled="!isNormalRecipe"
+            @visible-change="SelectGlobalSITEDisplay"
+          >
+            <el-option
+              v-for="item in SelectSITEOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="isNormalRecipe" label="段次" prop="selectStage">
+          <el-select
+            v-model="copyForm.selectStage"
+            size="mini"
+            style="width: 150px"
+            clearable
+            placeholder="请选择"
+            :disabled="!isNormalRecipe"
+            @visible-change="SelectStageDisplay"
+          >
+            <el-option
+              v-for="item in SelectStageOptions"
+              :key="item.id"
+              :label="item.global_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="isNormalRecipe" label="胶料编号" prop="selectRecipeNo">
+          <el-select
+            v-model="copyForm.selectRecipeNo"
+            filterable
+            size="mini"
+            style="width: 100px"
+            clearable
+            placeholder="请选择"
+            :disabled="!isNormalRecipe"
+            @visible-change="SelectRecipeNoDisplay"
+          >
+            <el-option
+              v-for="item in SelectRecipeNoOptions"
+              :key="item.id"
+              :label="item.product_no"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="isNormalRecipe" label="版本" prop="version">
+          <el-input v-model="copyForm.version" :disabled="!isNormalRecipe" style="width: 90px" size="mini" placeholder="版本" />
+        </el-form-item>
+        <el-form-item v-show="isNormalRecipe" label="方案">
+          <el-input v-model="copyForm.scheme" :disabled="!isNormalRecipe" style="width: 90px" size="mini" placeholder="方案" />
+        </el-form-item>
+        <el-form-item v-show="!isNormalRecipe" label="胶料配方编码">
+          <el-input v-model="copyForm.stage_product_batch_no" :disabled="isNormalRecipe" style="width: 300px" size="mini" placeholder="胶料配方编码" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogCopyRecipeSync = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="CopyRecipeConfirm">确 定</el-button>
+        <el-button size="mini" type="primary" @click="CopyRecipeConfirm('copyForm')">确 定</el-button>
       </div>
 
     </el-dialog>
@@ -201,15 +296,12 @@
 </template>
 
 <script>
-import { recipe_list, recipe_copy_list, equip_url, site_url, stage_url, equip_copy_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+import { validate_versions, recipe_no_url, global_SITE_url, recipe_list, recipe_copy_list, equip_url, site_url, stage_url } from '@/api/recipe_fun'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 import { mapGetters } from 'vuex'
 
 export default {
-  computed: {
-    ...mapGetters(['permission'])
-  },
   data: function() {
     return {
       loading: null,
@@ -222,35 +314,114 @@ export default {
       }, {
         value: 4, label: '启用'
       }, {
-        value: 5, label: '驳回'
+        value: 7, label: '停用'
       }, {
-        value: 6, label: '废弃'
-      }],
+        value: 5, label: '驳回'
+      }
+      ],
+      // }, {
+      //   value: 6, label: '废弃'
+      // }
+
+      SelectSITEOptions: [],
       SelectSiteOptions: [],
       SelectStageOptions: [],
+      SelectRecipeNoOptions: [],
       category__category_name: null,
       SelectEquip: null,
-      CopySelectEquip: '',
+
       SelectRecipeStatus: null,
       SelectSite: null,
       SelectStage: null,
       input_rubber_no: null,
       tableData: [],
       currentRow: {
-        product_name: null
+        product_name: null,
+        stage_name: null
       },
       currentPage: 1,
       pageSize: 10,
       tableDataTotal: 0,
 
-      dialogCopyRecipeSync: false
+      dialogCopyRecipeSync: false,
+
+      copyForm: {
+        CopySelectEquip: '',
+        site: '',
+        SITE: '',
+        selectStage: '',
+        selectRecipeNo: '',
+        version: '',
+        scheme: '',
+        stage_product_batch_no: ''
+      },
+      rules: {
+        CopySelectEquip: [{ required: true, message: '请选择机台', trigger: 'change' }],
+        site: [{ required: true, message: '请选择产地', trigger: 'change' }],
+        SITE: [{ required: true, message: '请选择SITE', trigger: 'change' }],
+        selectStage: [{ required: true, message: '请选择段次', trigger: 'change' }],
+        selectRecipeNo: [{ required: true, message: '请选择胶料编号', trigger: 'change' }],
+        version: [{ required: true, message: '请填写版本', trigger: 'change' }]
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(['permission']),
+    isNormalRecipe() {
+      return !!this.currentRow.product_name
     }
   },
   created() {
     this.permissionObj = this.permission
-    this.get_recipe_list()
+    this.site_list()
+    this.global_SITE_list()
+    this.stage_list()
+    this.recipe_no_list()
+    this.equip_list()
+    var recipeGetParams = JSON.parse(localStorage.getItem('recipeGetParams'))
+    if (recipeGetParams) {
+      this.SelectEquip = recipeGetParams.equip_id
+      this.SelectRecipeStatus = recipeGetParams.used_type
+      this.SelectSite = recipeGetParams.factory_id
+      this.SelectStage = recipeGetParams.stage_id
+      this.input_rubber_no = recipeGetParams.stage_product_batch_no
+    }
+
+    //  加默认分页，传到要返回的界面，再传回来
+    this.currentPage = this.$route.params.currentPage || 1
+    this.get_recipe_list(this.currentPage)
   },
   methods: {
+    async recipe_no_list() {
+      try {
+        const recipe_no_list = await recipe_no_url('get', {
+          params: { }
+        })
+        if (recipe_no_list.results.length !== 0) {
+          this.SelectRecipeNoOptions = recipe_no_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectRecipeNoDisplay: function(bool) {
+      if (bool) {
+        this.recipe_no_list()
+      }
+    },
+    async global_SITE_list() {
+      try {
+        const global_SITE_list = await global_SITE_url('get', {
+          params: { }
+        })
+        if (global_SITE_list.results.length !== 0) {
+          this.SelectSITEOptions = global_SITE_list.results
+        }
+      } catch (e) { throw new Error(e) }
+    },
+    SelectGlobalSITEDisplay: function(bool) {
+      if (bool) {
+        this.global_SITE_list()
+      }
+    },
     async get_recipe_list(val = 1) {
       try {
         var v_SelectEquip = this.SelectEquip ? this.SelectEquip : ''
@@ -259,21 +430,25 @@ export default {
         var v_SelectStage = this.SelectStage ? this.SelectStage : ''
         var v_input_rubber_no = this.input_rubber_no ? this.input_rubber_no : ''
         this.loading = true
+        var params = {
+          page: val,
+          equip_id: v_SelectEquip,
+          used_type: v_SelectRecipeStatus,
+          factory_id: v_SelectSite,
+          stage_id: v_SelectStage,
+          stage_product_batch_no: v_input_rubber_no
+        }
+        var str = JSON.stringify(params)
+        localStorage.setItem('recipeGetParams', str)
         const recipe_listData = await recipe_list('get', null, {
-          params: {
-            page: val,
-            equip_id: v_SelectEquip,
-            used_type: v_SelectRecipeStatus,
-            factory_id: v_SelectSite,
-            stage_id: v_SelectStage,
-            stage_product_batch_no: v_input_rubber_no
-          }
+          params
         })
         this.tableData = recipe_listData.results
         this.tableDataTotal = recipe_listData.count
         this.loading = false
         this.currentRow = {
-          product_name: null
+          product_name: null,
+          stage_name: null
         }
       } catch (e) {
         this.loading = false
@@ -314,12 +489,15 @@ export default {
     },
     async equip_copy_list(dev_type_param) {
       try {
-        const equip_copy_list = await equip_copy_url('get', {
-          params: { dev_type: dev_type_param }
+        const equip_list = await equip_url('get', {
+          params: { category_name: '密炼设备' }
         })
+        // const equip_copy_list = await equip_copy_url('get', {
+        //   params: { dev_type: dev_type_param }
+        // })
         // console.log('aaaaaa------------')
         // console.log(equip_copy_list.results)
-        this.SelectCopyEquipOptions = equip_copy_list.results
+        this.SelectCopyEquipOptions = equip_list.results
       } catch (e) { throw new Error(e) }
     },
     async site_list() {
@@ -359,7 +537,7 @@ export default {
     },
     SelectCopyEquipChange: function() {
       for (var i = 0; i < this.SelectCopyEquipOptions.length; i++) {
-        if (this.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) { this.category__category_name = this.SelectCopyEquipOptions[i]['category__category_name'] }
+        if (this.copyForm.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) { this.category__category_name = this.SelectCopyEquipOptions[i]['category__category_name'] }
       }
     },
 
@@ -367,10 +545,12 @@ export default {
       this.currentRow = val
     },
     pagehandleCurrentChange: function(val) {
-      this.currentRow = val
+      this.currentRow = val // ?
+      this.currentPage = val
       this.get_recipe_list(val)
       this.currentRow = {
-        product_name: null
+        product_name: null,
+        stage_name: null
       }
     },
 
@@ -427,7 +607,7 @@ export default {
     },
 
     recipe_display_change: function(raw) {
-      this.$router.push({ name: 'RecipeDisplay', params: raw })
+      this.$router.push({ name: 'RecipeDisplay', params: { ...raw, currentPage: this.currentPage }})
       this.$route.params
     },
     AddRecipeButton: function() {
@@ -435,68 +615,101 @@ export default {
       this.$route.params
     },
     ModifyRecipeButton: function(modify_row) {
-      console.log(modify_row)
-      this.$router.push({ name: 'RecipeModify', params: modify_row })
+      // console.log(modify_row)
+      this.$router.push({ name: 'RecipeModify', params: { ...modify_row, currentPage: this.currentPage }})
       this.$route.params
     },
     handleRecipeDelete: function(delete_row) {
-      console.log('--------------------------')
-      console.log(delete_row)
-      this.$confirm('此操作将永久删除' + delete_row['stage_product_batch_no'] + ', 是否继续?', '提示', {
+      const str = delete_row.used_type === 4 ? '停用' : '启用'
+
+      this.$confirm('确定' + str + delete_row['stage_product_batch_no'] + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.delete_recipe_fun(delete_row['id'])
+      }).then(async() => {
+        await this.delete_recipe_fun(delete_row['id'])
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '操作成功!'
         })
-        this.get_recipe_list(this.currentPage)
+        await this.get_recipe_list(this.currentPage)
       }).catch(() => {
 
       })
     },
     CopyRecipeButton: async function() {
+      if (this.$refs['copyForm']) {
+        this.$refs['copyForm'].resetFields()
+      }
+      this.copyForm.site = this.currentRow.factory_id
+      this.copyForm.SITE = this.currentRow.site_id
+      this.copyForm.selectStage = this.currentRow.stage_id
+      this.copyForm.selectRecipeNo = this.currentRow.product_info_id
+      this.copyForm.version = this.currentRow.versions
+      this.copyForm.scheme = this.currentRow.precept
+      this.copyForm.stage_product_batch_no = this.currentRow.stage_product_batch_no
       this.dialogCopyRecipeSync = true
       await this.equip_copy_list(this.currentRow['dev_type'])
     },
-    CopyRecipeConfirm: async function() {
-      if (this.CopySelectEquip === '') {
-        this.$message({
-          message: '机台不能为空',
-          type: 'error'
-        })
-        return
+    routerToCopy() {
+      this.dialogCopyRecipeSync = false
+      var add_currentRow = Object.assign(this.currentRow, { ...this.copyForm, copy_equip_id: this.copyForm.CopySelectEquip, category__category_name: this.category__category_name })
+      add_currentRow.isNormalRecipe = this.isNormalRecipe
+      for (var i = 0; i < this.SelectCopyEquipOptions.length; i++) {
+        if (this.copyForm.CopySelectEquip === this.SelectCopyEquipOptions[i]['id']) {
+          add_currentRow.equip_no = this.SelectCopyEquipOptions[i]['equip_no']
+        }
       }
-      if (this.CopySelectEquip === this.currentRow['equip']) {
-        this.$message({
-          message: '该机台配方已存在',
-          type: 'error'
+      if (this.copyForm.CopySelectEquip !== this.currentRow.equip_id) {
+        this.$notify({
+          title: '提示',
+          message: '选择机台与拷贝源机台不同, 炭黑和油料称量信息未被拷贝！',
+          duration: 0
         })
-        return
       }
-      // var copy_recipe_return = await this.copy_recipe_list(
-      // { data: {
-      // 'product_batching': this.currentRow['id'],
-      // 'equip': this.CopySelectEquip
-      // }}
-      // )
-      // if (copy_recipe_return.error !== undefined) {
-      // return
-      // }
-      // this.dialogCopyRecipeSync = false
-      // this.currentRow = {
-      // product_name: null
-      // }
-      // this.get_recipe_list()
-
-      console.log('----------------------------------------')
-      // console.log(this.currentRow)
-      var add_currentRow = Object.assign(this.currentRow, { copy_equip_id: this.CopySelectEquip, category__category_name: this.category__category_name })
-      console.log(add_currentRow)
+      // console.log(add_currentRow)
       this.$router.push({ name: 'RecipeCopy', params: add_currentRow })
-      this.$route.params
+    },
+    CopyRecipeConfirm: async function(formName) {
+      if (!this.isNormalRecipe) {
+        this.$refs[formName].validateField('CopySelectEquip', error => {
+          if (!error) {
+            // this.routerToCopy()
+            validate_versions({
+              site: null,
+              product_info: null,
+              versions: null,
+              equip: this.copyForm.CopySelectEquip,
+              stage: null,
+              stage_product_batch_no: this.copyForm.stage_product_batch_no
+            }).then(response => {
+              this.routerToCopy()
+            // eslint-disable-next-line handle-callback-err
+            }).catch(error => {
+            // this.$message.error('配方已存在, 不可复制')
+            })
+          }
+        })
+        return
+      }
+      this.$refs[formName].validate(valide => {
+        if (valide) {
+          validate_versions({
+            site: this.copyForm.SITE,
+            product_info: this.copyForm.selectRecipeNo,
+            versions: this.copyForm.version,
+            equip: this.copyForm.CopySelectEquip,
+            stage: this.copyForm.selectStage
+          }).then(response => {
+            this.routerToCopy()
+          // eslint-disable-next-line handle-callback-err
+          }).catch(error => {
+            // this.$message.error('配方已存在, 不可复制')
+          })
+        } else {
+          return false
+        }
+      })
     }
   }
 }

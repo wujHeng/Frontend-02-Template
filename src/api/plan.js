@@ -148,3 +148,29 @@ export function getPlanStatusList(params) {
   })
 }
 
+export function productClassesPlan(method, data = {}) {
+  const obj = {
+    url: API.ProductClassesPlanUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
+export function productClassesPlanPanycreateUrl(method, data = {}) {
+  const obj = {
+    url: API.ProductClassesPlanPanycreateUrl,
+    method: method
+  }
+  Object.assign(obj, data)
+  return request(obj)
+}
+
+export function hfRecipeList(params) {
+  return request({
+    url: API.HfRecipeList,
+    method: 'get',
+    params
+  })
+}
+

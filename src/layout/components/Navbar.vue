@@ -9,6 +9,18 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <!-- <el-dropdown
+        class="edition-dropdown"
+        @command="commandClick"
+      >
+        <span class="el-dropdown-link">
+          {{ currentEdition === 'v1'?'万龙版':'国自版' }}<i class="el-icon-arrow-down el-icon--right" />
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="v1">万龙版</el-dropdown-item>
+          <el-dropdown-item command="v2">国自版</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown> -->
       <el-dropdown
         class="avatar-container"
         trigger="click"
@@ -26,6 +38,7 @@
           <router-link to="/">
             <el-dropdown-item>首 页</el-dropdown-item>
           </router-link>
+          <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
           <el-dropdown-item
             divided
             @click.native="logout"
@@ -35,6 +48,10 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <password-dialog
+      :table-visible="tableVisible"
+      @dialogTableVisible="tableVisible = false"
+    />
   </div>
 </template>
 
@@ -42,14 +59,25 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import PasswordDialog from '@/components/select_w/changePassword'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    PasswordDialog
+  },
+  data() {
+    return {
+      tableVisible: false,
+      currentEdition: ''
+    }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name'])
+    ...mapGetters(['sidebar', 'avatar', 'name', 'editionNo'])
+  },
+  created() {
+    this.currentEdition = this.editionNo
   },
   methods: {
     toggleSideBar() {
@@ -58,6 +86,17 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login`)
+    },
+    changePassword() {
+      this.tableVisible = true
+    },
+    commandClick(val) {
+      this.currentEdition = val
+      this.$store.commit('user/SET_EDITION', val)
+      const { fullPath } = this.$route
+      this.$router.replace({
+        path: '/redirect?path=' + fullPath
+      })
     }
   }
 }
@@ -72,6 +111,10 @@ export default {
   color:#fff !important;
   background: #e99d2a;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  .edition-dropdown{
+    margin-right:30px;
+    color:#fff;
+  }
 
   .right-menu .avatar-container .avatar-wrapper{
     margin-top: 0 !important;
@@ -122,6 +165,7 @@ export default {
 
     .avatar-container {
       margin-right: 30px;
+      cursor: pointer;
 
       .avatar-wrapper {
         margin-top: 5px;

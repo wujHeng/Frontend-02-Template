@@ -1,6 +1,9 @@
 <template>
   <div style="margin-top: 25px">
-    <el-form style="margin-left: 10px" :inline="true">
+    <el-form
+      style="margin-left: 10px"
+      :inline="true"
+    >
       <el-form-item label="原材料类别">
         <el-select
           v-model="params.material_type_id"
@@ -32,9 +35,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="原材料名称">
-        <el-input v-model="params.material_name" @input="search" />
+        <el-input
+          v-model="params.material_name"
+          @input="search"
+        />
       </el-form-item>
-      <el-form-item v-if="permissionObj.production.material.indexOf('add')>-1" style="float: right;">
+      <el-form-item
+        v-if="permissionObj.production.material.indexOf('add')>-1"
+        style="float: right;"
+      >
         <el-button @click="showCreateMaterialDialog">新建</el-button>
       </el-form-item>
     </el-form>
@@ -43,7 +52,12 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" type="index" width="50" label="No" />
+      <el-table-column
+        align="center"
+        type="index"
+        width="50"
+        label="No"
+      />
       <el-table-column
         prop="material_no"
         label="原材料代码"
@@ -97,15 +111,18 @@
         width="160"
         label="更新时间"
       />
-      <el-table-column fixed="right" label="操作">
+      <el-table-column
+        fixed="right"
+        label="操作"
+      >
         <template slot-scope="scope">
           <!-- <el-button-group> -->
-          <!-- <el-button
-              v-if="permissionObj.production.material.indexOf('change')>-1"
-              size="mini"
-              @click="showUpdateMaterialDialog(scope.row)"
-            >编辑
-            </el-button> -->
+          <el-button
+            v-if="permissionObj.production.material.indexOf('change')>-1"
+            size="mini"
+            @click="showUpdateMaterialDialog(scope.row)"
+          >编辑
+          </el-button>
           <el-button
             v-if="permissionObj.production.material.indexOf('change')>-1"
             size="mini"
@@ -113,11 +130,16 @@
             @click="deleteMaterial(scope.row)"
           >{{ scope.row.use_flag ? '停用':'启用' }}
             <!-- </el-button> -->
-            </el-button-group>
-          </el-button></template>
+            <!-- </el-button-group> -->
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
-    <page :total="total" @currentChange="currentChange" />
+    <page
+      :total="total"
+      :current-page.sync="params.page"
+      @currentChange="currentChange"
+    />
     <create-material-dialog
       ref="createMaterialDialog"
       :material-types="materialTypes"

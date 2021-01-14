@@ -8,10 +8,10 @@
       <el-form-item label="机型名称">
         <el-input v-model="category__category_name" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
-      <el-form-item label="配方编号">
+      <el-form-item label="胶料配方编码">
         <el-input v-model="stage_product_batch_no" size="mini" :disabled="true" style="width: 160px" />
       </el-form-item>
-      <el-form-item label="配方名称">
+      <el-form-item label="胶料名称">
         <el-input v-model="product_name" size="mini" :disabled="true" style="width: 120px" />
       </el-form-item>
       <el-form-item label="预计炼胶时间">
@@ -121,7 +121,16 @@
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="炭黑名称" />
+            <el-table-column align="center" prop="material_name" label="炭黑名称">
+              <template slot-scope="{row}">
+                {{ row.material_name }} ({{ row.tank_no }}号罐)
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="90%" label="产地">
+              <template slot-scope="{row}">
+                {{ row.provenance?row.provenance:'' }}
+              </template>
+            </el-table-column>
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
           </el-table>
@@ -135,9 +144,19 @@
             <el-table-column align="center" width="50%" prop="sn" label="序号" />
             <el-table-column align="center" width="60%" prop="action_name" label="动作">投料</el-table-column>
             <!-- <el-table-column prop="auto_flag" label="自动与否" /> -->
-            <el-table-column align="center" prop="material_name" label="油脂名称" />
+            <el-table-column align="center" prop="material_name" label="油脂名称">
+              <template slot-scope="{row}">
+                {{ row.material_name }} ({{ row.tank_no }}号罐)
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="90%" label="产地">
+              <template slot-scope="{row}">
+                {{ row.provenance?row.provenance:'' }}
+              </template>
+            </el-table-column>
             <el-table-column align="center" width="90%" prop="actual_weight" label="设定值(kg)" />
             <el-table-column align="center" width="90%" prop="standard_error" label="误差值(kg)" />
+
           </el-table>
         </div>
       </el-col>
@@ -170,8 +189,8 @@
 
 <script>
 import { recipe_list, rubber_process_url } from '@/api/recipe_fun'
-import { constantRoutes } from '@/router'
-import { dataTool } from 'echarts/lib/echarts'
+// import { constantRoutes } from '@/router'
+// import { dataTool } from 'echarts/lib/echarts'
 
 export default {
   data: function() {
@@ -206,8 +225,8 @@ export default {
   },
   created() {
     //   rubber_process_url
-    console.log('====================')
-    console.log(this.$route.params)
+    // console.log('====================')
+    // console.log(this.$route.params)
     // 配方详情界面的三个表格的原材料展示接口访问
     this.recipe_material_list(this.$route.params['id'])
     // 配方详情界面的配方信息和密炼步序信息接口访问(已废弃)
@@ -220,44 +239,46 @@ export default {
         const recipe_listData = await recipe_list('get', id, {
           params: { }
         })
-        // console.log('====================111111111')
         // console.log(recipe_listData)
-        // console.log('====================111111111')
         // 机台、配方编号、配方名称
         this.equip_name = this.$route.params['equip_name']
-        this.category__category_name = this.$route.params['category__category_name']
+        this.category__category_name = recipe_listData.category__category_name
         this.stage_product_batch_no = this.$route.params['stage_product_batch_no']
         this.product_name = this.$route.params['product_name']
         this.production_time_interval = this.$route.params['production_time_interval']
         for (var j = 0; j < recipe_listData['batching_details'].length; ++j) {
           var v_auto_falg = ''
-          if (recipe_listData['batching_details'][j]['auto_flag'] == 1) {
+          if (recipe_listData['batching_details'][j]['auto_flag'] === 1) {
             v_auto_falg = '自动'
-          } else if (recipe_listData['batching_details'][j]['auto_flag'] == 2) {
+          } else if (recipe_listData['batching_details'][j]['auto_flag'] === 2) {
             v_auto_falg = '手动'
           } else {
             v_auto_falg = '其他'
           }
-          if (recipe_listData['batching_details'][j]['material_type'] == '炭黑') {
+          if (recipe_listData['batching_details'][j]['type'] === 2) {
             this.carbon_tableData.push({
-              sn: this.carbon_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
+              standard_error: recipe_listData['batching_details'][j]['standard_error'],
+              provenance: recipe_listData['batching_details'][j]['provenance'],
+              tank_no: recipe_listData['batching_details'][j]['tank_no']
             })
-          } else if (recipe_listData['batching_details'][j]['material_type'] == '油料') {
+          } else if (recipe_listData['batching_details'][j]['type'] === 3) {
             this.oil_tableData.push({
-              sn: this.oil_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               action_name: '投料',
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
               actual_weight: recipe_listData['batching_details'][j]['actual_weight'],
-              standard_error: recipe_listData['batching_details'][j]['standard_error']
+              standard_error: recipe_listData['batching_details'][j]['standard_error'],
+              provenance: recipe_listData['batching_details'][j]['provenance'],
+              tank_no: recipe_listData['batching_details'][j]['tank_no']
             })
           } else {
             this.rubber_tableData.push({
-              sn: this.rubber_tableData.length + 1,
+              sn: recipe_listData['batching_details'][j]['sn'],
               action_name: '投料',
               auto_flag: v_auto_falg,
               material_name: recipe_listData['batching_details'][j]['material_name'],
@@ -266,6 +287,9 @@ export default {
             })
           }
         }
+        this.carbon_tableData = this.carbon_tableData.sort(this.compareSn)
+        this.oil_tableData = this.oil_tableData.sort(this.compareSn)
+        this.rubber_tableData = this.rubber_tableData.sort(this.compareSn)
         // 超温最短时间、进胶最低温度...
         this.mini_time = (recipe_listData['processes']['mini_time'])
         this.mini_temp = (recipe_listData['processes']['mini_temp'])
@@ -336,12 +360,12 @@ export default {
         this.temp_use_flag = process_step_listData.results[0]['temp_use_flag']
         this.sp_num = process_step_listData.results[0]['sp_num']
         this.use_flag = process_step_listData.results[0]['use_flag']
-        console.log('====================2222')
-        console.log(process_step_listData.results)
-        console.log('====================2222')
+        // console.log('====================2222')
+        // console.log(process_step_listData.results)
+        // console.log('====================2222')
         for (var i = 0; i < process_step_listData.results[0]['process_details'].length; ++i) {
-          console.log('====================333333')
-          console.log(process_step_listData.results[0]['process_details'][i])
+          // console.log('====================333333')
+          // console.log(process_step_listData.results[0]['process_details'][i])
           this.process_step_tableData.push({
             sn: this.process_step_tableData.length + 1,
             condition_name: process_step_listData.results[0]['process_details'][i]['condition_name'],
@@ -357,7 +381,7 @@ export default {
       } catch (e) { e }
     },
     recipe_return_list: function() {
-      this.$router.push({ name: 'RecipeList' })
+      this.$router.push({ name: 'RecipeList', params: { currentPage: this.$route.params.currentPage }})
     },
     sp_numFormatter: function() {
       return this.sp_numChoice(this.sp_num)
